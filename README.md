@@ -2,15 +2,19 @@
 
 Database development is fun :)
 
+## General
+
+## Papers
+
+* [CAP Twelve Years Later: How the "Rules" Have Changed](https://www.infoq.com/articles/cap-twelve-years-later-how-the-rules-have-changed) (2012)
+
+> The modern CAP goal should be to maximize combinations of consistency and availability that make sense for the specific application.
+
 ## Posts
 
 * [What I Learned From Programming Databases](http://www.philipotoole.com/what-i-learned-from-programming-a-database/) (2016)
 
 > Programming a database is fascinating work.
-
-* [How does a relational database work](http://coding-geek.com/how-databases-work/) (2015)
-
-> Relational Databases are very interesting because they’re based on useful and reusable concepts.
 
 * [Elements Of Scale: Composing And Scaling Data Platforms](http://highscalability.com/blog/2015/5/4/elements-of-scale-composing-and-scaling-data-platforms.html) (2015)
 
@@ -20,11 +24,32 @@ Database development is fun :)
 
 > Although computers have got faster, data has got bigger and requirements have become more complex, many old ideas are actually still highly relevant today.
 
-* [CAP Twelve Years Later: How the "Rules" Have Changed](https://www.infoq.com/articles/cap-twelve-years-later-how-the-rules-have-changed) (2012)
+## Storage Engine
 
-> The modern CAP goal should be to maximize combinations of consistency and availability that make sense for the specific application.
+### Papers
+
+* [The Log-Structured Merge-Tree (LSM-Tree)](https://paperhub.s3.amazonaws.com/18e91eb4db2114a06ea614f0384f2784.pdf) (1996)
+
+> The Log-Structured Merge-tree (LSM-tree) is a disk-based data structure designed to provide low-cost indexing for a file experiencing a high rate of record inserts (and deletes) over an extended period.
+
+* [bLSM: A General Purpose Log Structured Merge Tree](http://www.eecs.harvard.edu/~margo/cs165/papers/gp-lsm.pdf) (2012)
+
+> We then present bLSM, a Log Structured Merge (LSM) tree with the advantages of B-Trees and log structured approaches:
+> (1) Unlike existing log structured trees, bLSM has near-optimal read and scan performance, and
+> (2) its new “spring and gear” merge scheduler bounds write latency without impacting throughput or allowing merges to block writes for extended periods of time.
+
+* [Cache-Oblivious Streaming B-trees](http://supertech.csail.mit.edu/papers/sbtree.pdf) (2007)
+
+> A streaming B-tree is a dictionary that efficiently implements insertions and range queries.
+> We present two cache-oblivious streaming B-trees, the shuttle tree, and the cache-oblivious lookahead array (COLA).
+
+### Videos
+
+* [MySQL vs something else. Evaluating alternative databases.](https://vimeo.com/98428203) (2013)
 
 ## SQL Database
+
+### Papers
 
 * [Megastore: Providing Scalable, Highly Available Storage for Interactive Services](http://static.googleusercontent.com/media/research.google.com/en//pubs/archive/36971.pdf) (2011)
 
@@ -34,48 +59,91 @@ Database development is fun :)
 
 > F1 is a hybrid database that combines high availability, the scalability of NoSQL systems like Bigtable, and the consistency and usability of traditional SQL databases.
 
+### Posts
+
+* [How does a relational database work](http://coding-geek.com/how-databases-work/) (2015)
+
+> Relational Databases are very interesting because they’re based on useful and reusable concepts.
+> If understanding a database interests you but you’ve never had the time or the will to dig into this wide subject, you should like this article.
+
 ## NoSQL Database
+
+### Papers
 
 * [Bigtable: A Distributed Storage System for Structured Data](http://static.googleusercontent.com/media/research.google.com/en//archive/bigtable-osdi06.pdf) (2006)
 
-> Bigtable is a distributed storage system for managing structured data that is designed to scale to a very large size.
+> Bigtable is a distributed storage system for managing structured data that is designed to scale to a very large size: petabytes of data across thousands of commodity servers.
 
 * [Spanner: Google’s Globally-Distributed Database](http://static.googleusercontent.com/media/research.google.com/en//archive/spanner-osdi2012.pdf) (2012)
 
-> Spanner is Google’s scalable, multi-version, globally distributed, and synchronously-replicated database.
+> Spanner is Google’s scalable, multi-version, globallydistributed, and synchronously-replicated database.
+> It is the first system to distribute data at global scale and support externally-consistent distributed transactions.
 
-## Consensus Algorithm
-
-* [In Search of an Understandable Consensus Algorithm](https://raft.github.io/raft.pdf) (2014)
-
-> Raft is a consensus algorithm for managing a replicated log.
-
-## Distributed Trasaction
-
-* [Large-scale Incremental Processing Using Distributed Transactions and Notifications](http://static.googleusercontent.com/media/research.google.com/en//pubs/archive/36726.pdf) (2010)
-
-> Percolator provides cross-row, cross-table transactions with ACID snapshot-isolation semantics.
-
-## Distributed File System
+## Distributed System
 
 * [The Google File System](http://static.googleusercontent.com/media/research.google.com/en//archive/gfs-sosp2003.pdf) (2003)
 
-> The Google File System demonstrates the qualities essential for supporting large-scale data processing workloads on commodity hardware.
-
-## Distributed Lock Service
-
-* [The Chubby lock service for loosely-coupled distributed systems](http://static.googleusercontent.com/media/research.google.com/en//archive/chubby-osdi06.pdf) (2006)
-
-> Chubby is a distributed lock service intended for coarsegrained synchronization of activities within Google’s distributed systems.
-
-## Distributed Data Processing
+> We have designed and implemented the Google File System, a scalable distributed file system for large distributed data-intensive applications.
+> It provides fault tolerance while running on inexpensive commodity hardware, and it delivers high aggregate performance to a large number of clients.
 
 * [MapReduce: Simplified Data Processing on Large Clusters](http://static.googleusercontent.com/media/research.google.com/en//archive/mapreduce-osdi04.pdf) (2004)
 
 > MapReduce is a programming model and an associated implementation for processing and generating large data sets.
 
-## Others
+* [The Chubby lock service for loosely-coupled distributed systems](http://static.googleusercontent.com/media/research.google.com/en//archive/chubby-osdi06.pdf) (2006)
+
+> We describe our experiences with the Chubby lock service, which is intended to provide coarse-grained locking as well as reliable (though low-volume) storage for a loosely-coupled distributed system.
+
+* [Large-scale Incremental Processing Using Distributed Transactions and Notifications](http://static.googleusercontent.com/media/research.google.com/en//pubs/archive/36726.pdf) (2010)
+
+> Percolator provides cross-row, cross-table transactions with ACID snapshot-isolation semantics.
 
 * [Logical Physical Clocks and Consistent Snapshots in Globally Distributed Databases](https://www.cse.buffalo.edu/tech-reports/2014-04.pdf) (2014)
 
-> The hybrid logical clocks (HLC) that combines the benefits of logical clocks (LC) and physical time (PT) while overcoming their shortcomings.
+> We propose a hybrid logical clock, HLC, that combines the best of logical clocks and physical clocks.
+> HLC captures the causality relationship like logical clocks, and enables easy identification of consistent snapshots in distributed systems.
+
+## Consensus Algorithm
+
+### Papers
+
+* [The Part-Time Parliament](http://research.microsoft.com/en-us/um/people/lamport/pubs/lamport-paxos.pdf) (1998)
+
+> The Island of Paxos.
+
+* [Paxos Made Simple](http://research.microsoft.com/en-us/um/people/lamport/pubs/paxos-simple.pdf) (2001)
+
+> The Paxos algorithm, when presented in plain English, is very simple.
+
+* [Fast Paxos](https://www.microsoft.com/en-us/research/wp-content/uploads/2016/02/tr-2005-112.pdf) (2005)
+
+> Fast Paxos is an extension of the classic Paxos algorithm that allows the value to be learned in two message delays.
+
+* [Paxos Made Live - An Engineering Perspective](http://static.googleusercontent.com/media/research.google.com/en//archive/paxos_made_live.pdf) (2007)
+
+> We describe our experience building a fault-tolerant data-base using the Paxos consensus algorithm.
+> Despite the existing literature in the field, building such a database proved to be non-trivial.
+
+* [There Is More Consensus in Egalitarian Parliaments](https://www.cs.cmu.edu/~dga/papers/epaxos-sosp2013.pdf) (2013)
+
+> This paper describes the design and implementation of Egalitarian Paxos (EPaxos), a new distributed consensus algorithm based on Paxos.
+> EPaxos achieves three goals:
+> (1) optimal commit latency in the wide-area when tolerating one and two failures, under realistic conditions;
+> (2) uniform load balancing across all replicas (thus achieving high throughput); and
+> (3) graceful performance degradation when replicas are slow or crash.
+
+* [In Search of an Understandable Consensus Algorithm](https://raft.github.io/raft.pdf) (2014)
+
+> Raft is a consensus algorithm for managing a replicated log.
+> It produces a result equivalent to (multi-)Paxos, and it is as efficient as Paxos, but its structure is different from Paxos;
+> this makes Raft more understandable than Paxos and also provides a better foundation for building practical systems.
+
+### Posts
+
+- [Neat Algorithms - Paxos](http://harry.me/blog/2014/12/27/neat-algorithms-paxos/) (2014)
+
+> This is an explanation and demonstration of an extraordinarily neat algorithm called Paxos.
+
+### Slides
+
+- [Implementing Replicated Logs with Paxos](https://ramcloud.stanford.edu/~ongaro/userstudy/paxos.pdf) (2013)
