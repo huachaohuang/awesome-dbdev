@@ -43,6 +43,8 @@ Database development is fun :)
 > A streaming B-tree is a dictionary that efficiently implements insertions and range queries.
 > We present two cache-oblivious streaming B-trees, the shuttle tree, and the cache-oblivious lookahead array (COLA).
 
+* [Bitcask: A Log-Structured Hash Table for Fast Key/Value Data](http://basho.com/wp-content/uploads/2015/05/bitcask-intro.pdf) (2010)
+
 ### Videos
 
 * [MySQL vs something else. Evaluating alternative databases.](https://vimeo.com/98428203) (2013)
