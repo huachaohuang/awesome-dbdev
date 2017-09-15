@@ -132,6 +132,9 @@ Database development is fun :-)
 - [Online, Asynchronous Schema Change in F1](papers/f1-online-ddl.pdf) (2013)
   > We introduce a protocol for schema evolution in a globally distributed database management system with shared data, stateless servers, and no global membership.
 
+- [Spanner: Becoming a SQL System](papers/spanner-2017.pdf) (2017)
+  > In this paper, we focus on the "database system" aspects of Spanner, in particular how query execution has evolved and forced the rest of Spanner to evolve.
+
 ### Links
 
 - [How does a relational database work](http://coding-geek.com/how-databases-work/)
