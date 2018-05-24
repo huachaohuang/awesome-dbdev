@@ -36,16 +36,22 @@ Database development is fun :-)
 
 ### Papers
 
-- [Bitcask: A Log-Structured Hash Table for Fast Key/Value Data](papers/bitcask.pdf) (2010)
+- [Weaving Relations for Cache Performance](papers/pax.pdf) (2001)
+  > A new data organization model called PAX (Partition Attributes Across), that significantly improves cache performance by grouping together all values of each attribute within each page.
 
 - [Cache-Oblivious Streaming B-trees](papers/sbtree.pdf) (2007)
   > A streaming B-tree is a dictionary that efficiently implements insertions and range queries. We present two cache-oblivious streaming B-trees, the shuttle tree, and the cache-oblivious lookahead array (COLA).
+
+- [Bitcask: A Log-Structured Hash Table for Fast Key/Value Data](papers/bitcask.pdf) (2010)
 
 - [The Log-Structured Merge-Tree (LSM-Tree)](papers/lsm.pdf) (1996)
   > The LSM-tree uses an algorithm that defers and batches index changes, cascading the changes from a memory-based component through one or more disk components in an efficient manner reminiscent of merge sort.
 
 - [bLSM: A General Purpose Log Structured Merge Tree](papers/gp-lsm.pdf) (2012)
   > bLSM, a Log Structured Merge (LSM) tree with the advantages of B-Trees and log structured approaches.
+
+- [WiscKey: Separating Keys from Values in SSD-Conscious Storage](papers/wisckey.pdf) (2016)
+  > WiscKey, a persistent LSM-tree-based key-value store with a performance-oriented data layout that separates keys from values to minimize I/O amplification.
 
 ### Links
 
