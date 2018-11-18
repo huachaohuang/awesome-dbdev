@@ -53,6 +53,9 @@ Database development is fun :-)
 - [WiscKey: Separating Keys from Values in SSD-Conscious Storage](papers/wisckey.pdf) (2016)
   > WiscKey, a persistent LSM-tree-based key-value store with a performance-oriented data layout that separates keys from values to minimize I/O amplification.
 
+- [The Data Calculator: Data Structure Design and Cost Synthesis from First Principles and Learned Cost Models](papers/datacalculator.pdf) (2018)
+  > We present a design engine, the Data Calculator, which enables interactive and semi-automated design of data structures.
+
 ### Links
 
 - [Fractal tree index](https://en.wikipedia.org/wiki/Fractal_tree_index)
