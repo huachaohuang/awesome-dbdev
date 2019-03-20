@@ -116,6 +116,9 @@ Database development is fun :-)
 
 ### Papers
 
+- [A Critique of ANSI SQL Isolation Levels](papers/isolation-levels.pdf) (1995)
+  > Investigating the ambiguities of the phenomena leads to clearer definitions; in addition new phenomena that better characterize isolation types are introduced. An important multiversion isolation type, Snapshot Isolation, is defined.
+
 - [Large-scale Incremental Processing Using Distributed Transactions and Notifications](papers/percolator.pdf) (2010)
   > Percolator provides cross-row, cross-table transactions with ACID snapshot-isolation semantics.
 
