@@ -47,13 +47,16 @@ Database development is fun :-)
 - [The Log-Structured Merge-Tree (LSM-Tree)](papers/lsm.pdf) (1996)
   > The LSM-tree uses an algorithm that defers and batches index changes, cascading the changes from a memory-based component through one or more disk components in an efficient manner reminiscent of merge sort.
 
-- [bLSM: A General Purpose Log Structured Merge Tree](papers/gp-lsm.pdf) (2012)
+- [bLSM: A General Purpose Log Structured Merge Tree](papers/blsm.pdf) (2012)
   > bLSM, a Log Structured Merge (LSM) tree with the advantages of B-Trees and log structured approaches.
+
+- [The Bw-Tree: A B-tree for New Hardware Platforms](papers/bw-tree.pdf) (2013)
+  > Our new form of B-tree, calledthe Bw-tree achieves its very  high performance via a latch-freeapproach that effectively exploits the processor caches ofmodernmulti-core chips.
 
 - [WiscKey: Separating Keys from Values in SSD-Conscious Storage](papers/wisckey.pdf) (2016)
   > WiscKey, a persistent LSM-tree-based key-value store with a performance-oriented data layout that separates keys from values to minimize I/O amplification.
 
-- [The Data Calculator: Data Structure Design and Cost Synthesis from First Principles and Learned Cost Models](papers/datacalculator.pdf) (2018)
+- [The Data Calculator: Data Structure Design and Cost Synthesis from First Principles and Learned Cost Models](papers/data-calculator.pdf) (2018)
   > We present a design engine, the Data Calculator, which enables interactive and semi-automated design of data structures.
 
 ### Links
@@ -109,14 +112,14 @@ Database development is fun :-)
 - [Time, Clocks, and the Ordering of Events in a Distributed System](papers/logical-clock.pdf) (1978)
   > A distributed algorithm is given for synchronizing a system of logical clocks which can be used to totally order the events.
 
-- [Logical Physical Clocks and Consistent Snapshots in Globally Distributed Databases](papers/logical-physical-clock.pdf) (2014)
+- [Logical Physical Clocks and Consistent Snapshots in Globally Distributed Databases](papers/hlc.pdf) (2014)
   > We propose a hybrid logical clock, HLC, that combines the best of logical clocks and physical clocks. HLC captures the causality relationship like logical clocks, and enables easy identification of consistent snapshots in distributed systems.
 
 ## Distributed Transaction
 
 ### Papers
 
-- [A Critique of ANSI SQL Isolation Levels](papers/isolation-levels.pdf) (1995)
+- [A Critique of ANSI SQL Isolation Levels](papers/snapshot-isolation.pdf) (1995)
   > Investigating the ambiguities of the phenomena leads to clearer definitions; in addition new phenomena that better characterize isolation types are introduced. An important multiversion isolation type, Snapshot Isolation, is defined.
 
 - [Large-scale Incremental Processing Using Distributed Transactions and Notifications](papers/percolator.pdf) (2010)
