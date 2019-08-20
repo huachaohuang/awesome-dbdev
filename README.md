@@ -4,7 +4,7 @@ You want to become an awesome database developer?
 
 Great, that's fun but challenging. I collect these awesome materials here to help each other.
 
-# Storage Medium
+# Storage Mediums
 
 ## HDD
 
@@ -34,7 +34,7 @@ Great, that's fun but challenging. I collect these awesome materials here to hel
 
 - [How Flash Memory Works](https://www.youtube.com/watch?v=s7JLXs5es7I)
 
-# Storage Standard
+# Storage Standards
 
 ## SCSI
 
@@ -50,7 +50,7 @@ Great, that's fun but challenging. I collect these awesome materials here to hel
 
 ### Projects
 
-- [Linux Driver for SCSI](https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/tree/drivers/scsi?h=linux-4.19.y)
+- [Linux SCSI Driver](https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/tree/drivers/scsi?h=linux-4.19.y)
 
 ## ATA (IDE)
 
@@ -62,8 +62,8 @@ Great, that's fun but challenging. I collect these awesome materials here to hel
 
 ### Projects
 
-- [Linux Driver for IDE](https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/tree/drivers/ide?h=linux-4.19.y)
-- [Linux Driver for ATA](https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/tree/drivers/ata?h=linux-4.19.y)
+- [Linux IDE Driver](https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/tree/drivers/ide?h=linux-4.19.y)
+- [Linux ATA Driver](https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/tree/drivers/ata?h=linux-4.19.y)
 
 ## PCI
 
@@ -80,7 +80,20 @@ Great, that's fun but challenging. I collect these awesome materials here to hel
 
 ### Projects
 
-- [Linux Driver for NVMe](https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/tree/drivers/nvme?h=linux-4.19.y)
+- [Linux NVMe Driver](https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/tree/drivers/nvme?h=linux-4.19.y)
+
+# Storage Virtualization
+
+## Multiple Devices Management
+
+### Wikis
+
+- [Logical Volume Manager (Linux)](https://en.wikipedia.org/wiki/Logical_Volume_Manager_(Linux))
+- [Redundant Array of Independent Disks (RAID)](https://en.wikipedia.org/wiki/RAID)
+
+### Projects
+
+- [Linux Multiple Devices Driver](https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/tree/drivers/md?h=linux-4.19.y)
 
 ----------------------------------------
 
@@ -101,12 +114,6 @@ The following part is the original, but I'm reorganizing these materials.
 
 - [Apache Kafka, Samza, and the Unix Philosophy of Distributed Data](http://www.confluent.io/blog/apache-kafka-samza-and-the-unix-philosophy-of-distributed-data)
   > As we’re in such a fast-moving field, we often have a tendency of dismissing older ideas as irrelevant – and consequently, we end up having to learn the same lessons over and over again, the hard way.
-
-## Hard Disk
-
-### Links
-
-- [RAID](https://en.wikipedia.org/wiki/RAID)
 
 ## File System
 
