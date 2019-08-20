@@ -1,6 +1,92 @@
-# Awesome Database Development
+# About
 
-Database development is fun :-)
+You want to become an awesome database developer?
+
+Great, that's fun but challenging. I collect these awesome materials here to help each other.
+
+# Storage Medium
+
+## HDD
+
+### Wikis
+
+- [Magnetic Storage](https://en.wikipedia.org/wiki/Magnetic_storage)
+- [Hard Disk Drive (HDD)](https://en.wikipedia.org/wiki/Hard_disk_drive)
+
+### Videos
+
+- [How HDD Works](https://www.youtube.com/watch?v=Ep-yM894mQQ)
+- [The Mechanical Structure of HDD](https://www.youtube.com/watch?v=NtPc0jI21i0)
+- [The Development of HDD Technique](https://www.youtube.com/watch?v=wteUW2sL7bc)
+
+## SSD
+
+### Wikis
+
+- [Flash Memory](https://en.wikipedia.org/wiki/Flash_memory)
+- [Solid-State Drive (SSD)](https://en.wikipedia.org/wiki/Solid-state_drive)
+
+### Posts
+
+- [Coding for SSDs](http://codecapsule.com/2014/02/12/coding-for-ssds-part-1-introduction-and-table-of-contents/)
+
+### Videos
+
+- [How Flash Memory Works](https://www.youtube.com/watch?v=s7JLXs5es7I)
+
+# Storage Standard
+
+## SCSI
+
+### Wikis
+
+- [Small Computer System Interface (SCSI)](https://en.wikipedia.org/wiki/SCSI)
+- [Parallel SCSI](https://en.wikipedia.org/wiki/Parallel_SCSI)
+- [Serial Attached SCSI (SAS)](https://en.wikipedia.org/wiki/Serial_Attached_SCSI)
+
+### Videos
+
+- [Understanding SCSI](https://www.youtube.com/watch?v=pR7SdrXdT4M)
+
+### Projects
+
+- [Linux Driver for SCSI](https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/tree/drivers/scsi?h=linux-4.19.y)
+
+## ATA (IDE)
+
+### Wikis
+
+- [AT Atachment (ATA)](https://en.wikipedia.org/wiki/Parallel_ATA)
+- [Serial AT Attachment (SATA)](https://en.wikipedia.org/wiki/Serial_ATA)
+- [Advanced Host Controller Interface (AHCI)](https://en.wikipedia.org/wiki/Advanced_Host_Controller_Interface)
+
+### Projects
+
+- [Linux Driver for IDE](https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/tree/drivers/ide?h=linux-4.19.y)
+- [Linux Driver for ATA](https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/tree/drivers/ata?h=linux-4.19.y)
+
+## PCI
+
+### Wikis
+
+- [Industry Standard Architecture (ISA)](https://en.wikipedia.org/wiki/Industry_Standard_Architecture)
+- [Peripheral Component Interconnect (PCI)](https://en.wikipedia.org/wiki/Conventional_PCI)
+- [PCI Express (PCIe)](https://en.wikipedia.org/wiki/PCI_Express)
+- [NVM Express (NVMe)](https://en.wikipedia.org/wiki/NVM_Express)
+
+### Videos
+
+- [A History of PC Buses - From ISA to PCI Express](https://www.youtube.com/watch?v=qla-5isbK60)
+
+### Projects
+
+- [Linux Driver for NVMe](https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/tree/drivers/nvme?h=linux-4.19.y)
+
+----------------------------------------
+
+# To be Continued
+
+The following part is the original, but I'm reorganizing these materials.
 
 ## Posts
 
@@ -21,9 +107,6 @@ Database development is fun :-)
 ### Links
 
 - [RAID](https://en.wikipedia.org/wiki/RAID)
-
-- [Coding for SSDs](http://codecapsule.com/2014/02/12/coding-for-ssds-part-1-introduction-and-table-of-contents/)
-  > The basics of SSDs along with all of the recommended access patterns on how reads and writes should be implemented to get the best performance out of solid-state drives.
 
 ## File System
 
