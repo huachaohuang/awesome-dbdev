@@ -4,7 +4,7 @@ You want to become an awesome database developer?
 
 Great, that's fun but challenging. I collect these awesome materials here to help each other.
 
-# Storage Mediums
+# Storage Devices
 
 ## HDD
 
@@ -34,7 +34,7 @@ Great, that's fun but challenging. I collect these awesome materials here to hel
 
 - [How Flash Memory Works](https://www.youtube.com/watch?v=s7JLXs5es7I)
 
-# Storage Standards
+# Storage Interfaces
 
 ## SCSI
 
@@ -48,10 +48,6 @@ Great, that's fun but challenging. I collect these awesome materials here to hel
 
 - [Understanding SCSI](https://www.youtube.com/watch?v=pR7SdrXdT4M)
 
-### Projects
-
-- [Linux SCSI Driver](https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/tree/drivers/scsi?h=linux-4.19.y)
-
 ## ATA (IDE)
 
 ### Wikis
@@ -59,11 +55,6 @@ Great, that's fun but challenging. I collect these awesome materials here to hel
 - [AT Atachment (ATA)](https://en.wikipedia.org/wiki/Parallel_ATA)
 - [Serial AT Attachment (SATA)](https://en.wikipedia.org/wiki/Serial_ATA)
 - [Advanced Host Controller Interface (AHCI)](https://en.wikipedia.org/wiki/Advanced_Host_Controller_Interface)
-
-### Projects
-
-- [Linux IDE Driver](https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/tree/drivers/ide?h=linux-4.19.y)
-- [Linux ATA Driver](https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/tree/drivers/ata?h=linux-4.19.y)
 
 ## PCI
 
@@ -78,22 +69,46 @@ Great, that's fun but challenging. I collect these awesome materials here to hel
 
 - [A History of PC Buses - From ISA to PCI Express](https://www.youtube.com/watch?v=qla-5isbK60)
 
-### Projects
-
-- [Linux NVMe Driver](https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/tree/drivers/nvme?h=linux-4.19.y)
-
 # Storage Virtualization
 
-## Multiple Devices Management
+## LVM
 
 ### Wikis
 
-- [Logical Volume Manager (Linux)](https://en.wikipedia.org/wiki/Logical_Volume_Manager_(Linux))
+- [Logical Volume Manager (LVM)](https://en.wikipedia.org/wiki/Logical_Volume_Manager_(Linux))
+
+### Videos
+
+- [Logical Volume Management (LVM) - Linux](https://www.youtube.com/watch?v=fadQX2e_PGk)
+
+## RAID
+
+### Wikis
+
 - [Redundant Array of Independent Disks (RAID)](https://en.wikipedia.org/wiki/RAID)
 
-### Projects
+### Videos
 
-- [Linux Multiple Devices Driver](https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/tree/drivers/md?h=linux-4.19.y)
+- [What is RAID 0, 1, 2, 3, 4, 5, 6 and 10 (1+0)?](https://www.youtube.com/watch?v=wTcxRObq738)
+
+# Operating System
+
+## Linux Kernel
+
+### Books
+
+- [Understanding the Linux Kernel](https://www.oreilly.com/library/view/understanding-the-linux/0596005652/)
+
+### Links
+
+- [The Linux Kernel Archives](https://www.kernel.org/)
+- [Linux Weekly News](https://lwn.net/)
+
+## Device Drivers
+
+### Books
+
+- [Linux Device Drivers](https://www.oreilly.com/library/view/linux-device-drivers/0596005903/)
 
 ----------------------------------------
 
