@@ -2,9 +2,11 @@
 
 You want to become an awesome database developer?
 
-Great, that's fun but challenging. I collect these awesome materials here to help each other.
+Great, that's fun but challenging. Let's collect the awesome materials here to help each other.
 
 # Storage Devices
+
+We should know the characteristics of different storage devices to make good use of them.
 
 ## HDD
 
@@ -35,6 +37,10 @@ Great, that's fun but challenging. I collect these awesome materials here to hel
 - [How Flash Memory Works](https://www.youtube.com/watch?v=s7JLXs5es7I)
 
 # Storage Interfaces
+
+These interface standards define how CPU communicates with storage devices.
+
+TODO: Due to historical reasons, it is a headache to sort out the relationship between these standards. I should write a post about it.
 
 ## SCSI
 
@@ -93,13 +99,15 @@ Great, that's fun but challenging. I collect these awesome materials here to hel
 
 # Operating System
 
+Please explain how IO operations work, start from the POSIX API until the device drivers.
+
 ## Linux Kernel
 
 ### Books
 
 - [Understanding the Linux Kernel](https://www.oreilly.com/library/view/understanding-the-linux/0596005652/)
 
-### Links
+### Websites
 
 - [The Linux Kernel Archives](https://www.kernel.org/)
 - [Linux Weekly News](https://lwn.net/)
