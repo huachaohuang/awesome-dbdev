@@ -6,115 +6,118 @@ Great, that's fun but challenging. Let's collect the awesome materials here to h
 
 # Storage Devices
 
-We should know the characteristics of different storage devices to make good use of them.
+I have put up a post to explain these things: [What You Should Know About Storage Devices](http://huachaohuang.com/2019/08/28/what-you-should-know-about-storage-devices.html)
 
-## HDD
+## Storage Media
 
-### Wikis
+### HDD
+
+#### Wikis
 
 - [Magnetic Storage](https://en.wikipedia.org/wiki/Magnetic_storage)
 - [Hard Disk Drive (HDD)](https://en.wikipedia.org/wiki/Hard_disk_drive)
 
-### Videos
+#### Videos
 
 - [How HDD Works](https://www.youtube.com/watch?v=Ep-yM894mQQ)
 - [The Mechanical Structure of HDD](https://www.youtube.com/watch?v=NtPc0jI21i0)
 - [The Development of HDD Technique](https://www.youtube.com/watch?v=wteUW2sL7bc)
 
-## SSD
+### SSD
 
-### Wikis
+#### Wikis
 
 - [Flash Memory](https://en.wikipedia.org/wiki/Flash_memory)
 - [Solid-State Drive (SSD)](https://en.wikipedia.org/wiki/Solid-state_drive)
 
-### Posts
+#### Posts
 
 - [Coding for SSDs](http://codecapsule.com/2014/02/12/coding-for-ssds-part-1-introduction-and-table-of-contents/)
 
-### Videos
+#### Videos
 
 - [How Flash Memory Works](https://www.youtube.com/watch?v=s7JLXs5es7I)
 
-# Storage Interfaces
+## Storage Standards
 
-These interface standards define how CPU communicates with storage devices.
+### SCSI
 
-TODO: Due to historical reasons, it is a headache to sort out the relationship between these standards. I should write a post about it.
-
-## SCSI
-
-### Wikis
+#### Wikis
 
 - [Small Computer System Interface (SCSI)](https://en.wikipedia.org/wiki/SCSI)
 - [Parallel SCSI](https://en.wikipedia.org/wiki/Parallel_SCSI)
 - [Serial Attached SCSI (SAS)](https://en.wikipedia.org/wiki/Serial_Attached_SCSI)
 
-### Videos
+#### Videos
 
 - [Understanding SCSI](https://www.youtube.com/watch?v=pR7SdrXdT4M)
 
-## ATA (IDE)
+### ATA
 
-### Wikis
+#### Wikis
 
 - [AT Atachment (ATA)](https://en.wikipedia.org/wiki/Parallel_ATA)
 - [Serial AT Attachment (SATA)](https://en.wikipedia.org/wiki/Serial_ATA)
 - [Advanced Host Controller Interface (AHCI)](https://en.wikipedia.org/wiki/Advanced_Host_Controller_Interface)
 
-## PCI
+### PCI
 
-### Wikis
+#### Wikis
 
 - [Industry Standard Architecture (ISA)](https://en.wikipedia.org/wiki/Industry_Standard_Architecture)
 - [Peripheral Component Interconnect (PCI)](https://en.wikipedia.org/wiki/Conventional_PCI)
 - [PCI Express (PCIe)](https://en.wikipedia.org/wiki/PCI_Express)
+- [Non-Volatile Memory (NVM)](https://en.wikipedia.org/wiki/Non-volatile_memory)
 - [NVM Express (NVMe)](https://en.wikipedia.org/wiki/NVM_Express)
 
-### Videos
+#### Videos
 
 - [A History of PC Buses - From ISA to PCI Express](https://www.youtube.com/watch?v=qla-5isbK60)
 
 # Storage Virtualization
 
-## LVM
+## Multiple Devices Management
 
-### Wikis
+### LVM
+
+#### Wikis
 
 - [Logical Volume Manager (LVM)](https://en.wikipedia.org/wiki/Logical_Volume_Manager_(Linux))
 
-### Videos
+#### Videos
 
 - [Logical Volume Management (LVM) - Linux](https://www.youtube.com/watch?v=fadQX2e_PGk)
 
-## RAID
+### RAID
 
-### Wikis
+#### Wikis
 
 - [Redundant Array of Independent Disks (RAID)](https://en.wikipedia.org/wiki/RAID)
 
-### Videos
+#### Videos
 
 - [What is RAID 0, 1, 2, 3, 4, 5, 6 and 10 (1+0)?](https://www.youtube.com/watch?v=wTcxRObq738)
 
 # Operating System
 
-Please explain how IO operations work, start from the POSIX API until the device drivers.
+Please explain how different IO operations work, start from the POSIX API to the device drivers.
 
 ## Linux Kernel
 
-### Books
+### General
+
+#### Books
 
 - [Understanding the Linux Kernel](https://www.oreilly.com/library/view/understanding-the-linux/0596005652/)
 
-### Websites
+#### Websites
 
 - [The Linux Kernel Archives](https://www.kernel.org/)
 - [Linux Weekly News](https://lwn.net/)
 
-## Device Drivers
+### Device Drivers
 
-### Books
+#### Books
 
 - [Linux Device Drivers](https://www.oreilly.com/library/view/linux-device-drivers/0596005903/)
 
