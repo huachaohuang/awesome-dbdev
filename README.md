@@ -121,6 +121,52 @@ Please explain how different IO operations work, start from the POSIX API to the
 
 - [Linux Device Drivers](https://www.oreilly.com/library/view/linux-device-drivers/0596005903/)
 
+# Distributed System
+
+## Clock
+
+- [Time, Clocks, and the Ordering of Events in a Distributed System](papers/logical-clock.pdf)
+  > Propose logical clock (LC).
+  >
+  > -- Leslie Lamport, 1978
+
+- [Logical Physical Clocks and Consistent Snapshots in Globally Distributed Databases](papers/hybrid-logical-clock.pdf)
+  > Propose hybrid logical clock (HLC).
+  >
+  > -- Sandeep Kulkarni, 2014
+
+## Consistency
+
+- [Session Guarantees for Weakly Consistent Replicated Data](papers/session-guarantees.pdf)
+  > Propose session guarantees.
+  >
+  > -- Douglas B. Terry, 1994
+
+- [From Session Causality to Causal Consistency](papers/session-causality.pdf)
+  > Prove the relationship between session guarantees and causal consistency.
+  >
+  > -- Jerzy Brzezinski, 2004
+
+- [Causal Memory: Definitions, Implementation and Programming](papers/causal-consistency.pdf)
+  > Propose causal consistency.
+  >
+  > -- Mustaque Ahamad, 1993
+
+- [How to Make a Multiprocessor Computer That CorrectlyExecutesMultiprocessProgranm](papers/sequential-consistency.pdf)
+  > Propose sequential consistency.
+  >
+  > -- Leslie Lamport, 1979
+
+- [Linearizability: A Correctness Condition for Concurrent Objects](papers/linearizable-consistency.pdf)
+  > Propose linearizable consistency.
+  >
+  > -- Maurice P. Herlihy, 1990
+
+- [Eventually consistent](papers/eventual-consistency.pdf)
+  > Propose eventual consistency.
+  >
+  > -- Werner Vogels, 2009
+
 ----------------------------------------
 
 # To be Continued
@@ -220,16 +266,6 @@ The following part is the original, but I'm reorganizing these materials.
 - [Neat Algorithms - Paxos](http://harry.me/blog/2014/12/27/neat-algorithms-paxos/)
 
 - [Implementing Replicated Logs with Paxos](https://ramcloud.stanford.edu/~ongaro/userstudy/paxos.pdf)
-
-## Distributed Clock
-
-### Papers
-
-- [Time, Clocks, and the Ordering of Events in a Distributed System](papers/logical-clock.pdf) (1978)
-  > A distributed algorithm is given for synchronizing a system of logical clocks which can be used to totally order the events.
-
-- [Logical Physical Clocks and Consistent Snapshots in Globally Distributed Databases](papers/hlc.pdf) (2014)
-  > We propose a hybrid logical clock, HLC, that combines the best of logical clocks and physical clocks. HLC captures the causality relationship like logical clocks, and enables easy identification of consistent snapshots in distributed systems.
 
 ## Distributed Transaction
 
