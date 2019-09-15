@@ -128,44 +128,44 @@ Please explain how different IO operations work, start from the POSIX API to the
 - [Time, Clocks, and the Ordering of Events in a Distributed System](papers/logical-clock.pdf)
   > Propose logical clock (LC).
   >
-  > -- Leslie Lamport, 1978
+  > *Leslie Lamport, 1978*
 
 - [Logical Physical Clocks and Consistent Snapshots in Globally Distributed Databases](papers/hybrid-logical-clock.pdf)
   > Propose hybrid logical clock (HLC).
   >
-  > -- Sandeep Kulkarni, 2014
+  > *Sandeep Kulkarni, 2014*
 
 ## Consistency
 
 - [Session Guarantees for Weakly Consistent Replicated Data](papers/session-guarantees.pdf)
   > Propose session guarantees.
   >
-  > -- Douglas B. Terry, 1994
+  > *Douglas B. Terry, 1994*
 
 - [From Session Causality to Causal Consistency](papers/session-causality.pdf)
   > Prove the relationship between session guarantees and causal consistency.
   >
-  > -- Jerzy Brzezinski, 2004
+  > *Jerzy Brzezinski, 2004*
 
 - [Causal Memory: Definitions, Implementation and Programming](papers/causal-consistency.pdf)
   > Propose causal consistency.
   >
-  > -- Mustaque Ahamad, 1993
+  > *Mustaque Ahamad, 1993*
 
 - [How to Make a Multiprocessor Computer That CorrectlyExecutesMultiprocessProgranm](papers/sequential-consistency.pdf)
   > Propose sequential consistency.
   >
-  > -- Leslie Lamport, 1979
+  > *Leslie Lamport, 1979*
 
 - [Linearizability: A Correctness Condition for Concurrent Objects](papers/linearizable-consistency.pdf)
   > Propose linearizable consistency.
   >
-  > -- Maurice P. Herlihy, 1990
+  > *Maurice P. Herlihy, 1990*
 
 - [Eventually consistent](papers/eventual-consistency.pdf)
   > Propose eventual consistency.
   >
-  > -- Werner Vogels, 2009
+  > *Werner Vogels, 2009*
 
 ----------------------------------------
 
