@@ -100,72 +100,59 @@ I have put up a post to explain these things: [What You Should Know About Storag
 
 # Operating System
 
-Please explain how different IO operations work, start from the POSIX API to the device drivers.
-
 ## Linux Kernel
 
-### General
-
-#### Books
+### Books
 
 - [Understanding the Linux Kernel](https://www.oreilly.com/library/view/understanding-the-linux/0596005652/)
+- [Linux Device Drivers](https://www.oreilly.com/library/view/linux-device-drivers/0596005903/)
 
-#### Websites
+### Websites
 
 - [The Linux Kernel Archives](https://www.kernel.org/)
 - [Linux Weekly News](https://lwn.net/)
-
-### Device Drivers
-
-#### Books
-
-- [Linux Device Drivers](https://www.oreilly.com/library/view/linux-device-drivers/0596005903/)
 
 # Distributed System
 
 ## Clock
 
-- [Time, Clocks, and the Ordering of Events in a Distributed System](papers/logical-clock.pdf)
-  > Propose logical clock (LC).
-  >
-  > *Leslie Lamport, 1978*
+### Papers
 
-- [Logical Physical Clocks and Consistent Snapshots in Globally Distributed Databases](papers/hybrid-logical-clock.pdf)
-  > Propose hybrid logical clock (HLC).
-  >
-  > *Sandeep Kulkarni, 2014*
+- [Time, Clocks, and the Ordering of Events in a Distributed System](papers/distributed-system/logical-clock.pdf)
+  > Propose the *happended before* relation and the *logical clock (LC)*.
+
+- [Logical Physical Clocks and Consistent Snapshots in Globally Distributed Databases](papers/distributed-system/hybrid-logical-clock.pdf)
+  > Propose the *hybrid logical clock (HLC)*.
 
 ## Consistency
 
-- [Session Guarantees for Weakly Consistent Replicated Data](papers/session-guarantees.pdf)
-  > Propose session guarantees.
-  >
-  > *Douglas B. Terry, 1994*
+### Papers
 
-- [From Session Causality to Causal Consistency](papers/session-causality.pdf)
-  > Prove the relationship between session guarantees and causal consistency.
-  >
-  > *Jerzy Brzezinski, 2004*
+- [How to Make a Multiprocessor Computer That Correctly Executes Multiprocess Progranm](papers/distributed-system/sequential-consistency.pdf)
+  > Propose the *sequential consistency*.
 
-- [Causal Memory: Definitions, Implementation and Programming](papers/causal-consistency.pdf)
-  > Propose causal consistency.
-  >
-  > *Mustaque Ahamad, 1993*
+- [Linearizability: A Correctness Condition for Concurrent Objects](papers/distributed-system/linearizable-consistency.pdf)
+  > Propose the *linearizable consistency*.
 
-- [How to Make a Multiprocessor Computer That CorrectlyExecutesMultiprocessProgranm](papers/sequential-consistency.pdf)
-  > Propose sequential consistency.
-  >
-  > *Leslie Lamport, 1979*
+- [Causal Memory: Definitions, Implementation and Programming](papers/distributed-system/causal-consistency.pdf)
+  > Propose the *causal consistency*.
 
-- [Linearizability: A Correctness Condition for Concurrent Objects](papers/linearizable-consistency.pdf)
-  > Propose linearizable consistency.
-  >
-  > *Maurice P. Herlihy, 1990*
+- [Session Guarantees for Weakly Consistent Replicated Data](papers/distributed-system/session-guarantees.pdf)
+  > Propose the *session guarantees*: *monotonic reads*, *monotonic writes*, *read your writes*, and *writes follow reads*.
 
-- [Eventually consistent](papers/eventual-consistency.pdf)
-  > Propose eventual consistency.
-  >
-  > *Werner Vogels, 2009*
+- [Eventually Consistent](papers/distributed-system/eventual-consistency.pdf)
+  > Propose the *eventual consistency*.
+
+- [Consistency in Non-Transactional Distributed Storage Systems](papers/distributed-system/non-transactional-consistency.pdf)
+  > Overview more than 50 different consistency notions and provie a partial order among them.
+
+- [Brewer’s Conjecture and the Feasibility of Consistent, Available, Partition-Tolerant Web Services](papers/distributed-system/cap-theorem.pdf)
+  > Prove the *CAP conjecture* that it is impossible to provide all the three properties: *Consistency*, *Availability*, and *Partition-tolerance*.
+
+### Articles
+
+- [CAP Twelve Years Later: How the "Rules" Have Changed](https://www.infoq.com/articles/cap-twelve-years-later-how-the-rules-have-changed)
+  > Revisit the *CAP theorem* to maximize combinations of consistency and availability.
 
 ----------------------------------------
 
@@ -229,12 +216,6 @@ The following part is the original, but I'm reorganizing these materials.
 - [MySQL vs something else. Evaluating alternative databases.](https://vimeo.com/98428203)
 
 ## CAP Theorem
-
-- [Brewer’s Conjecture and the Feasibility of Consistent, Available, Partition-Tolerant Web Services](papers/cap-theorem.pdf) (2002)
-  > We prove the CAP theorem in the asynchronous network model, and then discuss solutions to this dilemma in the partially synchronous model.
-
-- [CAP Twelve Years Later: How the "Rules" Have Changed](https://www.infoq.com/articles/cap-twelve-years-later-how-the-rules-have-changed) (2012)
-  > The modern CAP goal should be to maximize combinations of consistency and availability that make sense for the specific application.
 
 - [Spanner, TrueTime and the CAP Theorem](papers/cap-spanner.pdf) (2017)
   > The original point of the CAP theorem was to get designers to take this tradeoff seriously. But there are two important caveats: first, you only need forfeit something during an actual partition, and even then there are many mitigations. Second, the actual theorem is about 100% availability, while the interesting discussion here is about the tradeoffs involved for realistic high availability.
