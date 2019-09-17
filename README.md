@@ -118,41 +118,71 @@ I have put up a post to explain these things: [What You Should Know About Storag
 
 ### Papers
 
-- [Time, Clocks, and the Ordering of Events in a Distributed System](papers/distributed-system/logical-clock.pdf)
+- [Time, Clocks, and the Ordering of Events in a Distributed System](papers/distributed-system/logical-clock.pdf) (1978)
   > Propose the *happended before* relation and the *logical clock (LC)*.
 
-- [Logical Physical Clocks and Consistent Snapshots in Globally Distributed Databases](papers/distributed-system/hybrid-logical-clock.pdf)
+- [Logical Physical Clocks and Consistent Snapshots in Globally Distributed Databases](papers/distributed-system/hybrid-logical-clock.pdf) (2014)
   > Propose the *hybrid logical clock (HLC)*.
 
 ## Consistency
 
 ### Papers
 
-- [How to Make a Multiprocessor Computer That Correctly Executes Multiprocess Progranm](papers/distributed-system/sequential-consistency.pdf)
+- [How to Make a Multiprocessor Computer That Correctly Executes Multiprocess Progranm](papers/distributed-system/sequential-consistency.pdf) (1979)
   > Propose the *sequential consistency*.
 
-- [Linearizability: A Correctness Condition for Concurrent Objects](papers/distributed-system/linearizable-consistency.pdf)
+- [Linearizability: A Correctness Condition for Concurrent Objects](papers/distributed-system/linearizable-consistency.pdf) (1990)
   > Propose the *linearizable consistency*.
 
-- [Causal Memory: Definitions, Implementation and Programming](papers/distributed-system/causal-consistency.pdf)
-  > Propose the *causal consistency*.
-
-- [Session Guarantees for Weakly Consistent Replicated Data](papers/distributed-system/session-guarantees.pdf)
+- [Session Guarantees for Weakly Consistent Replicated Data](papers/distributed-system/session-guarantees.pdf) (1994)
   > Propose the *session guarantees*: *monotonic reads*, *monotonic writes*, *read your writes*, and *writes follow reads*.
 
-- [Eventually Consistent](papers/distributed-system/eventual-consistency.pdf)
+- [Causal Memory: Definitions, Implementation and Programming](papers/distributed-system/causal-consistency.pdf) (1995)
+  > Propose the *causal consistency*.
+
+- [Brewer’s Conjecture and the Feasibility of Consistent, Available, Partition-Tolerant Web Services](papers/distributed-system/cap-theorem.pdf) (2002)
+  > Prove the *CAP conjecture* that it is impossible to provide all the three properties: *Consistency*, *Availability*, and *Partition-tolerance*.
+
+- [Eventually Consistent](papers/distributed-system/eventual-consistency.pdf) (2009)
   > Propose the *eventual consistency*.
 
-- [Consistency in Non-Transactional Distributed Storage Systems](papers/distributed-system/non-transactional-consistency.pdf)
+- [Consistency in Non-Transactional Distributed Storage Systems](papers/distributed-system/distributed-consistency.pdf) (2016)
   > Overview more than 50 different consistency notions and provie a partial order among them.
-
-- [Brewer’s Conjecture and the Feasibility of Consistent, Available, Partition-Tolerant Web Services](papers/distributed-system/cap-theorem.pdf)
-  > Prove the *CAP conjecture* that it is impossible to provide all the three properties: *Consistency*, *Availability*, and *Partition-tolerance*.
 
 ### Articles
 
-- [CAP Twelve Years Later: How the "Rules" Have Changed](https://www.infoq.com/articles/cap-twelve-years-later-how-the-rules-have-changed)
+- [CAP Twelve Years Later: How the "Rules" Have Changed](https://www.infoq.com/articles/cap-twelve-years-later-how-the-rules-have-changed) (2012)
   > Revisit the *CAP theorem* to maximize combinations of consistency and availability.
+
+# Transactional Database
+
+## Transaction Concept
+
+### Papers
+
+- [The Transaction Concept: Virtues and Limitations](papers/transaction-concept.pdf) (1981)
+  > Propose the transaction concept and properties: *Atomicity*, *Consistency* and *Durability*.
+
+- [Principles of Transaction-Oriented Database Recovery](papers/transaction-principles.pdf) (1983)
+  > Propose the transaction principles and *ACID* properties: *Atomicity*, *Consistency*, *Isolation* and *Durability*.
+
+## Concurrency Control
+
+### Papers
+
+- [The Notion of Consistency and Predicate Locks in a Database System](papers/transactional-database/two-phase-locking-and-predicate-locks.pdf) (1976)
+  > Propose *two-phase locking (2PL)* to guarantee serializability and *predicate locks* to prevent *phantom reads*.
+
+- [Granularity of Locks and Degrees of Consistency in a Shared Data Base](papers/transactional-database/locks-and-degrees-of-consistency.pdf) (1976)
+  > Propose multiple granularity of locks and degrees of consistency: *degree 0*, *degree 1 (READ UNCOMMITTED)*, *degree 2 (READ COMMITTED)*, and *degree 3 (SERIALIZABLE)*.
+
+- [The Serializability of Concurrent Database Updates](papers/transactional-database/npcomplete-and-subclasses-of-serializable-histories.pdf) (1979)
+  > Prove that recognizing the transaction histories that are serializable is an *NP-complete* problem.
+  > Introduce several efficiently recognizable subclasses of serializable histories.
+
+- [Concurrency Control in Distributed Database Systems](papers/transactional-database/two-phase-locking-and-timestamp-ordering.pdf) (1981)
+  > Decompose serializability into *read-write* and *write-write* synchronization.
+  > Describe 48 concurrency control algorithms based on *two-phase locking* and *timestamp ordering*.
 
 ----------------------------------------
 
