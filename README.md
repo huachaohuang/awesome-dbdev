@@ -119,7 +119,7 @@ I have put up a post to explain these things: [What You Should Know About Storag
 ### Papers
 
 - [Time, Clocks, and the Ordering of Events in a Distributed System](papers/distributed-system/logical-clock.pdf) (1978)
-  > Propose *logical clocks (LC)* and the *happended before* relation*.
+  > Propose *logical clocks (LC)* and the *happended before* relation.
 
 - [Logical Physical Clocks and Consistent Snapshots in Globally Distributed Databases](papers/distributed-system/hybrid-logical-clock.pdf) (2014)
   > Propose *hybrid logical clocks (HLC)*.
@@ -178,7 +178,7 @@ I have put up a post to explain these things: [What You Should Know About Storag
   > Propose *two-phase locking (2PL)* to guarantee serializability and *predicate locks* to prevent *phantom reads*.
 
 - [Granularity of Locks and Degrees of Consistency in a Shared Data Base](papers/transactional-database/degrees-of-isolation.pdf) (1976)
-  > Propose multiple granularity of locks and degrees of consistency: *degree 0*, *degree 1 (READ UNCOMMITTED)*, *degree 2 (READ COMMITTED)*, and *degree 3 (SERIALIZABLE)*.
+  > Propose multiple granularity of locks and degrees of consistency: *degree 0*, *degree 1 (Read Uncommitted)*, *degree 2 (Read Committed)*, and *degree 3 (Serializable)*.
 
 - [The Serializability of Concurrent Database Updates](papers/transactional-database/serializability-npcomplete.pdf) (1979)
   > Prove that recognizing the transaction histories that are serializable is an *NP-complete* problem.
@@ -189,11 +189,34 @@ I have put up a post to explain these things: [What You Should Know About Storag
   > Describe 48 concurrency control algorithms based on *two-phase locking* and *timestamp ordering*.
 
 - [A Critique of ANSI SQL Isolation Levels](papers/transactional-database/snapshot-isolation.pdf) (1995)
-  > Propose clearer definitions to charaterize populor isolation levels and a new *Snapshot Isolation*.
+  > Propose clearer definitions to charaterize existing ANSI isolation levels and a new *snapshot isolation*.
 
-- [Weak Consistency: A Generalized Theory and Optimistic Implementations for Distributed Transactions](papers/transactional-database/weak-consistency.pdf) (1999)
-  > Use a graph-based approach to define different isolation levels, including existing ANSI isolation levels and other widely used levels, e.g., Cursor Stability, Snapshot Isolation.
-  > Propose two new isolation levels: *Consistent View (PL-2+)* and *Monotonic View (PL-2L)*.
+- [Weak Consistency: A Generalized Theory and Optimistic Implementations for Distributed Transactions](papers/transactional-database/generalized-isolation-thesis.pdf) (1999)
+  > Propose a graph-based approach to define existing ANSI isolation levels and other widely used levels, e.g., *cursor stability*, *snapshot isolation*.
+  > Propose two new isolation levels: *consistent view (PL-2+)* and *monotonic view (PL-2L)*.
+
+- [Generalized Isolation Level Definitions](papers/transactional-database/generalized-isolation.pdf) (2000)
+  > Propose a graph-based approach to define existing ANSI isolation levels.
+  > *This is a paper simplified from the above thesis*.
+
+- [Serializable Isolation for Snapshot Databases](papers/transactional-database/serializable-snapshot-isolation.pdf) (2008)
+  > Propose an algorithm to achieve *serializable snapshot isolation* based on *anti-dependencies* detection.
+
+- [A Critique of Snapshot Isolation](papers/transactional-database/write-snapshot-isolation.pdf) (2012)
+  > Propose a new *write-snapshot isolation*, which is serializable and comparable with *snapshot isolation* in performance.
+
+## Distributed Transaction
+
+### Papers
+
+- [Consensus on Transaction Commit](papers/transactional-database/paxos-commit.pdf) (2005)
+  > Propose the *Paxos Commit* algorithm that runs a Paxos consensus algorithm on the commit/abort decision of each participant for fault-tolerance.
+
+- [Large-scale Incremental Processing Using Distributed Transactions and Notifications](papers/transactional-database/percolator.pdf) (2010)
+  > Introduce *Percolator*, an incremental updates processing system that provides transactions with *snapshot isolation*.
+
+- [Calvin: Fast Distributed Transactions for Partitioned Database Systems](papers/transactional-database/calvin.pdf) (2012)
+  > Introduce *Calvin*, a practical transaction scheduling and data replication layer that provides a deterministic ordering of distributed transactions.
 
 ----------------------------------------
 
@@ -288,19 +311,6 @@ The following part is the original, but I'm reorganizing these materials.
 - [Neat Algorithms - Paxos](http://harry.me/blog/2014/12/27/neat-algorithms-paxos/)
 
 - [Implementing Replicated Logs with Paxos](https://ramcloud.stanford.edu/~ongaro/userstudy/paxos.pdf)
-
-## Distributed Transaction
-
-### Papers
-
-- [Large-scale Incremental Processing Using Distributed Transactions and Notifications](papers/percolator.pdf) (2010)
-  > Percolator provides cross-row, cross-table transactions with ACID snapshot-isolation semantics.
-
-- [Calvin: Fast Distributed Transactions for Partitioned Database Systems](papers/calvin.pdf) (2012)
-  > Calvin is a practical transaction scheduling and data replication layer that uses a deterministic ordering guarantee to significantly reduce the normally prohibitive contention costs associated with distributed transactions.
-
-- [A Critique of Snapshot Isolation](papers/write-snapshot-isolation.pdf) (2012)
-  > We introduce write-snapshot isolation, a novel isolation level that has a performance comparable with that of snapshot isolation, and yet provides serializability.
 
 ## SQL Database
 
