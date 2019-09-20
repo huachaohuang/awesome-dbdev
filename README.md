@@ -119,7 +119,10 @@ I have put up a post to explain these things: [What You Should Know About Storag
 ### Papers
 
 - [Time, Clocks, and the Ordering of Events in a Distributed System](papers/distributed-system/logical-clock.pdf) (1978)
-  > Propose *logical clocks (LC)* and the *happended before* relation.
+  > Propose *logical clocks (LC)*.
+
+- [Practical Uses of Synchronized Clocks in Distributed Systems](papers/distributed-system/synchronized-clock.pdf) (1993)
+  > Discuss a number of distributed algorithms that make use of synchronized clocks and analyzes how clocks are used in these algorithms.
 
 - [Logical Physical Clocks and Consistent Snapshots in Globally Distributed Databases](papers/distributed-system/hybrid-logical-clock.pdf) (2014)
   > Propose *hybrid logical clocks (HLC)*.
@@ -132,7 +135,6 @@ I have put up a post to explain these things: [What You Should Know About Storag
   > Propose *sequential consistency*.
 
 - [Linearizability: A Correctness Condition for Concurrent Objects](papers/distributed-system/linearizability.pdf) (1990)
-  > Propose *linearizability*.
 
 - [Session Guarantees for Weakly Consistent Replicated Data](papers/distributed-system/session-guarantees.pdf) (1994)
   > Propose *session guarantees*: *monotonic reads*, *monotonic writes*, *read your writes*, and *writes follow reads*.
@@ -141,10 +143,9 @@ I have put up a post to explain these things: [What You Should Know About Storag
   > Propose *causal consistency*.
 
 - [Brewer’s Conjecture and the Feasibility of Consistent, Available, Partition-Tolerant Web Services](papers/distributed-system/cap-theorem.pdf) (2002)
-  > Prove that it is impossible to provide all the three properties: *Consistency*, *Availability*, and *Partition-tolerance* (CAP).
+  > Prove the *CAP conjecture* that it is impossible to provide all the three properties: *Consistency*, *Availability*, and *Partition-tolerance*.
 
 - [Eventually Consistent](papers/distributed-system/eventual-consistency.pdf) (2009)
-  > Propose *eventual consistency*.
 
 - [Consistency in Non-Transactional Distributed Storage Systems](papers/distributed-system/distributed-consistency.pdf) (2016)
   > Overview more than 50 different consistency notions and provie a partial order among them.
@@ -154,19 +155,25 @@ I have put up a post to explain these things: [What You Should Know About Storag
 - [CAP Twelve Years Later: How the "Rules" Have Changed](https://www.infoq.com/articles/cap-twelve-years-later-how-the-rules-have-changed) (2012)
   > Revisit the *CAP theorem* to maximize combinations of consistency and availability.
 
-# Transactional Database
+# Distributed Storage
 
-## Transaction Concept
+## File System
 
 ### Papers
 
-- [The Transaction Concept: Virtues and Limitations](papers/transactional-database/transaction-concept.pdf) (1981)
-  > Propose the transaction concept and properties: *Atomicity*, *Consistency* and *Durability*.
+- [The Google File System](papers/distributed-storage/gfs.pdf) (2003)
 
-- [Principles of Transaction-Oriented Database Recovery](papers/transactional-database/transaction-acid.pdf) (1983)
-  > Propose the transaction principles and properties: *Atomicity*, *Consistency*, *Isolation* and *Durability* (ACID).
+## NoSQL Storage
 
-## Concurrency Control
+### Papers
+
+- [Bigtable: A Distributed Storage System for Structured Data](papers/distributed-storage/bigtable.pdf) (2006)
+
+- [Dynamo: Amazon’s Highly Available Key-value Store](papers/distributed-storage/dynamo.pdf) (2007)
+
+# Distributed Database
+
+## Transaction
 
 ### Books
 
@@ -174,49 +181,87 @@ I have put up a post to explain these things: [What You Should Know About Storag
 
 ### Papers
 
-- [The Notion of Consistency and Predicate Locks in a Database System](papers/transactional-database/two-phase-locking.pdf) (1976)
+- [The Notion of Consistency and Predicate Locks in a Database System](papers/distributed-database/two-phase-locking.pdf) (1976)
   > Propose *two-phase locking (2PL)* to guarantee serializability and *predicate locks* to prevent *phantom reads*.
 
-- [Granularity of Locks and Degrees of Consistency in a Shared Data Base](papers/transactional-database/degrees-of-isolation.pdf) (1976)
+- [Granularity of Locks and Degrees of Consistency in a Shared Data Base](papers/distributed-database/degrees-of-isolation.pdf) (1976)
   > Propose multiple granularity of locks and degrees of consistency: *degree 0*, *degree 1 (Read Uncommitted)*, *degree 2 (Read Committed)*, and *degree 3 (Serializable)*.
 
-- [The Serializability of Concurrent Database Updates](papers/transactional-database/serializability-npcomplete.pdf) (1979)
+- [The Serializability of Concurrent Database Updates](papers/distributed-database/serializability-npcomplete.pdf) (1979)
   > Prove that recognizing the transaction histories that are serializable is an *NP-complete* problem.
+  >
   > Introduce several efficiently recognizable subclasses of serializable histories.
 
-- [Concurrency Control in Distributed Database Systems](papers/transactional-database/serializability-algorithms.pdf) (1981)
+- [Concurrency Control in Distributed Database Systems](papers/distributed-database/serializability-algorithms.pdf) (1981)
   > Charaterize serializability with *read-write* and *write-write* conflicts.
+  >
   > Describe 48 concurrency control algorithms based on *two-phase locking* and *timestamp ordering*.
 
-- [A Critique of ANSI SQL Isolation Levels](papers/transactional-database/snapshot-isolation.pdf) (1995)
+- [The Transaction Concept: Virtues and Limitations](papers/distributed-database/transaction-concept.pdf) (1981)
+  > Propose the transaction concept with properties: *Atomicity*, *Consistency* and *Durability*.
+
+- [Principles of Transaction-Oriented Database Recovery](papers/distributed-database/transaction-acid.pdf) (1983)
+  > Propose the transaction principles and the *ACID* properties: *Atomicity*, *Consistency*, *Isolation* and *Durability*.
+
+- [A Critique of ANSI SQL Isolation Levels](papers/distributed-database/snapshot-isolation.pdf) (1995)
   > Propose clearer definitions to charaterize existing ANSI isolation levels and a new *snapshot isolation*.
 
-- [Weak Consistency: A Generalized Theory and Optimistic Implementations for Distributed Transactions](papers/transactional-database/generalized-isolation-thesis.pdf) (1999)
+- [Weak Consistency: A Generalized Theory and Optimistic Implementations for Distributed Transactions](papers/distributed-database/generalized-isolation-thesis.pdf) (1999)
   > Propose a graph-based approach to define existing ANSI isolation levels and other widely used levels, e.g., *cursor stability*, *snapshot isolation*.
+  >
   > Propose two new isolation levels: *consistent view (PL-2+)* and *monotonic view (PL-2L)*.
 
-- [Generalized Isolation Level Definitions](papers/transactional-database/generalized-isolation.pdf) (2000)
+- [Generalized Isolation Level Definitions](papers/distributed-database/generalized-isolation.pdf) (2000)
   > Propose a graph-based approach to define existing ANSI isolation levels.
   > *This is a paper simplified from the above thesis*.
 
-- [Serializable Isolation for Snapshot Databases](papers/transactional-database/serializable-snapshot-isolation.pdf) (2008)
+- [Serializable Isolation for Snapshot Databases](papers/distributed-database/serializable-snapshot-isolation.pdf) (2008)
   > Propose an algorithm to achieve *serializable snapshot isolation* based on *anti-dependencies* detection.
 
-- [A Critique of Snapshot Isolation](papers/transactional-database/write-snapshot-isolation.pdf) (2012)
+- [A Critique of Snapshot Isolation](papers/distributed-database/write-snapshot-isolation.pdf) (2012)
   > Propose a new *write-snapshot isolation*, which is serializable and comparable with *snapshot isolation* in performance.
+
+### Articles
+
+- [Linearizability versus Serializability](http://www.bailis.org/blog/linearizability-versus-serializability/) (2014)
 
 ## Distributed Transaction
 
 ### Papers
 
-- [Consensus on Transaction Commit](papers/transactional-database/paxos-commit.pdf) (2005)
+- [Consensus on Transaction Commit](papers/distributed-database/paxos-commit.pdf) (2005)
   > Propose the *Paxos Commit* algorithm that runs a Paxos consensus algorithm on the commit/abort decision of each participant for fault-tolerance.
 
-- [Large-scale Incremental Processing Using Distributed Transactions and Notifications](papers/transactional-database/percolator.pdf) (2010)
+- [Large-scale Incremental Processing Using Distributed Transactions and Notifications](papers/distributed-database/percolator.pdf) (2010)
   > Introduce *Percolator*, an incremental updates processing system that provides transactions with *snapshot isolation*.
 
-- [Calvin: Fast Distributed Transactions for Partitioned Database Systems](papers/transactional-database/calvin.pdf) (2012)
+- [Calvin: Fast Distributed Transactions for Partitioned Database Systems](papers/distributed-database/calvin.pdf) (2012)
   > Introduce *Calvin*, a practical transaction scheduling and data replication layer that provides a deterministic ordering of distributed transactions.
+
+- [Spanner: Google’s Globally-Distributed Database](papers/distributed-database/spanner.pdf) (2012)
+  > Introduce *TrueTime* to support *external consistency*.
+
+- [Spanner, TrueTime and the CAP Theorem](papers/distributed-database/spanner-and-cap-theorem.pdf) (2017)
+  > Discuss the techniques behind *Spanner* that make it an "effectively CA" system.
+
+### Articles
+
+- [Living Without Atomic Clocks](https://www.cockroachlabs.com/blog/living-without-atomic-clocks/) (2016)
+  > Real-world example of *hybrid logical clocks (HLC)* and *write-snapshot isolation*.
+
+- [Distributed consistency at scale: Spanner vs. Calvin](http://dbmsmusings.blogspot.com/2017/04/distributed-consistency-at-scale.html) (2017)
+  > *Spanner* vs. *Calvin*, Part 1
+
+- [NewSQL database systems are failing to guarantee consistency, and I blame Spanner](http://dbmsmusings.blogspot.com/2018/09/newsql-database-systems-are-failing-to.html) (2018)
+  > *Spanner* vs. *Calvin*, Part 2
+
+- [Consistency without Clocks: The FaunaDB Distributed Transaction Protocol](https://fauna.com/blog/consistency-without-clocks-faunadb-transaction-protocol) (2018)
+  > Real-world example of *Calvin*.
+
+- [Demystifying Database Systems, Part 1: An Introduction to Transaction Isolation Levels](https://fauna.com/blog/introduction-to-transaction-isolation-levels) (2019)
+- [Demystifying Database Systems, Part 2: Correctness Anomalies Under Serializable Isolation](https://fauna.com/blog/demystifying-database-systems-correctness-anomalies-under-serializable-isolation) (2019)
+- [Demystifying Database Systems, Part 3: Introduction to Consistency Levels](https://fauna.com/blog/demystifying-database-systems-introduction-to-consistency-levels) (2019)
+- [Demystifying Database Systems, Part 4: Isolation levels vs. Consistency levels](https://fauna.com/blog/demystifying-database-systems-part-4-isolation-levels-vs-consistency-levels) (2019)
 
 ----------------------------------------
 
@@ -237,13 +282,6 @@ The following part is the original, but I'm reorganizing these materials.
 
 - [Apache Kafka, Samza, and the Unix Philosophy of Distributed Data](http://www.confluent.io/blog/apache-kafka-samza-and-the-unix-philosophy-of-distributed-data)
   > As we’re in such a fast-moving field, we often have a tendency of dismissing older ideas as irrelevant – and consequently, we end up having to learn the same lessons over and over again, the hard way.
-
-## File System
-
-### Papers
-
-- [The Google File System](papers/gfs.pdf) (2003)
-  > The Google File System, a scalable distributed file system for large distributed data-intensive applications.
 
 ## Storage Engine
 
@@ -279,11 +317,6 @@ The following part is the original, but I'm reorganizing these materials.
 
 - [MySQL vs something else. Evaluating alternative databases.](https://vimeo.com/98428203)
 
-## CAP Theorem
-
-- [Spanner, TrueTime and the CAP Theorem](papers/cap-spanner.pdf) (2017)
-  > The original point of the CAP theorem was to get designers to take this tradeoff seriously. But there are two important caveats: first, you only need forfeit something during an actual partition, and even then there are many mitigations. Second, the actual theorem is about 100% availability, while the interesting discussion here is about the tradeoffs involved for realistic high availability.
-
 ## Consensus Algorithm
 
 ### Papers
@@ -303,6 +336,8 @@ The following part is the original, but I'm reorganizing these materials.
 - [There Is More Consensus in Egalitarian Parliaments](papers/epaxos.pdf) (2013)
   > Egalitarian Paxos is to our knowledge the first protocol requiring only a simple majority of replicas to be non-faulty, using a number of messages linear in the number of replicas to choose a command, and committing commands after just one communication round in the common case or after at most two rounds in any case.
 
+- [Paxos Quorum Leases: Fast Reads Without Sacrificing Writes](papers/paxos-lease.pdf) (2014)
+
 - [In Search of an Understandable Consensus Algorithm](papers/raft.pdf) (2014)
   > Raft is a consensus algorithm for managing a replicated log. It produces a result equivalent to Paxos, and it is as efficient as Paxos.
 
@@ -319,9 +354,6 @@ The following part is the original, but I'm reorganizing these materials.
 - [Megastore: Providing Scalable, Highly Available Storage for Interactive Services](papers/megastore.pdf) (2011)
   > Megastore blends the scalability of a NoSQL datastore with the convenience of a traditional RDBMS in a novel way, and provides both strong consistency guarantees and high availability.
 
-- [Spanner: Google’s Globally-Distributed Database](papers/spanner.pdf) (2012)
-  > Spanner is Google’s scalable, multi-version, globallydistributed, and synchronously-replicated database. It is the first system to distribute data at global scale and support externally-consistent distributed transactions.
-
 - [F1: A Distributed SQL Database That Scales](papers/f1.pdf) (2013)
   > F1 is a hybrid database that combines high availability, the scalability of NoSQL systems like Bigtable, and the consistency and usability of traditional SQL databases.
 
@@ -335,13 +367,3 @@ The following part is the original, but I'm reorganizing these materials.
 
 - [How does a relational database work](http://coding-geek.com/how-databases-work/)
   > Relational Databases are very interesting because they’re based on useful and reusable concepts. If understanding a database interests you but you’ve never had the time or the will to dig into this wide subject, you should like this article.
-
-## NoSQL Database
-
-### Papers
-
-- [Bigtable: A Distributed Storage System for Structured Data](papers/bigtable.pdf) (2006)
-  > Bigtable is a distributed storage system for managing structured data that is designed to scale to a very large size: petabytes of data across thousands of commodity servers.
-
-- [Dynamo: Amazon’s Highly Available Key-value Store](papers/dynamo.pdf) (2007)
-  > This paper presents the design and implementation of Dynamo, a highly available key-value storage system that some of Amazon’s core services use to provide an “always-on” experience.
