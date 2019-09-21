@@ -98,6 +98,20 @@ I have put up a post to explain these things: [What You Should Know About Storag
 
 - [What is RAID 0, 1, 2, 3, 4, 5, 6 and 10 (1+0)?](https://www.youtube.com/watch?v=wTcxRObq738)
 
+# Storage System
+
+## Storage Model
+
+- [Bitcask: A Log-Structured Hash Table for Fast Key/Value Data](papers/storage-system/bitcask.pdf) (2010)
+
+## Analytical Engine
+
+- [C-Store: A Column-oriented DBMS](papers/storage-system/c-store.pdf) (2005)
+
+## Transactional Engine
+
+- [Hekaton: SQL Server’s Memory-Optimized OLTP Engine](papers/storage-system/hekaton.pdf) (2013)
+
 # Operating System
 
 ## Linux Kernel
@@ -292,8 +306,6 @@ The following part is the original, but I'm reorganizing these materials.
 
 - [Cache-Oblivious Streaming B-trees](papers/sbtree.pdf) (2007)
   > A streaming B-tree is a dictionary that efficiently implements insertions and range queries. We present two cache-oblivious streaming B-trees, the shuttle tree, and the cache-oblivious lookahead array (COLA).
-
-- [Bitcask: A Log-Structured Hash Table for Fast Key/Value Data](papers/bitcask.pdf) (2010)
 
 - [The Log-Structured Merge-Tree (LSM-Tree)](papers/lsm.pdf) (1996)
   > The LSM-tree uses an algorithm that defers and batches index changes, cascading the changes from a memory-based component through one or more disk components in an efficient manner reminiscent of merge sort.
