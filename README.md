@@ -102,15 +102,23 @@ I have put up a post to explain these things: [What You Should Know About Storag
 
 ## Storage Model
 
+### Papers
+
 - [Bitcask: A Log-Structured Hash Table for Fast Key/Value Data](papers/storage-system/bitcask.pdf) (2010)
 
-## Analytical Engine
+## Storage Engine
+
+### Papers
 
 - [C-Store: A Column-oriented DBMS](papers/storage-system/c-store.pdf) (2005)
 
-## Transactional Engine
-
 - [Hekaton: SQL Server’s Memory-Optimized OLTP Engine](papers/storage-system/hekaton.pdf) (2013)
+
+## Relational Database
+
+### Articles
+
+- [How does a relational database work](http://coding-geek.com/how-databases-work/)
 
 # Operating System
 
@@ -222,6 +230,10 @@ I have put up a post to explain these things: [What You Should Know About Storag
 - [Bigtable: A Distributed Storage System for Structured Data](papers/distributed-storage/bigtable.pdf) (2006)
 
 - [Dynamo: Amazon’s Highly Available Key-value Store](papers/distributed-storage/dynamo.pdf) (2007)
+  > Introduce *Dynamo*, an *eventually-consistent* storage system that partitions and replicates data using *consistent hashing*.
+
+- [Megastore: Providing Scalable, Highly Available Storage for Interactive Services](papers/distributed-storage/megastore.pdf) (2011)
+  > Introduce *Megastore*, a NoSQL storage system that provides serializable ACID semantics within fine-grained partitions of data.
 
 # Distributed Database
 
@@ -309,6 +321,19 @@ I have put up a post to explain these things: [What You Should Know About Storag
 - [Demystifying Database Systems, Part 3: Introduction to Consistency Levels](https://fauna.com/blog/demystifying-database-systems-introduction-to-consistency-levels) (2019)
 - [Demystifying Database Systems, Part 4: Isolation levels vs. Consistency levels](https://fauna.com/blog/demystifying-database-systems-part-4-isolation-levels-vs-consistency-levels) (2019)
 
+## Distributed SQL
+
+### Papers
+
+- [F1: A Distributed SQL Database That Scales](papers/distributed-database/f1.pdf) (2013)
+  > Introduce *F1*, a hybrid database that combines high availability, the scalability of NoSQL systems like Bigtable, and the consistency and usability of traditional SQL databases.
+
+- [Online, Asynchronous Schema Change in F1](papers/distributed-database/f1-online-ddl.pdf) (2013)
+  > Introduce a protocol for schema evolution in a globally distributed database management system with shared data, stateless servers, and no global membership.
+
+- [Spanner: Becoming a SQL System](papers/distributed-database/spanner-2017.pdf) (2017)
+  > Introduce the "database system" aspects of *Spanner*, in particular how query execution has evolved and forced the rest of Spanner to evolve.
+
 ----------------------------------------
 
 # To be Continued
@@ -360,24 +385,3 @@ The following part is the original, but I'm reorganizing these materials.
   > A Fractal Tree index is a tree data structure that keeps data sorted and allows searches and sequential access in the same time as a B-tree but with insertions and deletions that are asymptotically faster than a B-tree.
 
 - [MySQL vs something else. Evaluating alternative databases.](https://vimeo.com/98428203)
-
-## SQL Database
-
-### Papers
-
-- [Megastore: Providing Scalable, Highly Available Storage for Interactive Services](papers/megastore.pdf) (2011)
-  > Megastore blends the scalability of a NoSQL datastore with the convenience of a traditional RDBMS in a novel way, and provides both strong consistency guarantees and high availability.
-
-- [F1: A Distributed SQL Database That Scales](papers/f1.pdf) (2013)
-  > F1 is a hybrid database that combines high availability, the scalability of NoSQL systems like Bigtable, and the consistency and usability of traditional SQL databases.
-
-- [Online, Asynchronous Schema Change in F1](papers/f1-online-ddl.pdf) (2013)
-  > We introduce a protocol for schema evolution in a globally distributed database management system with shared data, stateless servers, and no global membership.
-
-- [Spanner: Becoming a SQL System](papers/spanner-2017.pdf) (2017)
-  > In this paper, we focus on the "database system" aspects of Spanner, in particular how query execution has evolved and forced the rest of Spanner to evolve.
-
-### Links
-
-- [How does a relational database work](http://coding-geek.com/how-databases-work/)
-  > Relational Databases are very interesting because they’re based on useful and reusable concepts. If understanding a database interests you but you’ve never had the time or the will to dig into this wide subject, you should like this article.
