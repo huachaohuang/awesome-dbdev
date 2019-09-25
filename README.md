@@ -121,6 +121,11 @@ I have put up a post to explain these things: [What You Should Know About Storag
 - [Understanding the Linux Kernel](https://www.oreilly.com/library/view/understanding-the-linux/0596005652/)
 - [Linux Device Drivers](https://www.oreilly.com/library/view/linux-device-drivers/0596005903/)
 
+### Papers
+
+- [What Every Programmer Should Know About Memory](papers/operating-system/cpumemory.pdf)
+- [The Slab Allocator: An Object-Caching Kernel Memory Allocator](papers/operating-system/slab-allocator.pdf)
+
 ### Websites
 
 - [The Linux Kernel Archives](https://www.kernel.org/)
