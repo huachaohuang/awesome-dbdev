@@ -138,13 +138,44 @@ I have put up a post to explain these things: [What You Should Know About Storag
 ### Papers
 
 - [Time, Clocks, and the Ordering of Events in a Distributed System](papers/distributed-system/logical-clock.pdf) (1978)
-  > Propose *logical clocks (LC)*.
+  > Propose a distributed algorithm to synchronize a system of logical clocks, which can be used to totally order the events.
 
 - [Practical Uses of Synchronized Clocks in Distributed Systems](papers/distributed-system/synchronized-clock.pdf) (1993)
   > Discuss a number of distributed algorithms that make use of synchronized clocks and analyzes how clocks are used in these algorithms.
 
 - [Logical Physical Clocks and Consistent Snapshots in Globally Distributed Databases](papers/distributed-system/hybrid-logical-clock.pdf) (2014)
-  > Propose *hybrid logical clocks (HLC)*.
+  > Propose a hybrid logical clock, HLC, that combines the best of logical clocks and physical clocks.
+
+## Consensus
+
+### Papers
+
+- [The Part-Time Parliament](papers/distributed-system/paxos.pdf) (1998)
+  > Propose the Paxos algorithm.
+
+- [Paxos Made Simple](papers/distributed-system/paxos-made-simple.pdf) (2001)
+  > Present the Paxos algorithm in plain English.
+
+- [Fast Paxos](papers/distributed-system/fast-paxos.pdf) (2005)
+  > Propose an extension of the classic Paxos algorithm that allows the value to be learned in two message delays.
+
+- [Paxos Made Live - An Engineering Perspective](papers/distributed-system/paxos-made-live.pdf) (2007)
+  > Describe the experience building a fault-tolerant database using the Paxos consensus algorithm.
+
+- [There Is More Consensus in Egalitarian Parliaments](papers/distributed-system/epaxos.pdf) (2013)
+  > Describe the design and implementation of Egalitarian Paxos (EPaxos), a new distributed consensus algorithm based on Paxos.
+
+- [Paxos Quorum Leases: Fast Reads Without Sacrificing Writes](papers/distributed-system/paxos-lease.pdf) (2014)
+  > Describe quorum leases, a new technique that allows Paxos-based systems to perform reads with high throughput and low latency.
+
+- [In Search of an Understandable Consensus Algorithm](papers/distributed-system/raft.pdf) (2014)
+  > Propose the Raft algorithm, which is as efficient as Paxos but more understandable and provides a better foundation for building practical systems.
+
+### Articles
+
+- [Neat Algorithms - Paxos](http://harry.me/blog/2014/12/27/neat-algorithms-paxos/)
+
+- [Implementing Replicated Logs with Paxos](https://ramcloud.stanford.edu/~ongaro/userstudy/paxos.pdf)
 
 ## Consistency
 
@@ -333,36 +364,6 @@ The following part is the original, but I'm reorganizing these materials.
   > A Fractal Tree index is a tree data structure that keeps data sorted and allows searches and sequential access in the same time as a B-tree but with insertions and deletions that are asymptotically faster than a B-tree.
 
 - [MySQL vs something else. Evaluating alternative databases.](https://vimeo.com/98428203)
-
-## Consensus Algorithm
-
-### Papers
-
-- [The Part-Time Parliament](papers/paxos.pdf) (1998)
-  > The Island of Paxos.
-
-- [Paxos Made Simple](papers/paxos-made-simple.pdf) (2001)
-  > The Paxos algorithm, when presented in plain English, is very simple.
-
-- [Fast Paxos](papers/fast-paxos.pdf) (2005)
-  > Fast Paxos is an extension of the classic Paxos algorithm that allows the value to be learned in two message delays.
-
-- [Paxos Made Live - An Engineering Perspective](papers/paxos-made-live.pdf) (2007)
-  > We used the Paxos algorithm (“Paxos”) as the base for a framework that implements a fault-tolerant log. We then relied on that framework to build a fault-tolerant database.
-
-- [There Is More Consensus in Egalitarian Parliaments](papers/epaxos.pdf) (2013)
-  > Egalitarian Paxos is to our knowledge the first protocol requiring only a simple majority of replicas to be non-faulty, using a number of messages linear in the number of replicas to choose a command, and committing commands after just one communication round in the common case or after at most two rounds in any case.
-
-- [Paxos Quorum Leases: Fast Reads Without Sacrificing Writes](papers/paxos-lease.pdf) (2014)
-
-- [In Search of an Understandable Consensus Algorithm](papers/raft.pdf) (2014)
-  > Raft is a consensus algorithm for managing a replicated log. It produces a result equivalent to Paxos, and it is as efficient as Paxos.
-
-### Links
-
-- [Neat Algorithms - Paxos](http://harry.me/blog/2014/12/27/neat-algorithms-paxos/)
-
-- [Implementing Replicated Logs with Paxos](https://ramcloud.stanford.edu/~ongaro/userstudy/paxos.pdf)
 
 ## SQL Database
 
