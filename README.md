@@ -182,20 +182,22 @@ I have put up a post to explain these things: [What You Should Know About Storag
 ### Papers
 
 - [How to Make a Multiprocessor Computer That Correctly Executes Multiprocess Progranm](papers/distributed-system/sequential-consistency.pdf) (1979)
-  > Propose *sequential consistency*.
+  > Define *sequential consistency* that guarantees the sequential ordering of operations.
 
 - [Linearizability: A Correctness Condition for Concurrent Objects](papers/distributed-system/linearizability.pdf) (1990)
+  > Define *linearizability* that guarantees the sequential and "real-time" precedence ordering of operations.
 
 - [Session Guarantees for Weakly Consistent Replicated Data](papers/distributed-system/session-guarantees.pdf) (1994)
-  > Propose *session guarantees*: *monotonic reads*, *monotonic writes*, *read your writes*, and *writes follow reads*.
+  > Define *session guarantees*: *Read Your Writes*, *Monotonic Reads*, *Writes Follow Reads*, and *Monotonic Writes*.
 
 - [Causal Memory: Definitions, Implementation and Programming](papers/distributed-system/causal-consistency.pdf) (1995)
-  > Propose *causal consistency*.
+  > Define *causal consistency* that guarantees the relative ordering of operations that are *causally related*.
 
 - [Brewer’s Conjecture and the Feasibility of Consistent, Available, Partition-Tolerant Web Services](papers/distributed-system/cap-theorem.pdf) (2002)
   > Prove the *CAP conjecture* that it is impossible to provide all the three properties: *Consistency*, *Availability*, and *Partition-tolerance*.
 
 - [Eventually Consistent](papers/distributed-system/eventual-consistency.pdf) (2009)
+  > Define *eventual consistency* that guarantees if no new updates are made to the object, eventually all accesses will return the last updated value.
 
 - [Consistency in Non-Transactional Distributed Storage Systems](papers/distributed-system/distributed-consistency.pdf) (2016)
   > Overview more than 50 different consistency notions and provie a partial order among them.
@@ -203,7 +205,7 @@ I have put up a post to explain these things: [What You Should Know About Storag
 ### Articles
 
 - [CAP Twelve Years Later: How the "Rules" Have Changed](https://www.infoq.com/articles/cap-twelve-years-later-how-the-rules-have-changed) (2012)
-  > Revisit the *CAP theorem* to maximize combinations of consistency and availability.
+  > Revisit the *CAP theorem* to maximize the combinations of consistency and availability.
 
 # Distributed Storage
 
@@ -238,38 +240,32 @@ I have put up a post to explain these things: [What You Should Know About Storag
   > Propose multiple granularity of locks and degrees of consistency: *degree 0*, *degree 1 (Read Uncommitted)*, *degree 2 (Read Committed)*, and *degree 3 (Serializable)*.
 
 - [The Serializability of Concurrent Database Updates](papers/distributed-database/serializability-npcomplete.pdf) (1979)
-  > Prove that recognizing the transaction histories that are serializable is an *NP-complete* problem.
-  >
-  > Introduce several efficiently recognizable subclasses of serializable histories.
+  > Prove the recognition of transaction histories to be serializable is an *NP-complete* problem.
 
 - [Concurrency Control in Distributed Database Systems](papers/distributed-database/serializability-algorithms.pdf) (1981)
-  > Charaterize serializability with *read-write* and *write-write* conflicts.
-  >
   > Describe 48 concurrency control algorithms based on *two-phase locking* and *timestamp ordering*.
 
 - [The Transaction Concept: Virtues and Limitations](papers/distributed-database/transaction-concept.pdf) (1981)
-  > Propose the transaction concept with properties: *Atomicity*, *Consistency* and *Durability*.
+  > Describe the transaction concept and its properties: *Atomicity*, *Consistency* and *Durability*.
 
 - [Principles of Transaction-Oriented Database Recovery](papers/distributed-database/transaction-acid.pdf) (1983)
-  > Propose the transaction principles and the *ACID* properties: *Atomicity*, *Consistency*, *Isolation* and *Durability*.
+  > Describe the transaction principles and the *ACID* properties: *Atomicity*, *Consistency*, *Isolation* and *Durability*.
 
 - [A Critique of ANSI SQL Isolation Levels](papers/distributed-database/snapshot-isolation.pdf) (1995)
   > Propose clearer definitions to charaterize existing ANSI isolation levels and a new *snapshot isolation*.
 
 - [Weak Consistency: A Generalized Theory and Optimistic Implementations for Distributed Transactions](papers/distributed-database/generalized-isolation-thesis.pdf) (1999)
-  > Propose a graph-based approach to define existing ANSI isolation levels and other widely used levels, e.g., *cursor stability*, *snapshot isolation*.
-  >
-  > Propose two new isolation levels: *consistent view (PL-2+)* and *monotonic view (PL-2L)*.
+  > Propose a graph-based approach to define existing ANSI isolation levels and other widely used levels.
+  > Propose two new isolation levels: *Consistent View (PL-2+)* and *Monotonic View (PL-2L)*.
 
 - [Generalized Isolation Level Definitions](papers/distributed-database/generalized-isolation.pdf) (2000)
   > Propose a graph-based approach to define existing ANSI isolation levels.
-  > *This is a paper simplified from the above thesis*.
 
 - [Serializable Isolation for Snapshot Databases](papers/distributed-database/serializable-snapshot-isolation.pdf) (2008)
   > Propose an algorithm to achieve *serializable snapshot isolation* based on *anti-dependencies* detection.
 
 - [A Critique of Snapshot Isolation](papers/distributed-database/write-snapshot-isolation.pdf) (2012)
-  > Propose a new *write-snapshot isolation*, which is serializable and comparable with *snapshot isolation* in performance.
+  > Propose a new *write-snapshot isolation* that is serializable and comparable with *snapshot isolation* in performance.
 
 ### Articles
 
@@ -289,7 +285,7 @@ I have put up a post to explain these things: [What You Should Know About Storag
   > Introduce *Calvin*, a practical transaction scheduling and data replication layer that provides a deterministic ordering of distributed transactions.
 
 - [Spanner: Google’s Globally-Distributed Database](papers/distributed-database/spanner.pdf) (2012)
-  > Introduce *TrueTime* to support *external consistency*.
+  > Introduce *Spanner*, a globally distributed database that support *externally consistent* transactions using the *TrueTime* API.
 
 - [Spanner, TrueTime and the CAP Theorem](papers/distributed-database/spanner-and-cap-theorem.pdf) (2017)
   > Discuss the techniques behind *Spanner* that make it an "effectively CA" system.
@@ -297,16 +293,16 @@ I have put up a post to explain these things: [What You Should Know About Storag
 ### Articles
 
 - [Living Without Atomic Clocks](https://www.cockroachlabs.com/blog/living-without-atomic-clocks/) (2016)
-  > Real-world example of *hybrid logical clocks (HLC)* and *write-snapshot isolation*.
+  > Describe an implementation of *write-snapshot isolation* using *hybrid logical clocks*.
 
 - [Distributed consistency at scale: Spanner vs. Calvin](http://dbmsmusings.blogspot.com/2017/04/distributed-consistency-at-scale.html) (2017)
-  > *Spanner* vs. *Calvin*, Part 1
+  > Discuss the comparison between *Spanner* and *Calvin*, Part 1.
 
 - [NewSQL database systems are failing to guarantee consistency, and I blame Spanner](http://dbmsmusings.blogspot.com/2018/09/newsql-database-systems-are-failing-to.html) (2018)
-  > *Spanner* vs. *Calvin*, Part 2
+  > Discuss the comparison between *Spanner* and *Calvin*, Part 2.
 
 - [Consistency without Clocks: The FaunaDB Distributed Transaction Protocol](https://fauna.com/blog/consistency-without-clocks-faunadb-transaction-protocol) (2018)
-  > Real-world example of *Calvin*.
+  > Describe an implementation of *Calvin*.
 
 - [Demystifying Database Systems, Part 1: An Introduction to Transaction Isolation Levels](https://fauna.com/blog/introduction-to-transaction-isolation-levels) (2019)
 - [Demystifying Database Systems, Part 2: Correctness Anomalies Under Serializable Isolation](https://fauna.com/blog/demystifying-database-systems-correctness-anomalies-under-serializable-isolation) (2019)
