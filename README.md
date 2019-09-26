@@ -100,19 +100,36 @@ I have put up a post to explain these things: [What You Should Know About Storag
 
 # Storage System
 
-## Storage Model
-
-### Papers
-
-- [Bitcask: A Log-Structured Hash Table for Fast Key/Value Data](papers/storage-system/bitcask.pdf) (2010)
-
 ## Storage Engine
 
 ### Papers
 
+- [The Log-Structured Merge-Tree (LSM-Tree)](papers/storage-system/lsm.pdf) (1996)
+  > Introduce *LSM-Tree*, a new data structure that defers and batches index changes, cascades the changes from a memory-based component through one or more disk components in an efficient manner reminiscent of merge sort.
+
+- [Weaving Relations for Cache Performance](papers/storage-system/pax.pdf) (2001)
+  > Introduce a new data organization model called *Partition Attributes Across (PAX)* that significantly improves cache performance by grouping together all values of each attribute within each page.
+
 - [C-Store: A Column-oriented DBMS](papers/storage-system/c-store.pdf) (2005)
 
+- [Cache-Oblivious Streaming B-trees](papers/storage-system/streaming-btree.pdf) (2007)
+  > Introduce two *cache-oblivious streaming B-trees* that efficiently implements insertions and range queries.
+
+- [Bitcask: A Log-Structured Hash Table for Fast Key/Value Data](papers/storage-system/bitcask.pdf) (2010)
+
+- [bLSM: A General Purpose Log Structured Merge Tree](papers/storage-system/blsm.pdf) (2012)
+  > Introduce *bLSM*, a new form of LSM-Tree with the advantages of B-Trees and log structured approaches.
+
+- [The Bw-Tree: A B-tree for New Hardware Platforms](papers/storage-system/bw-tree.pdf) (2013)
+  > Introduce *Bw-Tree*, a new form of B-Tree that achieves its very high performance via a latch-free approach that effectively exploits the processor caches of modern multi-core chips.
+
 - [Hekaton: SQL Server’s Memory-Optimized OLTP Engine](papers/storage-system/hekaton.pdf) (2013)
+
+- [WiscKey: Separating Keys from Values in SSD-Conscious Storage](papers/storage-system/wisckey.pdf) (2016)
+  > Introduce *WiscKey*, a persistent LSM-Tree-based key-value store with a performance-oriented data layout that separates keys from values to minimize I/O amplification.
+
+- [The Data Calculator: Data Structure Design and Cost Synthesis from First Principles and Learned Cost Models](papers/storage-system/data-calculator.pdf) (2018)
+  > Introduce the *Data Calculator*, a design engine that enables interactive and semi-automated design of data structures.
 
 ## Relational Database
 
@@ -181,7 +198,9 @@ I have put up a post to explain these things: [What You Should Know About Storag
 
 ### Articles
 
-- [Neat Algorithms - Paxos](http://harry.me/blog/2014/12/27/neat-algorithms-paxos/)
+- [Notes on Distributed Systems for Young Bloods](https://www.somethingsimilar.com/2013/01/14/notes-on-distributed-systems-for-young-bloods/) (2013)
+
+- [Neat Algorithms - Paxos](http://harry.me/blog/2014/12/27/neat-algorithms-paxos/) (2014)
 
 - [Implementing Replicated Logs with Paxos](https://ramcloud.stanford.edu/~ongaro/userstudy/paxos.pdf)
 
@@ -223,7 +242,7 @@ I have put up a post to explain these things: [What You Should Know About Storag
 
 - [The Google File System](papers/distributed-storage/gfs.pdf) (2003)
 
-## NoSQL Storage
+## Storage System
 
 ### Papers
 
@@ -234,6 +253,12 @@ I have put up a post to explain these things: [What You Should Know About Storag
 
 - [Megastore: Providing Scalable, Highly Available Storage for Interactive Services](papers/distributed-storage/megastore.pdf) (2011)
   > Introduce *Megastore*, a NoSQL storage system that provides serializable ACID semantics within fine-grained partitions of data.
+
+### Articles
+
+- [Elements Of Scale: Composing And Scaling Data Platforms](http://highscalability.com/blog/2015/5/4/elements-of-scale-composing-and-scaling-data-platforms.html) (2015)
+
+- [Apache Kafka, Samza, and the Unix Philosophy of Distributed Data](http://www.confluent.io/blog/apache-kafka-samza-and-the-unix-philosophy-of-distributed-data) (2015)
 
 # Distributed Database
 
@@ -334,54 +359,10 @@ I have put up a post to explain these things: [What You Should Know About Storag
 - [Spanner: Becoming a SQL System](papers/distributed-database/spanner-2017.pdf) (2017)
   > Introduce the "database system" aspects of *Spanner*, in particular how query execution has evolved and forced the rest of Spanner to evolve.
 
-----------------------------------------
+# Miscellaneous
 
-# To be Continued
+## General
 
-The following part is the original, but I'm reorganizing these materials.
-
-## Posts
+### Articles
 
 - [What I Learned From Programming Databases](http://www.philipotoole.com/what-i-learned-from-programming-a-database/)
-  > Programming a database is possibly the most instructive project one can ever complete as a software developer.
-
-- [Notes on Distributed Systems for Young Bloods](https://www.somethingsimilar.com/2013/01/14/notes-on-distributed-systems-for-young-bloods/)
-  > A list of some lessons I’ve learned as a distributed systems engineer that are worth being told to a new engineer.
-
-- [Elements Of Scale: Composing And Scaling Data Platforms](http://highscalability.com/blog/2015/5/4/elements-of-scale-composing-and-scaling-data-platforms.html)
-  > A masterful tour through the evolutionary forces that shape how systems adapt to key challenges.
-
-- [Apache Kafka, Samza, and the Unix Philosophy of Distributed Data](http://www.confluent.io/blog/apache-kafka-samza-and-the-unix-philosophy-of-distributed-data)
-  > As we’re in such a fast-moving field, we often have a tendency of dismissing older ideas as irrelevant – and consequently, we end up having to learn the same lessons over and over again, the hard way.
-
-## Storage Engine
-
-### Papers
-
-- [Weaving Relations for Cache Performance](papers/pax.pdf) (2001)
-  > A new data organization model called PAX (Partition Attributes Across), that significantly improves cache performance by grouping together all values of each attribute within each page.
-
-- [Cache-Oblivious Streaming B-trees](papers/sbtree.pdf) (2007)
-  > A streaming B-tree is a dictionary that efficiently implements insertions and range queries. We present two cache-oblivious streaming B-trees, the shuttle tree, and the cache-oblivious lookahead array (COLA).
-
-- [The Log-Structured Merge-Tree (LSM-Tree)](papers/lsm.pdf) (1996)
-  > The LSM-tree uses an algorithm that defers and batches index changes, cascading the changes from a memory-based component through one or more disk components in an efficient manner reminiscent of merge sort.
-
-- [bLSM: A General Purpose Log Structured Merge Tree](papers/blsm.pdf) (2012)
-  > bLSM, a Log Structured Merge (LSM) tree with the advantages of B-Trees and log structured approaches.
-
-- [The Bw-Tree: A B-tree for New Hardware Platforms](papers/bw-tree.pdf) (2013)
-  > Our new form of B-tree, calledthe Bw-tree achieves its very  high performance via a latch-freeapproach that effectively exploits the processor caches ofmodernmulti-core chips.
-
-- [WiscKey: Separating Keys from Values in SSD-Conscious Storage](papers/wisckey.pdf) (2016)
-  > WiscKey, a persistent LSM-tree-based key-value store with a performance-oriented data layout that separates keys from values to minimize I/O amplification.
-
-- [The Data Calculator: Data Structure Design and Cost Synthesis from First Principles and Learned Cost Models](papers/data-calculator.pdf) (2018)
-  > We present a design engine, the Data Calculator, which enables interactive and semi-automated design of data structures.
-
-### Links
-
-- [Fractal tree index](https://en.wikipedia.org/wiki/Fractal_tree_index)
-  > A Fractal Tree index is a tree data structure that keeps data sorted and allows searches and sequential access in the same time as a B-tree but with insertions and deletions that are asymptotically faster than a B-tree.
-
-- [MySQL vs something else. Evaluating alternative databases.](https://vimeo.com/98428203)
