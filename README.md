@@ -149,6 +149,7 @@ I have put up a post to explain these things: [What You Should Know About Storag
 ### Papers
 
 - [What Every Programmer Should Know About Memory](papers/operating-system/cpumemory.pdf)
+- [What Every Systems Programmer Should Know About Concurrency](papers/operating-system/concurrency-primer.pdf)
 - [The Slab Allocator: An Object-Caching Kernel Memory Allocator](papers/operating-system/slab-allocator.pdf)
 
 ### Websites
@@ -304,6 +305,9 @@ I have put up a post to explain these things: [What You Should Know About Storag
 - [A Critique of Snapshot Isolation](papers/distributed-database/write-snapshot-isolation.pdf) (2012)
   > Propose a new *write-snapshot isolation* that is serializable and comparable with *snapshot isolation* in performance.
 
+- [Highly Available Transactions: Virtues and Limitations](papers/distributed-database/highly-available-transactions.pdf) (2014)
+  > Introduce a taxonomy of highly available systems and analyze existing ACID isolation and distributed data consistency guarantees to identify which can and cannot be achieved in HAT systems.
+
 ### Articles
 
 - [Linearizability versus Serializability](http://www.bailis.org/blog/linearizability-versus-serializability/) (2014)
@@ -362,6 +366,10 @@ I have put up a post to explain these things: [What You Should Know About Storag
 # Miscellaneous
 
 ## General
+
+### Books
+
+- [Readings in Database Systems](http://www.redbook.io/)
 
 ### Articles
 
