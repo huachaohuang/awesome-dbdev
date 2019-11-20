@@ -10,13 +10,13 @@ Great, that's fun but challenging. Don't panic, I collects some awesome material
 
 ### Papers
 
-- [Access Path Selection in a Relational Database Management System](papers/sql/Access Path Selection in a Relational Database Management System.pdf) (SIGMOD, 1979)
+- [Access Path Selection in a Relational Database Management System](papers/sql/SystemR.pdf) (SIGMOD, 1979)
 
   Describes a cost-based SQL optimizer in System R. The optimizer estimates
   the cost of access paths in terms of I/O and CPU costs, using statistics about
   the contents of each relation.
 
-- [The Volcano Optimizer Generator: Extensibility and Efficient Search](papers/sql/The Volcano Optimizer Generator.pdf) (ICDE, 1993)
+- [The Volcano Optimizer Generator: Extensibility and Efficient Search](papers/sql/Volcano.pdf) (ICDE, 1993)
 
   Describes an optimizer generator that translates a model specification into
   optimizer source code. It also provides a search engine to be used in all
