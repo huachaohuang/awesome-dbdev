@@ -2,7 +2,44 @@
 
 You want to become an awesome database developer?
 
-Great, that's fun but challenging. Let's collect the awesome materials here to help each other.
+Great, that's fun but challenging. Don't panic, I collects some awesome materials here for us.
+
+# SQL
+
+## Optimizer
+
+### Papers
+
+- [Access Path Selection in a Relational Database Management System](papers/sql/Access Path Selection in a Relational Database Management System.pdf) (SIGMOD, 1979)
+
+  Describes a cost-based SQL optimizer in System R. The optimizer estimates
+  the cost of access paths in terms of I/O and CPU costs, using statistics about
+  the contents of each relation.
+
+- [The Volcano Optimizer Generator: Extensibility and Efficient Search](papers/sql/The Volcano Optimizer Generator.pdf) (ICDE, 1993)
+
+  Describes an optimizer generator that translates a model specification into
+  optimizer source code. It also provides a search engine to be used in all
+  generated optimizers. The search engine is goal-oriented using *directed
+  dynamic programming* search algorithms.
+
+### Posts
+
+- [How We Built a Cost-Based SQL Optimizer](https://www.cockroachlabs.com/blog/building-cost-based-sql-optimizer/) (Cockroach Labs, 2018)
+
+## Execution
+
+### Papers
+
+- [MonetDB/X100: Hyper-Pipelining Query Execution](papers/sql/MonetDB.pdf) (CIDR, 2005)
+
+  Describes a CPU efficient query processor that employs a *vertorized* query
+  processing model. The processor uses *loop-pipelined* and *cache-conscious*
+  operations to take advantage of modern CPUs.
+
+### Posts
+
+- [How We Built a Vectorized SQL Engine](https://www.cockroachlabs.com/blog/how-we-built-a-vectorized-sql-engine/) (Cockroach Labs, 2019)
 
 # Storage Devices
 
