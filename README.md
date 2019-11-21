@@ -12,9 +12,9 @@ Great, that's fun but challenging. Don't panic, I collect some awesome materials
 
 - [Online, Asynchronous Schema Change in F1](papers/sql/F1-Schema.pdf) (VLDB, 2013)
 
-  Introduces a protocol for asynchronous schema changes in distributed
-  databases. The protocol executes a schema change in intermediate states and
-  ensures that the transitions between these states are *consistency
+  This paper introduces a protocol for asynchronous schema changes in
+  distributed databases. The protocol executes a schema change in intermediate
+  states and ensures that the transitions between these states are *consistency
   preserving*.
 
 ### Posts
@@ -27,16 +27,16 @@ Great, that's fun but challenging. Don't panic, I collect some awesome materials
 
 - [Access Path Selection in a Relational Database Management System](papers/sql/SystemR.pdf) (SIGMOD, 1979)
 
-  Introduces a cost-based SQL optimizer in System R. The optimizer estimates
-  the cost of access paths in terms of I/O and CPU costs, using statistics about
-  the contents of each relation.
+  This paper introduces a cost-based SQL optimizer in System R. The optimizer
+  estimates the cost of access paths in terms of I/O and CPU costs, using
+  statistics about the contents of each relation.
 
 - [The Volcano Optimizer Generator: Extensibility and Efficient Search](papers/sql/Volcano.pdf) (ICDE, 1993)
 
-  Introduces an optimizer generator that translates a model specification into
-  optimizer source code. It also provides a search engine to be used in all
-  generated optimizers. The search engine is goal-oriented using *directed
-  dynamic programming* search algorithms.
+  This paper introduces an optimizer generator that translates a model
+  specification into an optimizer source code. It also provides a search engine
+  to be used in all generated optimizers. The search engine is goal-oriented
+  using *directed dynamic programming* search algorithms.
 
 ### Posts
 
@@ -48,9 +48,9 @@ Great, that's fun but challenging. Don't panic, I collect some awesome materials
 
 - [MonetDB/X100: Hyper-Pipelining Query Execution](papers/sql/MonetDB.pdf) (CIDR, 2005)
 
-  Introduces a CPU efficient query processor that employs a *vectorized* query
-  processing model. The processor uses *loop-pipelined* and *cache-conscious*
-  operations to take advantage of modern CPUs.
+  This paper introduces a CPU efficient query processor that employs a
+  *vectorized* query processing model. The processor uses *loop-pipelined* and
+  *cache-conscious* operations to take advantage of modern CPUs.
 
 ### Posts
 
@@ -60,32 +60,67 @@ Great, that's fun but challenging. Don't panic, I collect some awesome materials
 
 ## Isolation
 
+### Papers
+
 - [Granularity of Locks and Degrees of Consistency in a Shared Data Base](papers/transaction/Granularity-of-Locks-and-Degrees-of-Consistency.pdf) (IBM, 1975)
 
-  The first part introduces a locking protocol that allows simultaneous locking
-  at various granularities in a database with a hierarchical structure. The
-  second part introduces four degrees of consistency and the relationships of
-  the four degrees to the locking protocol. Degree 1, 2, and 3 are now typically
-  called *Read Uncommitted*, *Read Committed* and *Serializable*, respectively.
+  The first part of this paper introduces a locking protocol that allows
+  simultaneous locking at various granularities in a database with a
+  hierarchical structure. The second part of this paper introduces four degrees
+  of consistency and the relationships of the four degrees to the locking
+  protocol. Degree 1, 2, and 3 are now typically called *Read Uncommitted*,
+  *Read Committed* and *Serializable*, respectively.
 
 - [The Notion of Consistency and Predicate Locks in a Database System](papers/transaction/The-Notion-of-Consistency-and-Predicate-Locks.pdf) (IBM, 1976)
 
-  Proofs that *two-phase locking (2PL)* guarantees *serializability* and
-  introduces *predicate locks* to address the problem of *phantom reads*.
+  This paper proofs that *two-phase locking (2PL)* guarantees *serializability*
+  and introduces *predicate locks* to address the problem of *phantom reads*.
 
 - [A Critique of ANSI SQL Isolation Levels](papers/transaction/A-Critique-of-ANSI-SQL-Isolation-Levels.pdf) (SIGMOD, 1995)
 
-  Analyzes the ambiguities of ANSI isolation levels and provides clearer
-  phenomena definitions. Introduces a new MVCC isolation level called *Snapshot
-  Isolation*. A transaction in snapshot isolation reads data from a snapshot of
-  the committed data as of the time the transaction started, and checks for
-  write-write conflicts.
+  This paper analyzes the ambiguities of ANSI isolation levels and provides
+  clearer phenomena definitions. It also introduces a new MVCC isolation level
+  called *Snapshot Isolation*. A transaction in snapshot isolation reads data
+  from a snapshot of the committed data as of the time the transaction started,
+  and checks for write-write conflicts.
 
 - [A Critique of Snapshot Isolation](papers/transaction/A-Critique-of-Snapshot-Isolation.pdf) (EuroSys, 2012)
 
-  Introduces a new MVCC isolation level called *Write-Snapshot Isolation* that
-  provides serializability. A transaction in write-snapshot isolation checks for
-  read-write conflicts instead of write-write conflicts in snapshot isolation.
+  This paper introduces a new MVCC isolation level called *Write-Snapshot
+  Isolation* that provides serializability. A transaction in write-snapshot
+  isolation checks for read-write conflicts instead of write-write conflicts in
+  snapshot isolation.
+
+## Consistency
+
+### Papers
+
+- [How to Make a Multiprocessor Computer That Correctly Executes Multiprocess Progranm](papers/transaction/Sequential-Consistency.pdf) (IEEE Transactions on Computers, 1979)
+
+  This paper defines the condition of *sequential consistency* and describes a
+  method to ensure the sequential consistency of interconnecting sequential
+  processors with memory modules.
+
+- [Linearizability: A Correctness Condition for Concurrent Objects](papers/transaction/Linearizability.pdf) (TOPLAS, 1990)
+
+  This paper defines the condition of *linearizability* and discusses the
+  differences between it and other correctness conditions. It proves that
+  linearizability is a local and nonblocking property.
+
+- [Causal Memory: Definitions, Implementation and Programming](papers/transaction/Causal-Consistency.pdf) (Distributed Computing, 1995)
+
+  This paper first introduces a *causal order* based on Lamport's
+  happened-before relation and then defines the condition of *causal
+  consistency*.
+
+### Posts
+
+- [Linearizability versus Serializability](http://www.bailis.org/blog/linearizability-versus-serializability/) (Peter Bailis, 2014)
+
+- [Demystifying Database Systems, Part 1: An Introduction to Transaction Isolation Levels](https://fauna.com/blog/introduction-to-transaction-isolation-levels) (Fauna, 2019)
+- [Demystifying Database Systems, Part 2: Correctness Anomalies Under Serializable Isolation](https://fauna.com/blog/demystifying-database-systems-correctness-anomalies-under-serializable-isolation) (Fauna, 2019)
+- [Demystifying Database Systems, Part 3: Introduction to Consistency Levels](https://fauna.com/blog/demystifying-database-systems-introduction-to-consistency-levels) (Fauna, 2019)
+- [Demystifying Database Systems, Part 4: Isolation levels vs. Consistency levels](https://fauna.com/blog/demystifying-database-systems-part-4-isolation-levels-vs-consistency-levels) (Fauna, 2019)
 
 --------------------------------------------------------------------------------
 
@@ -298,17 +333,8 @@ I have put up a post to explain these things: [What You Should Know About Storag
 
 ### Papers
 
-- [How to Make a Multiprocessor Computer That Correctly Executes Multiprocess Progranm](papers/distributed-system/sequential-consistency.pdf) (1979)
-  > Define *sequential consistency* that guarantees the sequential ordering of operations.
-
-- [Linearizability: A Correctness Condition for Concurrent Objects](papers/distributed-system/linearizability.pdf) (1990)
-  > Define *linearizability* that guarantees the sequential and "real-time" precedence ordering of operations.
-
 - [Session Guarantees for Weakly Consistent Replicated Data](papers/distributed-system/session-guarantees.pdf) (1994)
   > Define *session guarantees*: *Read Your Writes*, *Monotonic Reads*, *Writes Follow Reads*, and *Monotonic Writes*.
-
-- [Causal Memory: Definitions, Implementation and Programming](papers/distributed-system/causal-consistency.pdf) (1995)
-  > Define *causal consistency* that guarantees the relative ordering of operations that are *causally related*.
 
 - [Brewer’s Conjecture and the Feasibility of Consistent, Available, Partition-Tolerant Web Services](papers/distributed-system/cap-theorem.pdf) (2002)
   > Prove the *CAP conjecture* that it is impossible to provide all the three properties: *Consistency*, *Availability*, and *Partition-tolerance*.
@@ -354,10 +380,6 @@ I have put up a post to explain these things: [What You Should Know About Storag
 
 ## Transaction
 
-### Books
-
-- [Concurrency Control and Recovery in Database Systems](https://www.microsoft.com/en-us/research/wp-content/uploads/2016/05/ccontrol.zip)
-
 ### Papers
 
 - [The Serializability of Concurrent Database Updates](papers/distributed-database/serializability-npcomplete.pdf) (1979)
@@ -384,10 +406,6 @@ I have put up a post to explain these things: [What You Should Know About Storag
 
 - [Highly Available Transactions: Virtues and Limitations](papers/distributed-database/highly-available-transactions.pdf) (2014)
   > Introduce a taxonomy of highly available systems and analyze existing ACID isolation and distributed data consistency guarantees to identify which can and cannot be achieved in HAT systems.
-
-### Articles
-
-- [Linearizability versus Serializability](http://www.bailis.org/blog/linearizability-versus-serializability/) (2014)
 
 ## Distributed Transaction
 
@@ -421,11 +439,6 @@ I have put up a post to explain these things: [What You Should Know About Storag
 
 - [Consistency without Clocks: The FaunaDB Distributed Transaction Protocol](https://fauna.com/blog/consistency-without-clocks-faunadb-transaction-protocol) (2018)
   > Describe an implementation of *Calvin*.
-
-- [Demystifying Database Systems, Part 1: An Introduction to Transaction Isolation Levels](https://fauna.com/blog/introduction-to-transaction-isolation-levels) (2019)
-- [Demystifying Database Systems, Part 2: Correctness Anomalies Under Serializable Isolation](https://fauna.com/blog/demystifying-database-systems-correctness-anomalies-under-serializable-isolation) (2019)
-- [Demystifying Database Systems, Part 3: Introduction to Consistency Levels](https://fauna.com/blog/demystifying-database-systems-introduction-to-consistency-levels) (2019)
-- [Demystifying Database Systems, Part 4: Isolation levels vs. Consistency levels](https://fauna.com/blog/demystifying-database-systems-part-4-isolation-levels-vs-consistency-levels) (2019)
 
 ## Distributed SQL
 
