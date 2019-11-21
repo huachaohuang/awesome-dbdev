@@ -56,6 +56,43 @@ Great, that's fun but challenging. Don't panic, I collect some awesome materials
 
 - [How We Built a Vectorized SQL Engine](https://www.cockroachlabs.com/blog/how-we-built-a-vectorized-sql-engine/) (Cockroach Labs, 2019)
 
+# Transaction
+
+## Isolation
+
+- [Granularity of Locks and Degrees of Consistency in a Shared Data Base](papers/transaction/Granularity-of-Locks-and-Degrees-of-Consistency.pdf) (IBM, 1975)
+
+  The first part introduces a locking protocol that allows simultaneous locking
+  at various granularities in a database with a hierarchical structure. The
+  second part introduces four degrees of consistency and the relationships of
+  the four degrees to the locking protocol. Degree 1, 2, and 3 are now typically
+  called *Read Uncommitted*, *Read Committed* and *Serializable*, respectively.
+
+- [The Notion of Consistency and Predicate Locks in a Database System](papers/transaction/The-Notion-of-Consistency-and-Predicate-Locks.pdf) (IBM, 1976)
+
+  Proofs that *two-phase locking (2PL)* guarantees *serializability* and
+  introduces *predicate locks* to address the problem of *phantom reads*.
+
+- [A Critique of ANSI SQL Isolation Levels](papers/transaction/A-Critique-of-ANSI-SQL-Isolation-Levels.pdf) (SIGMOD, 1995)
+
+  Analyzes the ambiguities of ANSI isolation levels and provides clearer
+  phenomena definitions. Introduces a new MVCC isolation level called *Snapshot
+  Isolation*. A transaction in snapshot isolation reads data from a snapshot of
+  the committed data as of the time the transaction started, and checks for
+  write-write conflicts.
+
+- [A Critique of Snapshot Isolation](papers/transaction/A-Critique-of-Snapshot-Isolation.pdf) (EuroSys, 2012)
+
+  Introduces a new MVCC isolation level called *Write-Snapshot Isolation* that
+  provides serializability. A transaction in write-snapshot isolation checks for
+  read-write conflicts instead of write-write conflicts in snapshot isolation.
+
+--------------------------------------------------------------------------------
+
+THE FOLLOWING PARTS ARE UNDER RE-ORGANIZING
+
+--------------------------------------------------------------------------------
+
 # Storage Devices
 
 I have put up a post to explain these things: [What You Should Know About Storage Devices](http://huachaohuang.com/2019/08/28/what-you-should-know-about-storage-devices.html)
@@ -323,12 +360,6 @@ I have put up a post to explain these things: [What You Should Know About Storag
 
 ### Papers
 
-- [The Notion of Consistency and Predicate Locks in a Database System](papers/distributed-database/two-phase-locking.pdf) (1976)
-  > Propose *two-phase locking (2PL)* to guarantee serializability and *predicate locks* to prevent *phantom reads*.
-
-- [Granularity of Locks and Degrees of Consistency in a Shared Data Base](papers/distributed-database/degrees-of-isolation.pdf) (1976)
-  > Propose multiple granularity of locks and degrees of consistency: *degree 0*, *degree 1 (Read Uncommitted)*, *degree 2 (Read Committed)*, and *degree 3 (Serializable)*.
-
 - [The Serializability of Concurrent Database Updates](papers/distributed-database/serializability-npcomplete.pdf) (1979)
   > Prove the recognition of transaction histories to be serializable is an *NP-complete* problem.
 
@@ -341,9 +372,6 @@ I have put up a post to explain these things: [What You Should Know About Storag
 - [Principles of Transaction-Oriented Database Recovery](papers/distributed-database/transaction-acid.pdf) (1983)
   > Describe the transaction principles and the *ACID* properties: *Atomicity*, *Consistency*, *Isolation* and *Durability*.
 
-- [A Critique of ANSI SQL Isolation Levels](papers/distributed-database/snapshot-isolation.pdf) (1995)
-  > Propose clearer definitions to charaterize existing ANSI isolation levels and a new *snapshot isolation*.
-
 - [Weak Consistency: A Generalized Theory and Optimistic Implementations for Distributed Transactions](papers/distributed-database/generalized-isolation-thesis.pdf) (1999)
   > Propose a graph-based approach to define existing ANSI isolation levels and other widely used levels.
   > Propose two new isolation levels: *Consistent View (PL-2+)* and *Monotonic View (PL-2L)*.
@@ -353,9 +381,6 @@ I have put up a post to explain these things: [What You Should Know About Storag
 
 - [Serializable Isolation for Snapshot Databases](papers/distributed-database/serializable-snapshot-isolation.pdf) (2008)
   > Propose an algorithm to achieve *serializable snapshot isolation* based on *anti-dependencies* detection.
-
-- [A Critique of Snapshot Isolation](papers/distributed-database/write-snapshot-isolation.pdf) (2012)
-  > Propose a new *write-snapshot isolation* that is serializable and comparable with *snapshot isolation* in performance.
 
 - [Highly Available Transactions: Virtues and Limitations](papers/distributed-database/highly-available-transactions.pdf) (2014)
   > Introduce a taxonomy of highly available systems and analyze existing ACID isolation and distributed data consistency guarantees to identify which can and cannot be achieved in HAT systems.
@@ -408,9 +433,6 @@ I have put up a post to explain these things: [What You Should Know About Storag
 
 - [F1: A Distributed SQL Database That Scales](papers/distributed-database/f1.pdf) (2013)
   > Introduce *F1*, a hybrid database that combines high availability, the scalability of NoSQL systems like Bigtable, and the consistency and usability of traditional SQL databases.
-
-- [Online, Asynchronous Schema Change in F1](papers/distributed-database/f1-online-ddl.pdf) (2013)
-  > Introduce a protocol for schema evolution in a globally distributed database management system with shared data, stateless servers, and no global membership.
 
 - [Spanner: Becoming a SQL System](papers/distributed-database/spanner-2017.pdf) (2017)
   > Introduce the "database system" aspects of *Spanner*, in particular how query execution has evolved and forced the rest of Spanner to evolve.
