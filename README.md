@@ -125,26 +125,26 @@ Great, that's fun but challenging. Don't panic, I collect some awesome materials
   relation, and gives a distributed algorithm for extending it to a consistent
   total ordering of all the events.
 
-- [Large-scale Incremental Processing Using Distributed Transactions and Notifications](papers/transaction/Percolator.pdf) (2010)
+- [Large-scale Incremental Processing Using Distributed Transactions and Notifications](papers/transaction/Percolator.pdf) (OSDI, 2010)
 
   This paper introduces *Percolator*, an incremental update processing system
   built on top of Bigtable. Percolator provides snapshot isolation transactions
   using a two-phase commit protocol.
 
-- [Spanner: Google’s Globally-Distributed Database](papers/transaction/Spanner.pdf) (2012)
+- [Spanner: Google’s Globally-Distributed Database](papers/transaction/Spanner.pdf) (OSDI, 2012)
 
   This paper introduces *Spanner*, a scalable, multi-version,
   globally-distributed, and synchronously-replicated database. Spanner supports
   externally-consistent distributed transactions using the *TrueTime* API.
 
-- [Calvin: Fast Distributed Transactions for Partitioned Database Systems](papers/transaction/Calvin.pdf) (2012)
+- [Calvin: Fast Distributed Transactions for Partitioned Database Systems](papers/transaction/Calvin.pdf) (SIGMOD, 2012)
 
   This paper introduces *Calvin*, a practical transaction scheduling and data
   replication layer that uses a deterministic ordering guarantee to
   significantly reduce the normally prohibitive contention costs associated with
   distributed transactions.
 
-- [Logical Physical Clocks and Consistent Snapshots in Globally Distributed Databases](papers/transaction/Hybrid-Logical-Clocks.pdf) (2014)
+- [Logical Physical Clocks and Consistent Snapshots in Globally Distributed Databases](papers/transaction/Hybrid-Logical-Clocks.pdf) (OPODIS, 2014)
 
   This paper introduces *Hybrid Logical Clocks (HLC)* that combines the best of
   logical clocks and physical clocks.
