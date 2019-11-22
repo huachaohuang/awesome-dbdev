@@ -58,7 +58,11 @@ Great, that's fun but challenging. Don't panic, I collect some awesome materials
 
 # Transaction
 
-## Isolation
+## Concurrency
+
+### Books
+
+- [Concurrency Control and Recovery in Database Systems](https://www.microsoft.com/en-us/research/wp-content/uploads/2016/05/ccontrol.zip) (1987)
 
 ### Papers
 
@@ -95,27 +99,73 @@ Great, that's fun but challenging. Don't panic, I collect some awesome materials
 
 ### Papers
 
-- [How to Make a Multiprocessor Computer That Correctly Executes Multiprocess Progranm](papers/transaction/Sequential-Consistency.pdf) (IEEE Transactions on Computers, 1979)
+- [How to Make a Multiprocessor Computer That Correctly Executes Multiprocess Progranm](papers/transaction/Sequential-Consistency.pdf) (1979)
 
   This paper defines the condition of *sequential consistency* and describes a
   method to ensure the sequential consistency of interconnecting sequential
   processors with memory modules.
 
-- [Linearizability: A Correctness Condition for Concurrent Objects](papers/transaction/Linearizability.pdf) (TOPLAS, 1990)
+- [Linearizability: A Correctness Condition for Concurrent Objects](papers/transaction/Linearizability.pdf) (1990)
 
   This paper defines the condition of *linearizability* and discusses the
-  differences between it and other correctness conditions. It proves that
-  linearizability is a local and nonblocking property.
+  differences between it and other correctness conditions.
 
-- [Causal Memory: Definitions, Implementation and Programming](papers/transaction/Causal-Consistency.pdf) (Distributed Computing, 1995)
+- [Causal Memory: Definitions, Implementation and Programming](papers/transaction/Causal-Consistency.pdf) (1995)
 
-  This paper first introduces a *causal order* based on Lamport's
-  happened-before relation and then defines the condition of *causal
-  consistency*.
+  This paper defines the *causal ordering* based on Lamport's "happened before"
+  relation, and then defines the condition of *causal consistency*.
+
+## Distributed Transaction
+
+### Papers
+
+- [Time, Clocks, and the Ordering of Events in a Distributed System](papers/transaction/Logical-Clocks.pdf) (1978)
+
+  This paper discusses the partial ordering defined by the "happened before"
+  relation, and gives a distributed algorithm for extending it to a consistent
+  total ordering of all the events.
+
+- [Large-scale Incremental Processing Using Distributed Transactions and Notifications](papers/transaction/Percolator.pdf) (2010)
+
+  This paper introduces *Percolator*, an incremental update processing system
+  built on top of Bigtable. Percolator provides snapshot isolation transactions
+  using a two-phase commit protocol.
+
+- [Spanner: Google’s Globally-Distributed Database](papers/transaction/Spanner.pdf) (2012)
+
+  This paper introduces *Spanner*, a scalable, multi-version,
+  globally-distributed, and synchronously-replicated database. Spanner supports
+  externally-consistent distributed transactions using the *TrueTime* API.
+
+- [Calvin: Fast Distributed Transactions for Partitioned Database Systems](papers/transaction/Calvin.pdf) (2012)
+
+  This paper introduces *Calvin*, a practical transaction scheduling and data
+  replication layer that uses a deterministic ordering guarantee to
+  significantly reduce the normally prohibitive contention costs associated with
+  distributed transactions.
+
+- [Logical Physical Clocks and Consistent Snapshots in Globally Distributed Databases](papers/transaction/Hybrid-Logical-Clocks.pdf) (2014)
+
+  This paper introduces *Hybrid Logical Clocks (HLC)* that combines the best of
+  logical clocks and physical clocks.
 
 ### Posts
 
 - [Linearizability versus Serializability](http://www.bailis.org/blog/linearizability-versus-serializability/) (Peter Bailis, 2014)
+
+- [How CockroachDB Does Distributed, Atomic Transactions](https://www.cockroachlabs.com/blog/how-cockroachdb-distributes-atomic-transactions/) (Cockroach Labs, 2015)
+
+- [Living Without Atomic Clocks](https://www.cockroachlabs.com/blog/living-without-atomic-clocks/) (Cockroach Labs, 2016)
+
+- [Serializable, Lockless, Distributed: Isolation in CockroachDB](https://www.cockroachlabs.com/blog/serializable-lockless-distributed-isolation-cockroachdb/) (Cockroach Labs, 2016)
+
+- [CockroachDB’s Consistency Model](https://www.cockroachlabs.com/blog/consistency-model/) (Cockroach Labs, 2019)
+
+- [Distributed consistency at scale: Spanner vs. Calvin](http://dbmsmusings.blogspot.com/2017/04/distributed-consistency-at-scale.html) (Daniel Abadi, 2017)
+
+- [NewSQL database systems are failing to guarantee consistency, and I blame Spanner](http://dbmsmusings.blogspot.com/2018/09/newsql-database-systems-are-failing-to.html) (Daniel Abadi, 2018)
+
+- [Consistency without Clocks: The FaunaDB Distributed Transaction Protocol](https://fauna.com/blog/consistency-without-clocks-faunadb-transaction-protocol) (Fauna, 2018)
 
 - [Demystifying Database Systems, Part 1: An Introduction to Transaction Isolation Levels](https://fauna.com/blog/introduction-to-transaction-isolation-levels) (Fauna, 2019)
 - [Demystifying Database Systems, Part 2: Correctness Anomalies Under Serializable Isolation](https://fauna.com/blog/demystifying-database-systems-correctness-anomalies-under-serializable-isolation) (Fauna, 2019)
@@ -287,14 +337,8 @@ I have put up a post to explain these things: [What You Should Know About Storag
 
 ### Papers
 
-- [Time, Clocks, and the Ordering of Events in a Distributed System](papers/distributed-system/logical-clock.pdf) (1978)
-  > Propose a distributed algorithm to synchronize a system of logical clocks, which can be used to totally order the events.
-
 - [Practical Uses of Synchronized Clocks in Distributed Systems](papers/distributed-system/synchronized-clock.pdf) (1993)
   > Discuss a number of distributed algorithms that make use of synchronized clocks and analyzes how clocks are used in these algorithms.
-
-- [Logical Physical Clocks and Consistent Snapshots in Globally Distributed Databases](papers/distributed-system/hybrid-logical-clock.pdf) (2014)
-  > Propose a hybrid logical clock, HLC, that combines the best of logical clocks and physical clocks.
 
 ## Consensus
 
@@ -414,31 +458,8 @@ I have put up a post to explain these things: [What You Should Know About Storag
 - [Consensus on Transaction Commit](papers/distributed-database/paxos-commit.pdf) (2005)
   > Propose the *Paxos Commit* algorithm that runs a Paxos consensus algorithm on the commit/abort decision of each participant for fault-tolerance.
 
-- [Large-scale Incremental Processing Using Distributed Transactions and Notifications](papers/distributed-database/percolator.pdf) (2010)
-  > Introduce *Percolator*, an incremental updates processing system that provides transactions with *snapshot isolation*.
-
-- [Calvin: Fast Distributed Transactions for Partitioned Database Systems](papers/distributed-database/calvin.pdf) (2012)
-  > Introduce *Calvin*, a practical transaction scheduling and data replication layer that provides a deterministic ordering of distributed transactions.
-
-- [Spanner: Google’s Globally-Distributed Database](papers/distributed-database/spanner.pdf) (2012)
-  > Introduce *Spanner*, a globally distributed database that support *externally consistent* transactions using the *TrueTime* API.
-
 - [Spanner, TrueTime and the CAP Theorem](papers/distributed-database/spanner-and-cap-theorem.pdf) (2017)
   > Discuss the techniques behind *Spanner* that make it an "effectively CA" system.
-
-### Articles
-
-- [Living Without Atomic Clocks](https://www.cockroachlabs.com/blog/living-without-atomic-clocks/) (2016)
-  > Describe an implementation of *write-snapshot isolation* using *hybrid logical clocks*.
-
-- [Distributed consistency at scale: Spanner vs. Calvin](http://dbmsmusings.blogspot.com/2017/04/distributed-consistency-at-scale.html) (2017)
-  > Discuss the comparison between *Spanner* and *Calvin*, Part 1.
-
-- [NewSQL database systems are failing to guarantee consistency, and I blame Spanner](http://dbmsmusings.blogspot.com/2018/09/newsql-database-systems-are-failing-to.html) (2018)
-  > Discuss the comparison between *Spanner* and *Calvin*, Part 2.
-
-- [Consistency without Clocks: The FaunaDB Distributed Transaction Protocol](https://fauna.com/blog/consistency-without-clocks-faunadb-transaction-protocol) (2018)
-  > Describe an implementation of *Calvin*.
 
 ## Distributed SQL
 
