@@ -172,6 +172,20 @@ Great, that's fun but challenging. Don't panic, I collect some awesome materials
 - [Demystifying Database Systems, Part 3: Introduction to Consistency Levels](https://fauna.com/blog/demystifying-database-systems-introduction-to-consistency-levels) (Fauna, 2019)
 - [Demystifying Database Systems, Part 4: Isolation levels vs. Consistency levels](https://fauna.com/blog/demystifying-database-systems-part-4-isolation-levels-vs-consistency-levels) (Fauna, 2019)
 
+# Operating System
+
+## Books
+
+- [Linux Device Drivers](https://www.oreilly.com/library/view/linux-device-drivers/0596005903/)
+- [Understanding the Linux Kernel](https://www.oreilly.com/library/view/understanding-the-linux/0596005652/)
+- [Understanding the Linux Virtual Memory Manager](https://www.kernel.org/doc/gorman/)
+
+## Papers
+
+- [What Every Programmer Should Know About Memory](papers/operating-system/Memory.pdf)
+- [What Every Systems Programmer Should Know About Concurrency](papers/operating-system/Concurrency.pdf)
+- [The Slab Allocator: An Object-Caching Kernel Memory Allocator](papers/operating-system/The-Slab-Allocator.pdf)
+
 --------------------------------------------------------------------------------
 
 THE FOLLOWING PARTS ARE UNDER RE-ORGANIZING
@@ -310,26 +324,6 @@ I have put up a post to explain these things: [What You Should Know About Storag
 ### Articles
 
 - [How does a relational database work](http://coding-geek.com/how-databases-work/)
-
-# Operating System
-
-## Linux Kernel
-
-### Books
-
-- [Understanding the Linux Kernel](https://www.oreilly.com/library/view/understanding-the-linux/0596005652/)
-- [Linux Device Drivers](https://www.oreilly.com/library/view/linux-device-drivers/0596005903/)
-
-### Papers
-
-- [What Every Programmer Should Know About Memory](papers/operating-system/cpumemory.pdf)
-- [What Every Systems Programmer Should Know About Concurrency](papers/operating-system/concurrency-primer.pdf)
-- [The Slab Allocator: An Object-Caching Kernel Memory Allocator](papers/operating-system/slab-allocator.pdf)
-
-### Websites
-
-- [The Linux Kernel Archives](https://www.kernel.org/)
-- [Linux Weekly News](https://lwn.net/)
 
 # Distributed System
 
