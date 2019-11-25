@@ -172,6 +172,57 @@ Great, that's fun but challenging. Don't panic, I collect some awesome materials
 - [Demystifying Database Systems, Part 3: Introduction to Consistency Levels](https://fauna.com/blog/demystifying-database-systems-introduction-to-consistency-levels) (Fauna, 2019)
 - [Demystifying Database Systems, Part 4: Isolation levels vs. Consistency levels](https://fauna.com/blog/demystifying-database-systems-part-4-isolation-levels-vs-consistency-levels) (Fauna, 2019)
 
+# Storage Device
+
+There are a lot of concepts here, I have put up a post to explain them: [What You Should Know About Storage Devices](http://huachaohuang.com/2019/08/28/what-you-should-know-about-storage-devices.html)
+
+## Media
+
+### Wikis
+
+- [Hard Disk Drive (HDD)](https://en.wikipedia.org/wiki/Hard_disk_drive)
+- [Solid-State Drive (SSD)](https://en.wikipedia.org/wiki/Solid-state_drive)
+
+### Posts
+
+- [Coding for SSDs](http://codecapsule.com/2014/02/12/coding-for-ssds-part-1-introduction-and-table-of-contents/)
+
+### Videos
+
+- [How HDD Works](https://www.youtube.com/watch?v=Ep-yM894mQQ)
+- [The Development of HDD Technique](https://www.youtube.com/watch?v=wteUW2sL7bc)
+- [How Flash Memory Works](https://www.youtube.com/watch?v=s7JLXs5es7I)
+
+## Standard
+
+### Wikis
+
+- [Small Computer System Interface (SCSI)](https://en.wikipedia.org/wiki/SCSI)
+- [Serial Attached SCSI (SAS)](https://en.wikipedia.org/wiki/Serial_Attached_SCSI)
+- [AT Atachment (ATA)](https://en.wikipedia.org/wiki/Parallel_ATA)
+- [Serial AT Attachment (SATA)](https://en.wikipedia.org/wiki/Serial_ATA)
+- [Advanced Host Controller Interface (AHCI)](https://en.wikipedia.org/wiki/Advanced_Host_Controller_Interface)
+- [Peripheral Component Interconnect (PCI)](https://en.wikipedia.org/wiki/Conventional_PCI)
+- [PCI Express (PCIe)](https://en.wikipedia.org/wiki/PCI_Express)
+- [NVM Express (NVMe)](https://en.wikipedia.org/wiki/NVM_Express)
+
+### Videos
+
+- [Understanding SCSI](https://www.youtube.com/watch?v=pR7SdrXdT4M)
+- [A History of PC Buses - From ISA to PCI Express](https://www.youtube.com/watch?v=qla-5isbK60)
+
+## Virtualization
+
+### Wikis
+
+- [Logical Volume Manager (LVM)](https://en.wikipedia.org/wiki/Logical_Volume_Manager_(Linux))
+- [Redundant Array of Independent Disks (RAID)](https://en.wikipedia.org/wiki/RAID)
+
+### Videos
+
+- [Logical Volume Management (LVM) - Linux](https://www.youtube.com/watch?v=fadQX2e_PGk)
+- [What is RAID 0, 1, 2, 3, 4, 5, 6 and 10 (1+0)?](https://www.youtube.com/watch?v=wTcxRObq738)
+
 # Operating System
 
 ## Books
@@ -182,109 +233,15 @@ Great, that's fun but challenging. Don't panic, I collect some awesome materials
 
 ## Papers
 
-- [What Every Programmer Should Know About Memory](papers/operating-system/Memory.pdf)
-- [What Every Systems Programmer Should Know About Concurrency](papers/operating-system/Concurrency.pdf)
-- [The Slab Allocator: An Object-Caching Kernel Memory Allocator](papers/operating-system/The-Slab-Allocator.pdf)
+- [The Slab Allocator: An Object-Caching Kernel Memory Allocator](papers/operating-system/The-Slab-Allocator.pdf) (1994)
+- [What Every Programmer Should Know About Memory](papers/operating-system/Memory.pdf) (2007)
+- [What Every Systems Programmer Should Know About Concurrency](papers/operating-system/Concurrency.pdf) (2018)
 
 --------------------------------------------------------------------------------
 
 THE FOLLOWING PARTS ARE UNDER RE-ORGANIZING
 
 --------------------------------------------------------------------------------
-
-# Storage Devices
-
-I have put up a post to explain these things: [What You Should Know About Storage Devices](http://huachaohuang.com/2019/08/28/what-you-should-know-about-storage-devices.html)
-
-## Storage Media
-
-### HDD
-
-#### Wikis
-
-- [Magnetic Storage](https://en.wikipedia.org/wiki/Magnetic_storage)
-- [Hard Disk Drive (HDD)](https://en.wikipedia.org/wiki/Hard_disk_drive)
-
-#### Videos
-
-- [How HDD Works](https://www.youtube.com/watch?v=Ep-yM894mQQ)
-- [The Mechanical Structure of HDD](https://www.youtube.com/watch?v=NtPc0jI21i0)
-- [The Development of HDD Technique](https://www.youtube.com/watch?v=wteUW2sL7bc)
-
-### SSD
-
-#### Wikis
-
-- [Flash Memory](https://en.wikipedia.org/wiki/Flash_memory)
-- [Solid-State Drive (SSD)](https://en.wikipedia.org/wiki/Solid-state_drive)
-
-#### Posts
-
-- [Coding for SSDs](http://codecapsule.com/2014/02/12/coding-for-ssds-part-1-introduction-and-table-of-contents/)
-
-#### Videos
-
-- [How Flash Memory Works](https://www.youtube.com/watch?v=s7JLXs5es7I)
-
-## Storage Standards
-
-### SCSI
-
-#### Wikis
-
-- [Small Computer System Interface (SCSI)](https://en.wikipedia.org/wiki/SCSI)
-- [Parallel SCSI](https://en.wikipedia.org/wiki/Parallel_SCSI)
-- [Serial Attached SCSI (SAS)](https://en.wikipedia.org/wiki/Serial_Attached_SCSI)
-
-#### Videos
-
-- [Understanding SCSI](https://www.youtube.com/watch?v=pR7SdrXdT4M)
-
-### ATA
-
-#### Wikis
-
-- [AT Atachment (ATA)](https://en.wikipedia.org/wiki/Parallel_ATA)
-- [Serial AT Attachment (SATA)](https://en.wikipedia.org/wiki/Serial_ATA)
-- [Advanced Host Controller Interface (AHCI)](https://en.wikipedia.org/wiki/Advanced_Host_Controller_Interface)
-
-### PCI
-
-#### Wikis
-
-- [Industry Standard Architecture (ISA)](https://en.wikipedia.org/wiki/Industry_Standard_Architecture)
-- [Peripheral Component Interconnect (PCI)](https://en.wikipedia.org/wiki/Conventional_PCI)
-- [PCI Express (PCIe)](https://en.wikipedia.org/wiki/PCI_Express)
-- [Non-Volatile Memory (NVM)](https://en.wikipedia.org/wiki/Non-volatile_memory)
-- [NVM Express (NVMe)](https://en.wikipedia.org/wiki/NVM_Express)
-
-#### Videos
-
-- [A History of PC Buses - From ISA to PCI Express](https://www.youtube.com/watch?v=qla-5isbK60)
-
-# Storage Virtualization
-
-## Multiple Devices Management
-
-### LVM
-
-#### Wikis
-
-- [Logical Volume Manager (LVM)](https://en.wikipedia.org/wiki/Logical_Volume_Manager_(Linux))
-
-#### Videos
-
-- [Logical Volume Management (LVM) - Linux](https://www.youtube.com/watch?v=fadQX2e_PGk)
-
-### RAID
-
-#### Wikis
-
-- [Redundant Array of Independent Disks (RAID)](https://en.wikipedia.org/wiki/RAID)
-
-#### Videos
-
-- [What is RAID 0, 1, 2, 3, 4, 5, 6 and 10 (1+0)?](https://www.youtube.com/watch?v=wTcxRObq738)
 
 # Storage System
 
