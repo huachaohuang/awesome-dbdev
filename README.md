@@ -99,7 +99,7 @@ Great, that's fun but challenging. Don't panic, I collect some awesome materials
 
 ### Papers
 
-- [How to Make a Multiprocessor Computer That Correctly Executes Multiprocess Progranm](papers/transaction/Sequential-Consistency.pdf) (1979)
+- [How to Make a Multiprocessor Computer That Correctly Executes Multiprocess Progranm](papers/transaction/Sequential-Consistency.pdf) (Lamport, 1979)
 
   This paper defines the condition of *sequential consistency* and describes a
   method to ensure the sequential consistency of interconnecting sequential
@@ -119,7 +119,7 @@ Great, that's fun but challenging. Don't panic, I collect some awesome materials
 
 ### Papers
 
-- [Time, Clocks, and the Ordering of Events in a Distributed System](papers/transaction/Logical-Clocks.pdf) (1978)
+- [Time, Clocks, and the Ordering of Events in a Distributed System](papers/transaction/Logical-Clocks.pdf) (Lamport, 1978)
 
   This paper discusses the partial ordering defined by the "happened before"
   relation, and gives a distributed algorithm for extending it to a consistent
@@ -171,6 +171,46 @@ Great, that's fun but challenging. Don't panic, I collect some awesome materials
 - [Demystifying Database Systems, Part 2: Correctness Anomalies Under Serializable Isolation](https://fauna.com/blog/demystifying-database-systems-correctness-anomalies-under-serializable-isolation) (Fauna, 2019)
 - [Demystifying Database Systems, Part 3: Introduction to Consistency Levels](https://fauna.com/blog/demystifying-database-systems-introduction-to-consistency-levels) (Fauna, 2019)
 - [Demystifying Database Systems, Part 4: Isolation levels vs. Consistency levels](https://fauna.com/blog/demystifying-database-systems-part-4-isolation-levels-vs-consistency-levels) (Fauna, 2019)
+
+# Replication
+
+## Consensus
+
+### Papers
+
+- [Paxos Made Simple](papers/replication/Paxos.pdf) (Lamport, 2001)
+
+  > The Paxos algorithm, when presented in plain English, is very simple.
+
+- [Paxos Made Live - An Engineering Perspective](papers/replication/Paxos-Made-Live.pdf) (PODC, 2007)
+
+  This paper describes the experience building a fault-tolerant system *Chubby*
+  using the Paxos consensus algorithm.
+
+- [There Is More Consensus in Egalitarian Parliaments](papers/replication/Egalitarian-Paxos.pdf) (SOSP, 2013)
+
+  This paper describes the design and implementation of Egalitarian Paxos
+  (EPaxos), a new distributed consensus algorithm based on Paxos that achieves
+  uniform load balancing across all replicas.
+
+- [Paxos Quorum Leases: Fast Reads Without Sacrificing Writes](papers/replication/Paxos-Quorum-Leases.pdf) (SOCC, 2014)
+
+  This paper describes *quorum leases*, a technique that allows Paxos-based
+  systems to perform consistent local reads on multiple replicas.
+
+- [In Search of an Understandable Consensus Algorithm](papers/replication/Raft.pdf) (USENIX, 2014)
+
+  This paper introduces *Raft*, a consensus algorithm for managing a replicated
+  log. Raft produces a result equivalent to Paxos, and it is as efficient as
+  Paxos, but its structure is different from Paxos. Raft is more understandable
+  than Paxos and also provides a better foundation for building practical
+  systems.
+
+### Posts
+
+- [Implementing Replicated Logs with Paxos](https://ongardie.net/static/raft/userstudy/paxos.pdf) (2013)
+
+- [Neat Algorithms - Paxos](http://harry.me/blog/2014/12/27/neat-algorithms-paxos/) (2014)
 
 # Storage Device
 
@@ -289,31 +329,12 @@ THE FOLLOWING PARTS ARE UNDER RE-ORGANIZING
 
 ### Papers
 
-- [Paxos Made Simple](papers/distributed-system/paxos-made-simple.pdf) (2001)
-  > Present the Paxos algorithm in plain English.
-
 - [Fast Paxos](papers/distributed-system/fast-paxos.pdf) (2005)
   > Propose an extension of the classic Paxos algorithm that allows the value to be learned in two message delays.
-
-- [Paxos Made Live - An Engineering Perspective](papers/distributed-system/paxos-made-live.pdf) (2007)
-  > Describe the experience building a fault-tolerant database using the Paxos consensus algorithm.
-
-- [There Is More Consensus in Egalitarian Parliaments](papers/distributed-system/epaxos.pdf) (2013)
-  > Describe the design and implementation of Egalitarian Paxos (EPaxos), a new distributed consensus algorithm based on Paxos.
-
-- [Paxos Quorum Leases: Fast Reads Without Sacrificing Writes](papers/distributed-system/paxos-lease.pdf) (2014)
-  > Describe quorum leases, a new technique that allows Paxos-based systems to perform reads with high throughput and low latency.
-
-- [In Search of an Understandable Consensus Algorithm](papers/distributed-system/raft.pdf) (2014)
-  > Propose the Raft algorithm, which is as efficient as Paxos but more understandable and provides a better foundation for building practical systems.
 
 ### Articles
 
 - [Notes on Distributed Systems for Young Bloods](https://www.somethingsimilar.com/2013/01/14/notes-on-distributed-systems-for-young-bloods/) (2013)
-
-- [Neat Algorithms - Paxos](http://harry.me/blog/2014/12/27/neat-algorithms-paxos/) (2014)
-
-- [Implementing Replicated Logs with Paxos](https://ramcloud.stanford.edu/~ongaro/userstudy/paxos.pdf)
 
 ## Consistency
 
