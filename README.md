@@ -230,6 +230,7 @@ There are a lot of concepts here, I have put up a post to explain them: [What Yo
 - [Linux Device Drivers](https://www.oreilly.com/library/view/linux-device-drivers/0596005903/)
 - [Understanding the Linux Kernel](https://www.oreilly.com/library/view/understanding-the-linux/0596005652/)
 - [Understanding the Linux Virtual Memory Manager](https://www.kernel.org/doc/gorman/)
+- [ext4 Data Structures and Algorithms](https://www.kernel.org/doc/html/latest/filesystems/ext4/index.html)
 
 ## Papers
 
@@ -284,19 +285,9 @@ THE FOLLOWING PARTS ARE UNDER RE-ORGANIZING
 
 # Distributed System
 
-## Clock
-
-### Papers
-
-- [Practical Uses of Synchronized Clocks in Distributed Systems](papers/distributed-system/synchronized-clock.pdf) (1993)
-  > Discuss a number of distributed algorithms that make use of synchronized clocks and analyzes how clocks are used in these algorithms.
-
 ## Consensus
 
 ### Papers
-
-- [The Part-Time Parliament](papers/distributed-system/paxos.pdf) (1998)
-  > Propose the Paxos algorithm.
 
 - [Paxos Made Simple](papers/distributed-system/paxos-made-simple.pdf) (2001)
   > Present the Paxos algorithm in plain English.
