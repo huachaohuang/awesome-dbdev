@@ -184,8 +184,8 @@ Great, that's fun but challenging. Don't panic, I collect some awesome materials
 
 - [Paxos Made Live - An Engineering Perspective](papers/replication/Paxos-Made-Live.pdf) (PODC, 2007)
 
-  This paper describes the experience building a fault-tolerant system *Chubby*
-  using the Paxos consensus algorithm.
+  This paper describes the experience of building *Chubby*, a fault-tolerant
+  storage system using the Paxos consensus algorithm.
 
 - [There Is More Consensus in Egalitarian Parliaments](papers/replication/Egalitarian-Paxos.pdf) (SOSP, 2013)
 
@@ -211,6 +211,24 @@ Great, that's fun but challenging. Don't panic, I collect some awesome materials
 - [Implementing Replicated Logs with Paxos](https://ongardie.net/static/raft/userstudy/paxos.pdf) (2013)
 
 - [Neat Algorithms - Paxos](http://harry.me/blog/2014/12/27/neat-algorithms-paxos/) (2014)
+
+# Storage Engine
+
+- [The Log-Structured Merge-Tree (LSM-Tree)](papers/storage-engine/LSM-Tree.pdf) (1996)
+
+  This paper introduces the Log-Structured Merge-tree (LSM-tree), a disk-based
+  data structure designed to provide low-cost indexing for a file experiencing a
+  high rate of record inserts (and deletes) over an extended period. The
+  LSM-tree uses an algorithm that defers and batches index changes, cascading
+  the changes from a memory-based component through one or more disk components
+  in an efficient manner reminiscent of merge sort.
+
+- [bLSM: A General Purpose Log Structured Merge Tree](papers/storage-engine/bLSM.pdf) (SIGMOD, 2012)
+
+  This paper introduces *bLSM*, a Log Structured Merge (LSM) tree with the
+  advantages of B-Trees and log structured approaches. bLSM uses Bloom filters
+  to improve index performance and uses *spring and gear scheduler* to avoid
+  long write pauses.
 
 # Storage Device
 
@@ -290,9 +308,6 @@ THE FOLLOWING PARTS ARE UNDER RE-ORGANIZING
 
 ### Papers
 
-- [The Log-Structured Merge-Tree (LSM-Tree)](papers/storage-system/lsm.pdf) (1996)
-  > Introduce *LSM-Tree*, a new data structure that defers and batches index changes, cascades the changes from a memory-based component through one or more disk components in an efficient manner reminiscent of merge sort.
-
 - [Weaving Relations for Cache Performance](papers/storage-system/pax.pdf) (2001)
   > Introduce a new data organization model called *Partition Attributes Across (PAX)* that significantly improves cache performance by grouping together all values of each attribute within each page.
 
@@ -302,9 +317,6 @@ THE FOLLOWING PARTS ARE UNDER RE-ORGANIZING
   > Introduce two *cache-oblivious streaming B-trees* that efficiently implements insertions and range queries.
 
 - [Bitcask: A Log-Structured Hash Table for Fast Key/Value Data](papers/storage-system/bitcask.pdf) (2010)
-
-- [bLSM: A General Purpose Log Structured Merge Tree](papers/storage-system/blsm.pdf) (2012)
-  > Introduce *bLSM*, a new form of LSM-Tree with the advantages of B-Trees and log structured approaches.
 
 - [The Bw-Tree: A B-tree for New Hardware Platforms](papers/storage-system/bw-tree.pdf) (2013)
   > Introduce *Bw-Tree*, a new form of B-Tree that achieves its very high performance via a latch-free approach that effectively exploits the processor caches of modern multi-core chips.
