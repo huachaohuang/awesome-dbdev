@@ -230,6 +230,11 @@ Great, that's fun but challenging. Don't panic, I collect some awesome materials
   to improve index performance and uses *spring and gear scheduler* to avoid
   long write pauses.
 
+- [The Five-Minute Rule for Trading Memory for Disc Accesses](papers/storage-engine/5-Minute-Rule.pdf) (SIGMOD, 1987)
+- [The Five-Minute Rule 10 Years Later, and Other Computer Storage Rules of Thumb](papers/storage-engine/5-Minute-Rule-10-Years-Later.pdf) (SIGMOD, 1997)
+- [The Five-Minute Rule 20 Years Later, and How Flash Memory Changes the Rules](papers/storage-engine/5-Minute-Rule-20-Years-Later.pdf) (2007)
+- [The Five-Minute Rule 30 Years Later, and its Impact on the Storage Hierarchy](papers/storage-engine/5-Minute-Rule-30-Years-Later.pdf) (2017)
+
 # Storage Device
 
 There are a lot of concepts here, I have put up a post to explain them: [What You Should Know About Storage Devices](http://huachaohuang.com/2019/08/28/what-you-should-know-about-storage-devices.html)
