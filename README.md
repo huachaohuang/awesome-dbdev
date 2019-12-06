@@ -105,12 +105,12 @@ Great, that's fun but challenging. Don't panic, I collect some awesome materials
   method to ensure the sequential consistency of interconnecting sequential
   processors with memory modules.
 
-- [Linearizability: A Correctness Condition for Concurrent Objects](papers/transaction/Linearizability.pdf) (1990)
+- [Linearizability: A Correctness Condition for Concurrent Objects](papers/transaction/Linearizability.pdf) (CMU, 1990)
 
   This paper defines the condition of *linearizability* and discusses the
   differences between it and other correctness conditions.
 
-- [Causal Memory: Definitions, Implementation and Programming](papers/transaction/Causal-Consistency.pdf) (1995)
+- [Causal Memory: Definitions, Implementation and Programming](papers/transaction/Causal-Consistency.pdf) (GIT, 1995)
 
   This paper defines the *causal ordering* based on Lamport's "happened before"
   relation, and then defines the condition of *causal consistency*.
@@ -124,6 +124,13 @@ Great, that's fun but challenging. Don't panic, I collect some awesome materials
   This paper discusses the partial ordering defined by the "happened before"
   relation, and gives a distributed algorithm for extending it to a consistent
   total ordering of all the events.
+
+- [Consensus on Transaction Commit](papers/transaction/Paxos-Commit.pdf) (Microsoft, 2004)
+
+  This paper introduces the Paxos Commit algorithm that runs a Paxos consensus
+  algorithm on the commit/abort decision of each participant to obtain a
+  transaction commit protocol that uses 2F + 1 coordinators and makes progress
+  if at least F + 1 of them are working properly.
 
 - [Large-scale Incremental Processing Using Distributed Transactions and Notifications](papers/transaction/Percolator.pdf) (OSDI, 2010)
 
@@ -148,6 +155,13 @@ Great, that's fun but challenging. Don't panic, I collect some awesome materials
 
   This paper introduces *Hybrid Logical Clocks (HLC)* that combines the best of
   logical clocks and physical clocks.
+
+- [SLOG: Serializable, Low-latency, Geo-replicated Transactions](papers/transaction/SLOG.pdf) (VLDB, 2019)
+
+  This paper introduces *SLOG*, a system that provides strictly serializable
+  ACID transactions at geo-replicated distance. SLOG achieves high-throughtput
+  and low latency for transactions that initiate from a location close to the
+  home region for data they access.
 
 ### Posts
 
@@ -211,6 +225,27 @@ Great, that's fun but challenging. Don't panic, I collect some awesome materials
 - [Implementing Replicated Logs with Paxos](https://ongardie.net/static/raft/userstudy/paxos.pdf) (2013)
 
 - [Neat Algorithms - Paxos](http://harry.me/blog/2014/12/27/neat-algorithms-paxos/) (2014)
+
+## CAP Theorem
+
+### Papers
+
+- [Brewer’s Conjecture and the Feasibility of Consistent, Available, Partition-Tolerant Web Services](papers/replication/CAP-Theorem.pdf) (SIGACT, 2002)
+
+  This paper proves the CAP conjecture in the asynchronous network model, and
+  then discusses solutions to this dilemma in the partially synchronous model.
+
+- [Spanner, TrueTime and the CAP Theorem](papers/replication/Spanner-and-CAP-Theorem.pdf) (Google, 2017)
+
+  This paper discusses the techniques behind Spanner that makes it an
+  "effectively CA" system despite operating over a wide area, as it is always
+  consistent and achieves greater than 5 9s availability.
+
+### Posts
+
+- [CAP Twelve Years Later: How the "Rules" Have Changed](https://www.infoq.com/articles/cap-twelve-years-later-how-the-rules-have-changed) (Eric Brewer, 2012)
+
+- [Notes on Distributed Systems for Young Bloods](https://www.somethingsimilar.com/2013/01/14/notes-on-distributed-systems-for-young-bloods/) (Jeff Hodges, 2013)
 
 # Storage Engine
 
@@ -342,17 +377,6 @@ THE FOLLOWING PARTS ARE UNDER RE-ORGANIZING
 
 # Distributed System
 
-## Consensus
-
-### Papers
-
-- [Fast Paxos](papers/distributed-system/fast-paxos.pdf) (2005)
-  > Propose an extension of the classic Paxos algorithm that allows the value to be learned in two message delays.
-
-### Articles
-
-- [Notes on Distributed Systems for Young Bloods](https://www.somethingsimilar.com/2013/01/14/notes-on-distributed-systems-for-young-bloods/) (2013)
-
 ## Consistency
 
 ### Papers
@@ -360,19 +384,8 @@ THE FOLLOWING PARTS ARE UNDER RE-ORGANIZING
 - [Session Guarantees for Weakly Consistent Replicated Data](papers/distributed-system/session-guarantees.pdf) (1994)
   > Define *session guarantees*: *Read Your Writes*, *Monotonic Reads*, *Writes Follow Reads*, and *Monotonic Writes*.
 
-- [Brewer’s Conjecture and the Feasibility of Consistent, Available, Partition-Tolerant Web Services](papers/distributed-system/cap-theorem.pdf) (2002)
-  > Prove the *CAP conjecture* that it is impossible to provide all the three properties: *Consistency*, *Availability*, and *Partition-tolerance*.
-
-- [Eventually Consistent](papers/distributed-system/eventual-consistency.pdf) (2009)
-  > Define *eventual consistency* that guarantees if no new updates are made to the object, eventually all accesses will return the last updated value.
-
 - [Consistency in Non-Transactional Distributed Storage Systems](papers/distributed-system/distributed-consistency.pdf) (2016)
   > Overview more than 50 different consistency notions and provie a partial order among them.
-
-### Articles
-
-- [CAP Twelve Years Later: How the "Rules" Have Changed](https://www.infoq.com/articles/cap-twelve-years-later-how-the-rules-have-changed) (2012)
-  > Revisit the *CAP theorem* to maximize the combinations of consistency and availability.
 
 # Distributed Storage
 
@@ -430,16 +443,6 @@ THE FOLLOWING PARTS ARE UNDER RE-ORGANIZING
 
 - [Highly Available Transactions: Virtues and Limitations](papers/distributed-database/highly-available-transactions.pdf) (2014)
   > Introduce a taxonomy of highly available systems and analyze existing ACID isolation and distributed data consistency guarantees to identify which can and cannot be achieved in HAT systems.
-
-## Distributed Transaction
-
-### Papers
-
-- [Consensus on Transaction Commit](papers/distributed-database/paxos-commit.pdf) (2005)
-  > Propose the *Paxos Commit* algorithm that runs a Paxos consensus algorithm on the commit/abort decision of each participant for fault-tolerance.
-
-- [Spanner, TrueTime and the CAP Theorem](papers/distributed-database/spanner-and-cap-theorem.pdf) (2017)
-  > Discuss the techniques behind *Spanner* that make it an "effectively CA" system.
 
 ## Distributed SQL
 
