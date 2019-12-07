@@ -14,8 +14,8 @@ Great, that's fun but challenging. Don't panic, I collect some awesome materials
 
   This paper introduces a protocol for asynchronous schema changes in
   distributed databases. The protocol executes a schema change in intermediate
-  states and ensures that the transitions between these states are *consistency
-  preserving*.
+  states and ensures that the transitions between these states are consistency
+  preserving.
 
 ### Posts
 
@@ -36,7 +36,9 @@ Great, that's fun but challenging. Don't panic, I collect some awesome materials
   This paper introduces an optimizer generator that translates a model
   specification into an optimizer source code. It also provides a search engine
   to be used in all generated optimizers. The search engine is goal-oriented
-  using *directed dynamic programming* search algorithms.
+  using directed dynamic programming search algorithms.
+
+- [The Cascades Framework for Query Optimization](papers/sql/Cascades.pdf) (IEEE, 1995)
 
 ### Posts
 
@@ -49,8 +51,8 @@ Great, that's fun but challenging. Don't panic, I collect some awesome materials
 - [MonetDB/X100: Hyper-Pipelining Query Execution](papers/sql/MonetDB.pdf) (CIDR, 2005)
 
   This paper introduces a CPU efficient query processor that employs a
-  *vectorized* query processing model. The processor uses *loop-pipelined* and
-  *cache-conscious* operations to take advantage of modern CPUs.
+  vectorized query processing model. The processor uses loop-pipelined and
+  cache-conscious operations to take advantage of modern CPUs.
 
 ### Posts
 
@@ -72,26 +74,25 @@ Great, that's fun but challenging. Don't panic, I collect some awesome materials
   simultaneous locking at various granularities in a database with a
   hierarchical structure. The second part of this paper introduces four degrees
   of consistency and the relationships of the four degrees to the locking
-  protocol. Degree 1, 2, and 3 are now typically called *Read Uncommitted*,
-  *Read Committed* and *Serializable*, respectively.
+  protocol.
 
 - [The Notion of Consistency and Predicate Locks in a Database System](papers/transaction/The-Notion-of-Consistency-and-Predicate-Locks.pdf) (IBM, 1976)
 
-  This paper proofs that *two-phase locking (2PL)* guarantees *serializability*
-  and introduces *predicate locks* to address the problem of *phantom reads*.
+  This paper proofs that two-phase locking (2PL) guarantees serializability and
+  introduces predicate locks to address the problem of phantom reads.
 
 - [A Critique of ANSI SQL Isolation Levels](papers/transaction/A-Critique-of-ANSI-SQL-Isolation-Levels.pdf) (SIGMOD, 1995)
 
   This paper analyzes the ambiguities of ANSI isolation levels and provides
   clearer phenomena definitions. It also introduces a new MVCC isolation level
-  called *Snapshot Isolation*. A transaction in snapshot isolation reads data
+  called *snapshot isolation*. A transaction in snapshot isolation reads data
   from a snapshot of the committed data as of the time the transaction started,
   and checks for write-write conflicts.
 
 - [A Critique of Snapshot Isolation](papers/transaction/A-Critique-of-Snapshot-Isolation.pdf) (EuroSys, 2012)
 
-  This paper introduces a new MVCC isolation level called *Write-Snapshot
-  Isolation* that provides serializability. A transaction in write-snapshot
+  This paper introduces a new MVCC isolation level called *write-snapshot
+  isolation* that provides serializability. A transaction in write-snapshot
   isolation checks for read-write conflicts instead of write-write conflicts in
   snapshot isolation.
 
@@ -110,10 +111,22 @@ Great, that's fun but challenging. Don't panic, I collect some awesome materials
   This paper defines the condition of *linearizability* and discusses the
   differences between it and other correctness conditions.
 
+- [Session Guarantees for Weakly Consistent Replicated Data](papers/transaction/Session-Guarantees.pdf) (PDIS, 1994)
+
+  This paper proposes four per-session guarantees to aid users and applications
+  of weakly consistent replicated data: *Read Your Writes*, *Monotonic Reads*,
+  *Writes Follow Reads*, and *Monotonic Writes*.
+
 - [Causal Memory: Definitions, Implementation and Programming](papers/transaction/Causal-Consistency.pdf) (GIT, 1995)
 
-  This paper defines the *causal ordering* based on Lamport's "happened before"
+  This paper defines the causal ordering based on Lamport's "happened before"
   relation, and then defines the condition of *causal consistency*.
+
+- [Consistency in Non-Transactional Distributed Storage Systems](papers/transaction/Distributed-Consistency.pdf) (CSUR, 2016)
+
+  This paper provides a structured and comprehensive overview of different
+  consistency notions and provide a partial order among different consistency
+  predicates.
 
 ## Distributed Transaction
 
@@ -153,7 +166,7 @@ Great, that's fun but challenging. Don't panic, I collect some awesome materials
 
 - [Logical Physical Clocks and Consistent Snapshots in Globally Distributed Databases](papers/transaction/Hybrid-Logical-Clocks.pdf) (OPODIS, 2014)
 
-  This paper introduces *Hybrid Logical Clocks (HLC)* that combines the best of
+  This paper introduces *hybrid logical clocks (HLC)* that combines the best of
   logical clocks and physical clocks.
 
 - [SLOG: Serializable, Low-latency, Geo-replicated Transactions](papers/transaction/SLOG.pdf) (VLDB, 2019)
@@ -203,8 +216,8 @@ Great, that's fun but challenging. Don't panic, I collect some awesome materials
 
 - [There Is More Consensus in Egalitarian Parliaments](papers/replication/Egalitarian-Paxos.pdf) (SOSP, 2013)
 
-  This paper describes the design and implementation of Egalitarian Paxos
-  (EPaxos), a new distributed consensus algorithm based on Paxos that achieves
+  This paper describes the design and implementation of *Egalitarian Paxos
+  (EPaxos)*, a new distributed consensus algorithm based on Paxos that achieves
   uniform load balancing across all replicas.
 
 - [Paxos Quorum Leases: Fast Reads Without Sacrificing Writes](papers/replication/Paxos-Quorum-Leases.pdf) (SOCC, 2014)
@@ -232,7 +245,7 @@ Great, that's fun but challenging. Don't panic, I collect some awesome materials
 
 - [Brewer’s Conjecture and the Feasibility of Consistent, Available, Partition-Tolerant Web Services](papers/replication/CAP-Theorem.pdf) (SIGACT, 2002)
 
-  This paper proves the CAP conjecture in the asynchronous network model, and
+  This paper proves the *CAP conjecture* in the asynchronous network model, and
   then discusses solutions to this dilemma in the partially synchronous model.
 
 - [Spanner, TrueTime and the CAP Theorem](papers/replication/Spanner-and-CAP-Theorem.pdf) (Google, 2017)
@@ -251,7 +264,7 @@ Great, that's fun but challenging. Don't panic, I collect some awesome materials
 
 - [The Log-Structured Merge-Tree (LSM-Tree)](papers/storage-engine/LSM-Tree.pdf) (1996)
 
-  This paper introduces the Log-Structured Merge-tree (LSM-tree), a disk-based
+  This paper introduces the *Log-Structured Merge-tree (LSM-tree)*, a disk-based
   data structure designed to provide low-cost indexing for a file experiencing a
   high rate of record inserts (and deletes) over an extended period. The
   LSM-tree uses an algorithm that defers and batches index changes, cascading
@@ -291,7 +304,7 @@ There are a lot of concepts here, I have put up a post to explain them: [What Yo
 - [The Development of HDD Technique](https://www.youtube.com/watch?v=wteUW2sL7bc)
 - [How Flash Memory Works](https://www.youtube.com/watch?v=s7JLXs5es7I)
 
-## Standard
+## Interface
 
 ### Wikis
 
@@ -375,18 +388,6 @@ THE FOLLOWING PARTS ARE UNDER RE-ORGANIZING
 
 - [How does a relational database work](http://coding-geek.com/how-databases-work/)
 
-# Distributed System
-
-## Consistency
-
-### Papers
-
-- [Session Guarantees for Weakly Consistent Replicated Data](papers/distributed-system/session-guarantees.pdf) (1994)
-  > Define *session guarantees*: *Read Your Writes*, *Monotonic Reads*, *Writes Follow Reads*, and *Monotonic Writes*.
-
-- [Consistency in Non-Transactional Distributed Storage Systems](papers/distributed-system/distributed-consistency.pdf) (2016)
-  > Overview more than 50 different consistency notions and provie a partial order among them.
-
 # Distributed Storage
 
 ## File System
@@ -419,17 +420,8 @@ THE FOLLOWING PARTS ARE UNDER RE-ORGANIZING
 
 ### Papers
 
-- [The Serializability of Concurrent Database Updates](papers/distributed-database/serializability-npcomplete.pdf) (1979)
-  > Prove the recognition of transaction histories to be serializable is an *NP-complete* problem.
-
 - [Concurrency Control in Distributed Database Systems](papers/distributed-database/serializability-algorithms.pdf) (1981)
   > Describe 48 concurrency control algorithms based on *two-phase locking* and *timestamp ordering*.
-
-- [The Transaction Concept: Virtues and Limitations](papers/distributed-database/transaction-concept.pdf) (1981)
-  > Describe the transaction concept and its properties: *Atomicity*, *Consistency* and *Durability*.
-
-- [Principles of Transaction-Oriented Database Recovery](papers/distributed-database/transaction-acid.pdf) (1983)
-  > Describe the transaction principles and the *ACID* properties: *Atomicity*, *Consistency*, *Isolation* and *Durability*.
 
 - [Weak Consistency: A Generalized Theory and Optimistic Implementations for Distributed Transactions](papers/distributed-database/generalized-isolation-thesis.pdf) (1999)
   > Propose a graph-based approach to define existing ANSI isolation levels and other widely used levels.
