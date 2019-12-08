@@ -89,6 +89,11 @@ Great, that's fun but challenging. Don't panic, I collect some awesome materials
   from a snapshot of the committed data as of the time the transaction started,
   and checks for write-write conflicts.
 
+- [Serializable Isolation for Snapshot Databases](papers/transaction/Serializable-Snapshot-Isolation.pdf) (SIGMOD, 2008)
+
+  This paper proposes an algorithm to achieve *serializable snapshot isolation*
+  based on anti-dependencies detection.
+
 - [A Critique of Snapshot Isolation](papers/transaction/A-Critique-of-Snapshot-Isolation.pdf) (EuroSys, 2012)
 
   This paper introduces a new MVCC isolation level called *write-snapshot
@@ -163,6 +168,12 @@ Great, that's fun but challenging. Don't panic, I collect some awesome materials
   replication layer that uses a deterministic ordering guarantee to
   significantly reduce the normally prohibitive contention costs associated with
   distributed transactions.
+
+- [Highly Available Transactions: Virtues and Limitations](papers/transaction/Highly-Available-Transactions.pdf) (VLDB, 2013)
+
+  This paper introduces a taxonomy of highly available systems and analyze
+  existing ACID isolation and distributed data consistency guarantees to
+  identify which can and cannot be achieved in HAT systems.
 
 - [Logical Physical Clocks and Consistent Snapshots in Globally Distributed Databases](papers/transaction/Hybrid-Logical-Clocks.pdf) (OPODIS, 2014)
 
@@ -349,6 +360,23 @@ There are a lot of concepts here, I have put up a post to explain them: [What Yo
 - [What Every Programmer Should Know About Memory](papers/operating-system/Memory.pdf) (2007)
 - [What Every Systems Programmer Should Know About Concurrency](papers/operating-system/Concurrency.pdf) (2018)
 
+
+# Miscellaneous
+
+## Books
+
+- [Readings in Database Systems](http://www.redbook.io/)
+
+## Posts
+
+- [How does a relational database work](http://coding-geek.com/how-databases-work/) (Christophe, 2015)
+
+- [Elements Of Scale: Composing And Scaling Data Platforms](http://www.benstopford.com/2015/04/28/elements-of-scale-composing-and-scaling-data-platforms/) (Ben Stopford, 2015)
+
+- [Apache Kafka, Samza, and the Unix Philosophy of Distributed Data](http://www.confluent.io/blog/apache-kafka-samza-and-the-unix-philosophy-of-distributed-data) (Martin Kleppmann, 2015)
+
+- [What I Learned From Programming Databases](http://www.philipotoole.com/what-i-learned-from-programming-a-database/) (Philip O'Toole, 2016)
+
 --------------------------------------------------------------------------------
 
 THE FOLLOWING PARTS ARE UNDER RE-ORGANIZING
@@ -382,12 +410,6 @@ THE FOLLOWING PARTS ARE UNDER RE-ORGANIZING
 - [The Data Calculator: Data Structure Design and Cost Synthesis from First Principles and Learned Cost Models](papers/storage-system/data-calculator.pdf) (2018)
   > Introduce the *Data Calculator*, a design engine that enables interactive and semi-automated design of data structures.
 
-## Relational Database
-
-### Articles
-
-- [How does a relational database work](http://coding-geek.com/how-databases-work/)
-
 # Distributed Storage
 
 ## File System
@@ -408,12 +430,6 @@ THE FOLLOWING PARTS ARE UNDER RE-ORGANIZING
 - [Megastore: Providing Scalable, Highly Available Storage for Interactive Services](papers/distributed-storage/megastore.pdf) (2011)
   > Introduce *Megastore*, a NoSQL storage system that provides serializable ACID semantics within fine-grained partitions of data.
 
-### Articles
-
-- [Elements Of Scale: Composing And Scaling Data Platforms](http://highscalability.com/blog/2015/5/4/elements-of-scale-composing-and-scaling-data-platforms.html) (2015)
-
-- [Apache Kafka, Samza, and the Unix Philosophy of Distributed Data](http://www.confluent.io/blog/apache-kafka-samza-and-the-unix-philosophy-of-distributed-data) (2015)
-
 # Distributed Database
 
 ## Transaction
@@ -430,12 +446,6 @@ THE FOLLOWING PARTS ARE UNDER RE-ORGANIZING
 - [Generalized Isolation Level Definitions](papers/distributed-database/generalized-isolation.pdf) (2000)
   > Propose a graph-based approach to define existing ANSI isolation levels.
 
-- [Serializable Isolation for Snapshot Databases](papers/distributed-database/serializable-snapshot-isolation.pdf) (2008)
-  > Propose an algorithm to achieve *serializable snapshot isolation* based on *anti-dependencies* detection.
-
-- [Highly Available Transactions: Virtues and Limitations](papers/distributed-database/highly-available-transactions.pdf) (2014)
-  > Introduce a taxonomy of highly available systems and analyze existing ACID isolation and distributed data consistency guarantees to identify which can and cannot be achieved in HAT systems.
-
 ## Distributed SQL
 
 ### Papers
@@ -445,15 +455,3 @@ THE FOLLOWING PARTS ARE UNDER RE-ORGANIZING
 
 - [Spanner: Becoming a SQL System](papers/distributed-database/spanner-2017.pdf) (2017)
   > Introduce the "database system" aspects of *Spanner*, in particular how query execution has evolved and forced the rest of Spanner to evolve.
-
-# Miscellaneous
-
-## General
-
-### Books
-
-- [Readings in Database Systems](http://www.redbook.io/)
-
-### Articles
-
-- [What I Learned From Programming Databases](http://www.philipotoole.com/what-i-learned-from-programming-a-database/)
