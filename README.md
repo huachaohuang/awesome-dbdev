@@ -12,13 +12,13 @@ Great, that's fun but challenging. Don't panic, I collect some awesome materials
 
 - [Access Path Selection in a Relational Database Management System](papers/sql/systemr.pdf) (SIGMOD, 1979)
 
-  This paper introduces a cost-based SQL optimizer in System R. The optimizer
+  This paper presents a cost-based SQL optimizer in System R. The optimizer
   estimates the cost of access paths in terms of I/O and CPU costs, using
   statistics about the contents of each relation.
 
 - [The Volcano Optimizer Generator: Extensibility and Efficient Search](papers/sql/volcano.pdf) (ICDE, 1993)
 
-  This paper introduces an optimizer generator that translates a model
+  This paper presents an optimizer generator that translates a model
   specification into an optimizer source code. It also provides a search engine
   to be used in all generated optimizers. The search engine is goal-oriented
   using directed dynamic programming search algorithms.
@@ -35,9 +35,9 @@ Great, that's fun but challenging. Don't panic, I collect some awesome materials
 
 - [MonetDB/X100: Hyper-Pipelining Query Execution](papers/sql/monetdb.pdf) (CIDR, 2005)
 
-  This paper introduces a CPU efficient query processor that employs a
-  vectorized query processing model. The processor uses loop-pipelined and
-  cache-conscious operations to take advantage of modern CPUs.
+  This paper presents a CPU efficient query processor that employs a vectorized
+  query processing model. The processor uses loop-pipelined and cache-conscious
+  operations to take advantage of modern CPUs.
 
 ### Posts
 
@@ -69,7 +69,7 @@ Great, that's fun but challenging. Don't panic, I collect some awesome materials
 - [A Critique of ANSI SQL Isolation Levels](papers/transaction/snapshot-isolation.pdf) (SIGMOD, 1995)
 
   This paper analyzes the ambiguities of ANSI isolation levels and provides
-  clearer phenomena definitions. It also introduces a new MVCC isolation level
+  clearer phenomena definitions. It also presents a new MVCC isolation level
   called *snapshot isolation*. A transaction in snapshot isolation reads data
   from a snapshot of the committed data as of the time the transaction started,
   and checks for write-write conflicts.
@@ -85,7 +85,7 @@ Great, that's fun but challenging. Don't panic, I collect some awesome materials
 
 - [A Critique of Snapshot Isolation](papers/transaction/write-snapshot-isolation.pdf) (EuroSys, 2012)
 
-  This paper introduces a new MVCC isolation level called *write-snapshot
+  This paper presents a new MVCC isolation level called *write-snapshot
   isolation*. A transaction in write-snapshot isolation checks for read-write
   conflicts instead of write-write conflicts in snapshot isolation.
 
@@ -192,7 +192,7 @@ Great, that's fun but challenging. Don't panic, I collect some awesome materials
 
 - [Brewer’s Conjecture and the Feasibility of Consistent, Available, Partition-Tolerant Web Services](papers/replication/cap-theorem.pdf) (SIGACT, 2002)
 
-  This paper proves the *CAP conjecture* in the asynchronous network model, and
+  This paper proves the CAP conjecture in the asynchronous network model, and
   then discusses solutions to this dilemma in the partially synchronous model.
 
 ### Posts
@@ -209,23 +209,23 @@ Great, that's fun but challenging. Don't panic, I collect some awesome materials
 
 - [Paxos Made Live - An Engineering Perspective](papers/replication/paxos-made-live.pdf) (PODC, 2007)
 
-  This paper describes the experience of building Chubby, a fault-tolerant
+  This paper presents the experience of building Chubby, a fault-tolerant
   storage system using the Paxos consensus algorithm.
 
 - [There Is More Consensus in Egalitarian Parliaments](papers/replication/epaxos.pdf) (SOSP, 2013)
 
-  This paper describes the design and implementation of Egalitarian Paxos
+  This paper presents the design and implementation of Egalitarian Paxos
   (EPaxos), a new distributed consensus algorithm based on Paxos that achieves
   uniform load balancing across all replicas.
 
 - [Paxos Quorum Leases: Fast Reads Without Sacrificing Writes](papers/replication/paxos-quorum-leases.pdf) (SOCC, 2014)
 
-  This paper describes *quorum leases*, a technique that allows Paxos-based
+  This paper presents *quorum leases*, a technique that allows Paxos-based
   systems to perform consistent local reads on multiple replicas.
 
 - [In Search of an Understandable Consensus Algorithm](papers/replication/raft.pdf) (USENIX, 2014)
 
-  This paper introduces Raft, a consensus algorithm for managing a replicated
+  This paper presents Raft, a consensus algorithm for managing a replicated
   log. Raft produces a result equivalent to Paxos, and it is as efficient as
   Paxos, but its structure is different from Paxos. Raft is more understandable
   than Paxos and also provides a better foundation for building practical
@@ -238,7 +238,7 @@ Great, that's fun but challenging. Don't panic, I collect some awesome materials
 
 # Storage Engine
 
-## Principles
+## Cost Analysis
 
 ### Papers
 
@@ -253,19 +253,66 @@ Great, that's fun but challenging. Don't panic, I collect some awesome materials
 
 - [The Log-Structured Merge-Tree (LSM-Tree)](papers/storage-engine/lsmtree.pdf) (1996)
 
-  This paper introduces the *Log-Structured Merge-tree (LSM-tree)*, a disk-based
+  This paper presents the Log-Structured Merge-tree (LSM-tree), a disk-based
   data structure designed to provide low-cost indexing for a file experiencing a
   high rate of record inserts (and deletes) over an extended period. The
   LSM-tree uses an algorithm that defers and batches index changes, cascading
   the changes from a memory-based component through one or more disk components
   in an efficient manner reminiscent of merge sort.
 
+- [Cache-Oblivious Streaming B-trees](papers/storage-engine/streaming-btree.pdf) (SPAA, 2007)
+
+  This paper presents two cache-oblivious streaming B-trees, the shuttle tree,
+  and the cache-oblivious lookahead array (COLA).
+
+- [Bitcask: A Log-Structured Hash Table for Fast Key/Value Data](papers/storage-engine/bitcask.pdf) (Basho, 2010)
+
 - [bLSM: A General Purpose Log Structured Merge Tree](papers/storage-engine/blsm.pdf) (SIGMOD, 2012)
 
-  This paper introduces *bLSM*, a Log Structured Merge (LSM) tree with the
+  This paper presents bLSM, a Log Structured Merge (LSM) tree with the
   advantages of B-Trees and log structured approaches. bLSM uses Bloom filters
   to improve index performance and uses *spring and gear scheduler* to avoid
   long write pauses.
+
+- [The Bw-Tree: A B-tree for New Hardware Platforms](papers/storage-engine/bw-tree.pdf) (ICDE, 2013)
+
+  This paper presents Bw-Tree, a new form of B-Tree that achieves its very
+  high performance via a latch-free approach that effectively exploits the
+  processor caches of modern multi-core chips.
+
+- [Hekaton: SQL Server’s Memory-Optimized OLTP Engine](papers/storage-engine/hekaton.pdf) (SIGMOD, 2013)
+
+  This paper presents Hekaton, a new database engine optimized for memory
+  resident data and OLTP workloads. Hekaton uses only latch-free data structures
+  and a new optimistic, multiversion concurrency control technique.
+
+- [WiscKey: Separating Keys from Values in SSD-Conscious Storage](papers/storage-engine/wisckey.pdf) (USENIX, 2016)
+
+  This paper presents WiscKey, a persistent LSM-Tree-based key-value store
+  with a performance-oriented data layout that separates keys from values to
+  minimize I/O amplification.
+
+- [PebblesDB: Building Key-Value Stores using Fragmented Log-Structured Merge Trees](papers/storage-engine/pebblesdb.pdf) (SOSP, 2017)
+
+  This paper presents a novel data structure that is inspired by Skip Lists,
+  termed Fragmented Log-Structured Merge Trees (FLSM). FLSM introduces the
+  notion of guards to organize logs, and avoids rewriting data in the same
+  level.
+
+## Columnar Storage
+
+### Papers
+
+- [Weaving Relations for Cache Performance](papers/storage-engine/pax.pdf) (VLDB, 2001)
+
+  This paper presents a new data organization model, Partition Attributes Across
+  (PAX), that significantly improves cache performance by grouping together all
+  values of each attribute within each page.
+
+- [C-Store: A Column-oriented DBMS](papers/storage-engine/c-store.pdf) (VLDB, 2005)
+
+  This paper presents the design of a read-optimized relational DBMS that stores
+  data by column.
 
 # Storage Device
 
@@ -389,7 +436,7 @@ There are a lot of concepts here, I have put up a post to explain them:
 
 - [Online, Asynchronous Schema Change in F1](papers/distributed-database/f1-schema.pdf) (VLDB, 2013)
 
-  This paper introduces a protocol for schema evolution in a globally
+  This paper describes a protocol for schema evolution in a globally
   distributed database management system with shared data, stateless servers,
   and no global membership.
 
@@ -422,36 +469,3 @@ There are a lot of concepts here, I have put up a post to explain them:
 - [Elements Of Scale: Composing And Scaling Data Platforms](http://www.benstopford.com/2015/04/28/elements-of-scale-composing-and-scaling-data-platforms/) (2015)
 - [Apache Kafka, Samza, and the Unix Philosophy of Distributed Data](http://www.confluent.io/blog/apache-kafka-samza-and-the-unix-philosophy-of-distributed-data) (2015)
 - [What I Learned From Programming Databases](http://www.philipotoole.com/what-i-learned-from-programming-a-database/) (2016)
-
---------------------------------------------------------------------------------
-
-THE FOLLOWING PARTS ARE UNDER RE-ORGANIZING
-
---------------------------------------------------------------------------------
-
-# Storage System
-
-## Storage Engine
-
-### Papers
-
-- [Weaving Relations for Cache Performance](papers/storage-system/pax.pdf) (2001)
-  > Introduce a new data organization model called *Partition Attributes Across (PAX)* that significantly improves cache performance by grouping together all values of each attribute within each page.
-
-- [C-Store: A Column-oriented DBMS](papers/storage-system/c-store.pdf) (2005)
-
-- [Cache-Oblivious Streaming B-trees](papers/storage-system/streaming-btree.pdf) (2007)
-  > Introduce two *cache-oblivious streaming B-trees* that efficiently implements insertions and range queries.
-
-- [Bitcask: A Log-Structured Hash Table for Fast Key/Value Data](papers/storage-system/bitcask.pdf) (2010)
-
-- [The Bw-Tree: A B-tree for New Hardware Platforms](papers/storage-system/bw-tree.pdf) (2013)
-  > Introduce *Bw-Tree*, a new form of B-Tree that achieves its very high performance via a latch-free approach that effectively exploits the processor caches of modern multi-core chips.
-
-- [Hekaton: SQL Server’s Memory-Optimized OLTP Engine](papers/storage-system/hekaton.pdf) (2013)
-
-- [WiscKey: Separating Keys from Values in SSD-Conscious Storage](papers/storage-system/wisckey.pdf) (2016)
-  > Introduce *WiscKey*, a persistent LSM-Tree-based key-value store with a performance-oriented data layout that separates keys from values to minimize I/O amplification.
-
-- [The Data Calculator: Data Structure Design and Cost Synthesis from First Principles and Learned Cost Models](papers/storage-system/data-calculator.pdf) (2018)
-  > Introduce the *Data Calculator*, a design engine that enables interactive and semi-automated design of data structures.
