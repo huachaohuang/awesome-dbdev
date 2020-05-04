@@ -47,10 +47,6 @@ Great, that's fun but challenging. Don't panic, I collect some awesome materials
 
 ## Concurrency
 
-### Books
-
-- [Concurrency Control and Recovery in Database Systems](https://www.microsoft.com/en-us/research/wp-content/uploads/2016/05/ccontrol.zip) (1987)
-
 ### Papers
 
 - [Granularity of Locks and Degrees of Consistency in a Shared Data Base](papers/transaction/consistency-and-locks.pdf) (IBM, 1975)
@@ -88,6 +84,10 @@ Great, that's fun but challenging. Don't panic, I collect some awesome materials
   This paper presents a new MVCC isolation level called *write-snapshot
   isolation*. A transaction in write-snapshot isolation checks for read-write
   conflicts instead of write-write conflicts in snapshot isolation.
+
+### Books
+
+- [Concurrency Control and Recovery in Database Systems](https://www.microsoft.com/en-us/research/wp-content/uploads/2016/05/ccontrol.zip) (1987)
 
 ## Consistency
 
@@ -184,6 +184,14 @@ Great, that's fun but challenging. Don't panic, I collect some awesome materials
 - [Demystifying Database Systems, Part 3: Introduction to Consistency Levels](https://fauna.com/blog/demystifying-database-systems-introduction-to-consistency-levels) (Fauna, 2019)
 - [Demystifying Database Systems, Part 4: Isolation levels vs. Consistency levels](https://fauna.com/blog/demystifying-database-systems-part-4-isolation-levels-vs-consistency-levels) (Fauna, 2019)
 
+# Scheduling
+
+## Papers
+
+- [An Opportunity Cost Approach for Job Assignment in a Scalable Computing Cluster](papers/scheduling/epvm.pdf) (2000)
+
+- [Large-scale cluster management at Google with Borg](papers/scheduling/borg.pdf) (EuroSys, 2015)
+
 # Replication
 
 ## Principles
@@ -203,7 +211,7 @@ Great, that's fun but challenging. Don't panic, I collect some awesome materials
 
 ### Papers
 
-- [Paxos Made Simple](papers/replication/paxos.pdf) (Lamport, 2001)
+- [Paxos Made Simple](papers/replication/paxos-made-simple.pdf) (Lamport, 2001)
 
   > The Paxos algorithm, when presented in plain English, is very simple.
 
