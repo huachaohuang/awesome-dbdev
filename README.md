@@ -460,6 +460,11 @@ There are a lot of concepts here, I have put up a post to explain them:
   This paper justifies Spanner as an "effectively CA" system despite operating
   over a wide area.
 
+- [CockroachDB: The Resilient Geo-Distributed SQL Database](papers/distributed-database/cockroachdb.pdf) (Cockroach Labs, 2020)
+
+  This paper presents the design of CockroachDB and its novel transaction model
+  that supports consistent geo-distrib- uted transactions on commodity hardware.
+
 ## Posts
 
 - [How online schema changes are possible in CockroachDB](https://www.cockroachlabs.com/blog/how-online-schema-changes-are-possible-in-cockroachdb/) (Cockroach Labs, 2016)
