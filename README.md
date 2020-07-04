@@ -215,6 +215,13 @@ Great, that's fun but challenging. Don't panic, I collect some awesome materials
 
   > The Paxos algorithm, when presented in plain English, is very simple.
 
+- [Chain Replication for Supporting High Throughput and Availability](papers/replication/chain-replication.pdf) (OSDI, 2004)
+
+  Chain replication is a new approach to coordinating clusters of fail-stop
+  storage servers. The approach is intended for supporting large-scale storage
+  services that exhibit high throughput and availability with- out sacrificing
+  strong consistency guarantees.
+
 - [Paxos Made Live - An Engineering Perspective](papers/replication/paxos-made-live.pdf) (PODC, 2007)
 
   This paper presents the experience of building Chubby, a fault-tolerant
@@ -243,6 +250,17 @@ Great, that's fun but challenging. Don't panic, I collect some awesome materials
 
 - [Implementing Replicated Logs with Paxos](https://ongardie.net/static/raft/userstudy/paxos.pdf) (2013)
 - [Neat Algorithms - Paxos](http://harry.me/blog/2014/12/27/neat-algorithms-paxos/) (2014)
+
+## Locality
+
+### Papers
+
+- [Sharding the Shards: Managing Datastore Locality at Scale with Akkio](papers/replication/akkio.pdf) (OSDI, 2018)
+
+  In this paper we present Akkio, a locality management service for distributed
+  datastore systems whose aim is to improve data access response times and to
+  reduce cross-datacenter bandwidth usage as well as the total amount of storage
+  capacity needed.
 
 # Storage Engine
 
