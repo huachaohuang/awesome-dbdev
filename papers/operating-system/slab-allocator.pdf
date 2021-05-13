@@ -1,0 +1,7139 @@
+%PDF-1.3
+%âãÏÓ
+2 0 obj
+<<
+/Length 7691
+>>
+stream
+BT
+/TT2 1 Tf
+14 0 0 14 233.2 668.0601 Tm
+0 g
+/GS1 gs
+0 Tc
+0.0771 Tw
+(The Slab Allocator:)Tj
+-5.7071 -1.1429 TD
+0.0721 Tw
+(An Object-Caching Kernel Memory Allocator)Tj
+/TT4 1 Tf
+12 0 0 12 261.6 622.0601 Tm
+0.0883 Tw
+(Jeff Bonwick)Tj
+-1.0583 -1.1667 TD
+0.0926 Tw
+(Sun Microsystems)Tj
+/TT2 1 Tf
+10 0 0 10 148.4 547.66 Tm
+0 Tw
+(Abstract)Tj
+/TT6 1 Tf
+-8.94 -1.62 TD
+0.2636 Tw
+[(This paper presents a )-8.4(comprehensive )-8.4(design )-8.4(over-)]TJ
+0 -1.2 TD
+0.3192 Tw
+[(view of the SunOS 5.4 )15.6(kernel )15.6(memory )15.6(allocator.)]TJ
+T*
+0.2649 Tw
+[(This )6.3(allocator )6.3(is based on a set of object-caching)]TJ
+T*
+0.0871 Tw
+[(primitives that reduce the cost )10.2(of )10.2(allocating )10.2(complex)]TJ
+T*
+0.1069 Tw
+[(objects by retaining their )-7.7(state )-7.7(between )-7.7(uses. )-335.4(These)]TJ
+T*
+0.1816 Tw
+[(same )-18.5(primitives prove equally effective for manag-)]TJ
+T*
+0.0936 Tw
+[(ing )6.8(stateless )6.8(memory )6.8(\(e.g. data pages and temporary)]TJ
+T*
+0.312 Tw
+[(buffers\) )11.6(because they are space-ef)]TJ
+/TT7 1 Tf
+14.8389 0 TD
+0 Tw
+(Ş)Tj
+/TT6 1 Tf
+0.5562 0 TD
+0.312 Tw
+(cient and fast.)Tj
+-15.395 -1.2 TD
+0.2717 Tw
+(The allocator’s object caches respond dynamically)Tj
+T*
+0.2169 Tw
+[(to global memory pressure, and employ )12(an )12(object-)]TJ
+T*
+0.1782 Tw
+[(coloring )19.3(scheme that improves the system’s overall)]TJ
+T*
+0.3739 Tw
+[(cache )-6(utilization and bus balance. )-331.4(The allocator)]TJ
+T*
+0.2862 Tw
+(also has several statistical and debugging features)Tj
+T*
+0.0959 Tw
+[(that )-6.9(can detect a wide range of problems throughout)]TJ
+T*
+0.0805 Tw
+(the system.)Tj
+/TT2 1 Tf
+11 0 0 11 59 333.4601 Tm
+0.4183 Tw
+(1. Introduction)Tj
+/TT6 1 Tf
+10 0 0 10 59 317.2601 Tm
+0.1247 Tw
+(The allocation and freeing of objects are among the)Tj
+T*
+0.1502 Tw
+[(most common operations in the )18.7(kernel. )-317.6(A )17.1(fast )17.1(ker-)]TJ
+T*
+0.2438 Tw
+[(nel memory allocator is therefore essential. )-338.9(How-)]TJ
+T*
+0.3847 Tw
+(ever, in many cases the cost of initializing and)Tj
+T*
+0.1643 Tw
+[(destroying the object exceeds the )-13.5(cost )-13.5(of )-13.5(allocating)]TJ
+T*
+0.2572 Tw
+[(and freeing memory for it. )-332.8(Thus, while improve-)]TJ
+T*
+0.2766 Tw
+(ments in the allocator are bene)Tj
+/TT7 1 Tf
+13.6276 0 TD
+0 Tw
+(Ş)Tj
+/TT6 1 Tf
+0.5562 0 TD
+0.2799 Tw
+(cial, even greater)Tj
+-14.1837 -1.2 TD
+0.2546 Tw
+[(gains )-6.9(can )-6.9(be )-6.9(achieved by caching frequently used)]TJ
+T*
+0.3852 Tw
+[(objects )6.9(so that their basic structure is preserved)]TJ
+T*
+0.0663 Tw
+(between uses.)Tj
+2.5 -1.62 TD
+0.189 Tw
+[(The )24.4(paper begins with a discussion of object)]TJ
+-2.5 -1.2 TD
+0.2852 Tw
+(caching, since the interface that this requires will)Tj
+T*
+0.2949 Tw
+[(shape the rest of )-10.2(the )-10.2(allocator. )-340.4(The )-13(next )-13(section)]TJ
+T*
+0.0981 Tw
+[(then describes the implementation in detail. )-322.4(Section)]TJ
+T*
+0.1723 Tw
+[(4 describes the effect of )-13.3(buffer )-13.3(address )-13.3(distribution)]TJ
+T*
+0.3126 Tw
+(on the system’s overall cache utilization and bus)Tj
+T*
+0.2056 Tw
+(balance, and shows how a simple coloring scheme)Tj
+T*
+0.7451 Tw
+[(can improve both. )-335.4(Section 5 compares )6.8(the)]TJ
+T*
+0.1348 Tw
+[(allocator’s )37.3(performance to several other well-known)]TJ
+T*
+0.5756 Tw
+(kernel memory allocators and )Tj
+/TT7 1 Tf
+14.4647 0 TD
+0 Tw
+(Ş)Tj
+/TT6 1 Tf
+0.5562 0 TD
+0.5726 Tw
+(nds that it is)Tj
+10.1792 46.46 TD
+0.1541 Tw
+(generally superior in both space)Tj
+/TT4 1 Tf
+13.81 0 TD
+0 Tw
+(and)Tj
+/TT6 1 Tf
+1.92 0 TD
+0.5092 Tw
+(time. Finally,)Tj
+-15.73 -1.2 TD
+0.6945 Tw
+[(Section 6 describes the allocator’s )6.2(debugging)]TJ
+T*
+0.2221 Tw
+[(features, which can detect a wide variety )-13.4(of )-13.4(prob-)]TJ
+T*
+0.081 Tw
+(lems throughout the system.)Tj
+/TT2 1 Tf
+11 0 0 11 311 483.6601 Tm
+0.3941 Tw
+[(2. Object )309.3(Caching)]TJ
+/TT6 1 Tf
+10 0 0 10 311 467.4601 Tm
+0.4557 Tw
+(Object caching is a technique for dealing with)Tj
+T*
+0.131 Tw
+[(objects )-12.6(that )-12.6(are frequently allocated and freed. )-334.3(The)]TJ
+T*
+0.4565 Tw
+[(idea is to preserve the invariant portion of )-9.7(an)]TJ
+T*
+0.441 Tw
+(object’s initial state — its)Tj
+/TT4 1 Tf
+12.73 0 TD
+0 Tw
+(constructed)Tj
+/TT6 1 Tf
+5.35 0 TD
+0.4375 Tw
+(state —)Tj
+-18.08 -1.2 TD
+0.2181 Tw
+[(between uses, so it does not )-7.6(have )-7.6(to )-7.6(be )-7.6(destroyed)]TJ
+T*
+0.2943 Tw
+[(and recreated every time the object is used. )-336.5(For)]TJ
+T*
+0.2262 Tw
+[(example, an object containing a mutex )-11.5(only )-11.5(needs)]TJ
+T*
+0.1545 Tw
+(to have)Tj
+/TT9 1 Tf
+3.75 0 TD
+0 Tw
+(mutex_init\(\))Tj
+/TT6 1 Tf
+7.61 0 TD
+0.1578 Tw
+(applied once — the )Tj
+/TT7 1 Tf
+8.6838 0 TD
+0 Tw
+(Ş)Tj
+/TT6 1 Tf
+0.5562 0 TD
+(rst)Tj
+-20.6 -1.2 TD
+0.1079 Tw
+[(time the object is allocated. )-327.4(The )-8(object )-8(can )-8(then )-8(be)]TJ
+T*
+0.1846 Tw
+(freed and reallocated many times without incurring)Tj
+T*
+1.1376 Tw
+[(the expense )-19.4(of)]TJ
+/TT9 1 Tf
+9.75 0 TD
+0 Tw
+(mutex_destroy\(\))Tj
+/TT6 1 Tf
+10.41 0 TD
+(and)Tj
+/TT9 1 Tf
+-20.16 -1.2 TD
+(mutex_init\(\))Tj
+/TT6 1 Tf
+7.55 0 TD
+0.0928 Tw
+[(each time. )-335(An object’s )12.2(embedded)]TJ
+-7.55 -1.2 TD
+0.1681 Tw
+[(locks, condition variables, reference )-23.3(counts, )-23.3(lists )-23.3(of)]TJ
+T*
+0.1437 Tw
+[(other objects, and read-only data all generally )8.4(qual-)]TJ
+T*
+0.0748 Tw
+(ify as constructed state.)Tj
+2.5 -1.62 TD
+0.1269 Tw
+[(Caching )11(is )11(important )11(because the cost of con-)]TJ
+-2.5 -1.2 TD
+0.2052 Tw
+[(structing an object can )6.3(be )6.3(signi)]TJ
+/TT7 1 Tf
+13.4264 0 TD
+0 Tw
+(Ş)Tj
+/TT6 1 Tf
+0.5561 0 TD
+0.1989 Tw
+(cantly higher than)Tj
+-13.9825 -1.2 TD
+0.168 Tw
+[(the )10.5(cost of allocating memory for it. )-332.8(For )5.2(example,)]TJ
+T*
+0.0909 Tw
+[(on a SPARCstation-2 running a )11.9(SunOS )11.9(5.4 )11.9(develop-)]TJ
+T*
+0.3207 Tw
+[(ment )8.7(kernel, the allocator presented here reduced)]TJ
+T*
+0.3469 Tw
+[(the cost of allocating and )14.1(freeing )14(a )14.1(stream )14.1(head)]TJ
+T*
+0.1362 Tw
+[(from 33 microseconds to 5.7 microseconds. )-332.5(As )-12.1(the)]TJ
+T*
+0.139 Tw
+[(table below illustrates, most of the )12(savings )12(was )12(due)]TJ
+T*
+0.0758 Tw
+(to object caching:)Tj
+/TT11 1 Tf
+0 -0.62 TD
+0 Tw
+(_ )Tj
+0.1 0 TD
+(___________________________________________)Tj
+/TT6 1 Tf
+1.6 -1.2 TD
+0.0766 Tw
+(Stream Head Allocation + Free Costs \()Tj
+/TT11 1 Tf
+16.02 0 TD
+0 Tw
+(µ)Tj
+/TT6 1 Tf
+0.58 0 TD
+(sec\))Tj
+/TT11 1 Tf
+-18.3 -0.1 TD
+(_ )Tj
+0.1 0 TD
+(___________________________________________)Tj
+-0.1 -0.2 TD
+(_ )Tj
+0.1 0 TD
+(___________________________________________)Tj
+/TT6 1 Tf
+6.64 -1.1 TD
+2.0541 Tw
+[(construction memory )758.8(other)]TJ
+-5.5 -1.2 TD
+1.548 Tw
+[(allocator + )1471.4(destruction )-9.1(allocation )311.5(init.)]TJ
+/TT11 1 Tf
+-1.24 -0.2 TD
+0 Tw
+(_ )Tj
+0.1 0 TD
+(___________________________________________)Tj
+/TT6 1 Tf
+2.25 -1.2 TD
+4.4522 Tw
+[(old 23.6 )-237.8(9.4 )1702.2(1.9)]TJ
+-0.19 -1.2 TD
+4.754 Tw
+[(new 0.0 )64(3.8 )2004(1.9)]TJ
+/TT11 1 Tf
+-2.16 -0.2 TD
+0 Tw
+(_ )Tj
+0.1 0 TD
+(___________________________________________ )Tj
+/TT10 1 Tf
+-0.4838 0 TD
+<00b2>Tj
+0.3838 0.6 TD
+<00b2>Tj
+0 1 TD
+<00b2>Tj
+T*
+<00b2>Tj
+T*
+<00b2>Tj
+T*
+<00b2>Tj
+T*
+<00b2>Tj
+5.64 -5.6 TD
+<00b2>Tj
+0 0.1 TD
+<00b2>Tj
+0 1 TD
+<00b2>Tj
+T*
+<00b2>Tj
+T*
+<00b2>Tj
+T*
+<00b2>Tj
+7.14 -4.1 TD
+<00b2>Tj
+0 0.1 TD
+<00b2>Tj
+0 1 TD
+<00b2>Tj
+T*
+<00b2>Tj
+T*
+<00b2>Tj
+T*
+<00b2>Tj
+5.75 -4.1 TD
+<00b2>Tj
+0 0.1 TD
+<00b2>Tj
+0 1 TD
+<00b2>Tj
+T*
+<00b2>Tj
+T*
+<00b2>Tj
+T*
+<00b2>Tj
+3.07 -4.1 TD
+<00b2>Tj
+0 0.6 TD
+<00b2>Tj
+0 1 TD
+<00b2>Tj
+T*
+<00b2>Tj
+T*
+<00b2>Tj
+T*
+<00b2>Tj
+T*
+<00b2>Tj
+/TT6 1 Tf
+-19.1 -7.64 TD
+0.3248 Tw
+(Caching is particularly bene)Tj
+/TT7 1 Tf
+12.2205 0 TD
+0 Tw
+(Ş)Tj
+/TT6 1 Tf
+0.5562 0 TD
+0.3399 Tw
+(cial in a mul-)Tj
+-15.2766 -1.2 TD
+0.3556 Tw
+(tithreaded environment, where many of the most)Tj
+ET
+endstream
+endobj
+3 0 obj
+<<
+/ProcSet [/PDF /Text ]
+/Font <<
+/TT2 4 0 R
+/TT4 5 0 R
+/TT6 6 0 R
+/TT7 7 0 R
+/TT9 8 0 R
+/TT10 9 0 R
+/TT11 10 0 R
+>>
+/ExtGState <<
+/GS1 11 0 R
+>>
+>>
+endobj
+14 0 obj
+<<
+/Length 6189
+>>
+stream
+BT
+/TT6 1 Tf
+10 0 0 10 59 722.4601 Tm
+0 g
+/GS1 gs
+0 Tc
+0.372 Tw
+[(frequently allocated objects contain )-14.2(one )-14.2(or )-14.2(more)]TJ
+0 -1.2 TD
+0.1244 Tw
+[(embedded locks, condition variables, )9.5(and )9.5(other )9.5(con-)]TJ
+T*
+0.0763 Tw
+(structible state.)Tj
+2.5 -2.04 TD
+0.7151 Tw
+[(The )9.4(design )9.4(of an object cache is)]TJ
+-2.5 -1.2 TD
+0 Tw
+(straightforward:)Tj
+/TT2 1 Tf
+2 -1.62 TD
+0.0759 Tw
+(To allocate an object:)Tj
+/TT6 1 Tf
+1.32 -1.8 TD
+0.0734 Tw
+(if \(there’s an object in the cache\))Tj
+1.32 -1.2 TD
+0.075 Tw
+(take it \(no construction required\);)Tj
+-1.32 -1.2 TD
+0 Tw
+(else)Tj
+/TT11 1 Tf
+1.88 0 TD
+({)Tj
+/TT6 1 Tf
+-0.56 -1.2 TD
+0.0708 Tw
+(allocate memory;)Tj
+T*
+0.0758 Tw
+(construct the object;)Tj
+/TT11 1 Tf
+-1.32 -1.2 TD
+0 Tw
+(})Tj
+/TT2 1 Tf
+-1.32 -1.8 TD
+0.0731 Tw
+(To free an object:)Tj
+/TT6 1 Tf
+1.32 -1.8 TD
+0.0747 Tw
+(return it to the cache \(no destruction required\);)Tj
+/TT2 1 Tf
+-1.32 -1.8 TD
+0.0711 Tw
+(To reclaim memory from the cache:)Tj
+/TT6 1 Tf
+1.32 -1.8 TD
+0.0745 Tw
+(take some objects from the cache;)Tj
+0 -1.2 TD
+0.0771 Tw
+(destroy the objects;)Tj
+T*
+0.0739 Tw
+(free the underlying memory;)Tj
+-0.82 -2.04 TD
+0.1935 Tw
+[(An object’s constructed state )-18.3(must )-18.3(be )-18.3(initial-)]TJ
+-2.5 -1.2 TD
+0.2073 Tw
+(ized only once — when the object is )Tj
+/TT7 1 Tf
+16.4815 0 TD
+0 Tw
+(Ş)Tj
+/TT6 1 Tf
+0.5562 0 TD
+0.2015 Tw
+(rst brought)Tj
+-17.0377 -1.2 TD
+0.219 Tw
+[(into )15.4(the )15.4(cache. )-311.1(Once )17.5(the )17.5(cache is populated, allo-)]TJ
+T*
+0.0744 Tw
+(cating and freeing objects are fast, trivial operations.)Tj
+/TT2 1 Tf
+11 0 0 11 59 389.4601 Tm
+0.4171 Tw
+[(2.1. An )335.8(Example)]TJ
+/TT6 1 Tf
+10 0 0 10 59 369.0601 Tm
+0.0767 Tw
+(Consider the following data structure:)Tj
+/TT9 1 Tf
+9 0 0 9 79 352.86 Tm
+-0.0006 Tw
+(struct foo {)Tj
+2.4 -1.3333 TD
+1.1982 Tw
+(kmutex_t foo_lock;)Tj
+T*
+-0.0018 Tw
+(kcondvar_t foo_cv;)Tj
+T*
+-0.0012 Tw
+(struct bar *foo_barlist;)Tj
+T*
+4.1985 Tw
+(int foo_refcnt;)Tj
+-2.4 -1.3333 TD
+0 Tw
+(};)Tj
+/TT6 1 Tf
+10 0 0 10 59 272.4601 Tm
+0.1672 Tw
+(Assume that a)Tj
+/TT9 1 Tf
+6.69 0 TD
+0 Tw
+(foo)Tj
+/TT6 1 Tf
+2.22 0 TD
+0.1737 Tw
+(structure cannot be freed until)Tj
+-8.91 -1.2 TD
+0.9622 Tw
+(there are no outstanding references to it)Tj
+T*
+0 Tw
+(\()Tj
+/TT9 1 Tf
+0.33 0 TD
+0.0493 Tw
+(foo_refcnt == 0)Tj
+/TT6 1 Tf
+9.1 0 TD
+0.1402 Tw
+[(\) )17.1(and all of its pending)]TJ
+/TT9 1 Tf
+10.37 0 TD
+0 Tw
+(bar)Tj
+/TT6 1 Tf
+-19.8 -1.2 TD
+0.8912 Tw
+[(events )-6.8(\(whatever )-6.8(they are\) have completed)]TJ
+T*
+0 Tw
+(\()Tj
+/TT9 1 Tf
+0.33 0 TD
+0.1491 Tw
+(foo_barlist == NULL)Tj
+/TT6 1 Tf
+11.7 0 TD
+0.225 Tw
+[(\). )-327.3(The life cycle of )-11.2(a)]TJ
+-12.03 -1.2 TD
+0.1842 Tw
+(dynamically allocated foo would be something like)Tj
+T*
+0 Tw
+(this:)Tj
+/TT9 1 Tf
+9 0 0 9 331 722.4601 Tm
+-0.0009 Tw
+(foo = kmem_alloc\(sizeof \(struct foo\),)Tj
+2.4 -1.3333 TD
+0 Tw
+(KM_SLEEP\);)Tj
+-2.4 -1.3333 TD
+-0.0031 Tw
+(mutex_init\(&foo->foo_lock, ...\);)Tj
+T*
+-0.0026 Tw
+(cv_init\(&foo->foo_cv, ...\);)Tj
+T*
+-0.001 Tw
+(foo->foo_refcnt = 0;)Tj
+T*
+-0.0012 Tw
+(foo->foo_barlist = NULL;)Tj
+0 -2.6667 TD
+-0.0008 Tw
+(use foo;)Tj
+T*
+-0.0016 Tw
+(ASSERT\(foo->foo_barlist == NULL\);)Tj
+0 -1.3333 TD
+-0.0014 Tw
+(ASSERT\(foo->foo_refcnt == 0\);)Tj
+T*
+0 Tw
+(cv_destroy\(&foo->foo_cv\);)Tj
+T*
+(mutex_destroy\(&foo->foo_lock\);)Tj
+T*
+(kmem_free\(foo\);)Tj
+/TT6 1 Tf
+10 0 0 10 311 550.2601 Tm
+0.2744 Tw
+(Notice that between each use of a foo object we)Tj
+0 -1.2 TD
+0.3326 Tw
+(perform a sequence of operations that constitutes)Tj
+T*
+0.1857 Tw
+[(nothing more than a very expensive )-11.3(no-op. )-346.5(All )-11.3(of)]TJ
+T*
+0.1238 Tw
+[(this )-9.2(overhead )-9.2(\(i.e., everything other than ‘‘use foo’’)]TJ
+T*
+0.0741 Tw
+(above\) can be eliminated by object caching.)Tj
+/TT2 1 Tf
+11 0 0 11 311 471.0601 Tm
+0.3462 Tw
+[(2.2. )-345.9(The Case for Object Caching in )-7.2(the)]TJ
+0 -1.0909 TD
+0.0473 Tw
+(Central Allocator)Tj
+/TT6 1 Tf
+10 0 0 10 311 442.86 Tm
+0.5133 Tw
+(Of course, object caching can be implemented)Tj
+0 -1.2 TD
+0.1958 Tw
+[(without any help from the central allocator )7.7(— )7.7(any)]TJ
+T*
+0.1281 Tw
+[(subsystem )13.5(can )13.5(have )13.5(a private implementation of the)]TJ
+T*
+0.5113 Tw
+[(algorithm described above. )-323.7(However, )10.9(there )10.9(are)]TJ
+T*
+0.0735 Tw
+(several disadvantages to this approach:)Tj
+0 -1.62 TD
+0.2885 Tw
+[(\(1\) )-283.9(There is a natural tension )-5.2(between )-5.3(an )-5.3(object)]TJ
+2 -1.2 TD
+0.2343 Tw
+[(cache, which wants to keep memory, and )6(the)]TJ
+T*
+0.2487 Tw
+[(rest )13(of )13(the system, which wants that memory)]TJ
+T*
+0.15 Tw
+[(back. )-319.6(Privately-managed caches cannot )5.5(handle)]TJ
+T*
+0.6743 Tw
+[(this tension sensibly. )-331(They )-5.3(have )-5.3(limited)]TJ
+T*
+0.119 Tw
+(insight into the system’s overall memory needs)Tj
+T*
+0 Tw
+(and)Tj
+/TT4 1 Tf
+1.89 0 TD
+(no)Tj
+/TT6 1 Tf
+1.45 0 TD
+0.2066 Tw
+[(insight into each other’s needs. )-340.7(Simi-)]TJ
+-3.34 -1.2 TD
+0.1668 Tw
+[(larly, the rest of the )8.9(system )8.9(has )8.9(no )8.9(knowledge)]TJ
+T*
+0.1432 Tw
+[(of the existence of these caches and )-9.5(hence )-9.5(has)]TJ
+T*
+0.0771 Tw
+(no way to ‘‘pull’’ memory from them.)Tj
+-2 -1.62 TD
+0.1738 Tw
+[(\(2\) )-408.5(Since private caches bypass the )-6(central )-6(alloca-)]TJ
+2 -1.2 TD
+0.2352 Tw
+(tor, they also bypass any accounting mechan-)Tj
+T*
+0.1166 Tw
+[(isms and debugging features that )-8.5(allocator )-8.5(may)]TJ
+T*
+0.528 Tw
+[(possess. )-343.7(This )-7.3(makes the operating system)]TJ
+T*
+0.0794 Tw
+(more dif)Tj
+/TT7 1 Tf
+3.4949 0 TD
+0 Tw
+(Ş)Tj
+/TT6 1 Tf
+0.5562 0 TD
+0.0793 Tw
+(cult to monitor and debug.)Tj
+-6.051 -1.62 TD
+0.1285 Tw
+[(\(3\) )-451.6(Having many instances of the same solution )-13.7(to)]TJ
+2 -1.2 TD
+0.2031 Tw
+(a common problem increases kernel code size)Tj
+T*
+0.0717 Tw
+(and maintenance costs.)Tj
+-2 -1.62 TD
+0.0881 Tw
+[(Object caching requires a greater degree )-11.6(of )-11.6(coopera-)]TJ
+0 -1.2 TD
+0.2575 Tw
+[(tion between the allocator and its clients than )9.2(the)]TJ
+T*
+0 Tw
+(standard)Tj
+/TT9 1 Tf
+4.8 0 TD
+(kmem_alloc\(9F\)/kmem_free\(9F\))Tj
+/TT6 1 Tf
+-4.8 -1.2 TD
+0.4658 Tw
+[(interface allows. )-339.5(The next section develops an)]TJ
+T*
+0.3142 Tw
+(interface to support constructed object caching in)Tj
+T*
+0.07 Tw
+(the central allocator.)Tj
+ET
+endstream
+endobj
+15 0 obj
+<<
+/ProcSet [/PDF /Text ]
+/Font <<
+/TT2 4 0 R
+/TT4 5 0 R
+/TT6 6 0 R
+/TT7 7 0 R
+/TT9 8 0 R
+/TT11 10 0 R
+>>
+/ExtGState <<
+/GS1 11 0 R
+>>
+>>
+endobj
+17 0 obj
+<<
+/Length 7547
+>>
+stream
+BT
+/TT2 1 Tf
+11 0 0 11 59 722.4601 Tm
+0 g
+/GS1 gs
+0 Tc
+0.0555 Tw
+[(2.3. )-343.2(Object Cache Interface)]TJ
+/TT6 1 Tf
+10 0 0 10 59 706.2601 Tm
+0.5164 Tw
+[(The )23.1(interface )23(presented here follows from two)]TJ
+0 -1.2 TD
+0 Tw
+(observations:)Tj
+0 -1.62 TD
+0.1664 Tw
+[(\(A\) )-190.7(Descriptions of objects \(name, size, alignment,)]TJ
+2 -1.2 TD
+0.6209 Tw
+(constructor, and destructor\) belong in the)Tj
+T*
+0.3723 Tw
+[(clients — not in the central allocator. )-333(The)]TJ
+T*
+0.8772 Tw
+[(allocator )-11.4(should )-11.4(not just ‘‘know’’ that)]TJ
+/TT9 1 Tf
+T*
+0.0486 Tw
+[(sizeof \(struct )-10.7(inode\))]TJ
+/TT6 1 Tf
+13.1 0 TD
+0.1392 Tw
+(is a useful pool)Tj
+-13.1 -1.2 TD
+0.0996 Tw
+[(size, for example. )-340.4(Such assumptions are brittle)]TJ
+T*
+0.0913 Tw
+[([Grunwald93A] and cannot anticipate the )-11.8(needs)]TJ
+T*
+0.2321 Tw
+(of third-party device drivers, streams modules)Tj
+T*
+0 Tw
+(and )Tj
+/TT7 1 Tf
+1.7745 0 TD
+(Ş)Tj
+/TT6 1 Tf
+0.5562 0 TD
+0.0807 Tw
+(le systems.)Tj
+-4.3307 -1.62 TD
+0.3996 Tw
+[(\(B\) )-13.5(Memory )14.2(management )14.2(policies belong in the)]TJ
+2 -1.2 TD
+0.4134 Tw
+[(central allocator — not in its clients. )-321.9(The)]TJ
+T*
+0.3048 Tw
+(clients just want to allocate and free objects)Tj
+T*
+0.2371 Tw
+[(quickly. )-328.7(They shouldn’t have to worry )8.8(about)]TJ
+T*
+0.7663 Tw
+[(how to manage the )-11.2(underlying )-11.2(memory)]TJ
+T*
+0 Tw
+(ef)Tj
+/TT7 1 Tf
+0.7769 0 TD
+(Ş)Tj
+/TT6 1 Tf
+0.5562 0 TD
+(ciently.)Tj
+-3.333 -1.62 TD
+0.1569 Tw
+[(It follows from \(A\) that object )-6.3(cache )-6.3(creation )-6.3(must)]TJ
+0 -1.2 TD
+0.0863 Tw
+[(be client-driven and must include )8.5(a )8.5(full )8.5(speci)]TJ
+/TT7 1 Tf
+18.6005 0 TD
+0 Tw
+(Ş)Tj
+/TT6 1 Tf
+0.5562 0 TD
+(cation)Tj
+-19.1566 -1.2 TD
+0.0775 Tw
+(of the objects:)Tj
+/TT9 1 Tf
+9 0 0 9 59 449.4601 Tm
+0 Tw
+(\(1\) )Tj
+1.9994 0 TD
+-0.0015 Tw
+(struct kmem_cache *kmem_cache_create\()Tj
+1.2006 -1.3333 TD
+-0.0011 Tw
+(char *name,)Tj
+T*
+-0.0012 Tw
+(size_t size,)Tj
+T*
+-0.001 Tw
+(int align,)Tj
+T*
+-0.0012 Tw
+(void \(*constructor\)\(void *, size_t\),)Tj
+T*
+(void \(*destructor\)\(void *, size_t\)\);)Tj
+/TT6 1 Tf
+10 0 0 10 79 373.2601 Tm
+0.1025 Tw
+(Creates a cache of objects, each of size)Tj
+/TT9 1 Tf
+16.95 0 TD
+0 Tw
+(size)Tj
+/TT6 1 Tf
+2.4 0 TD
+(,)Tj
+-19.35 -1.2 TD
+0.2366 Tw
+[(aligned on )10.4(an)]TJ
+/TT9 1 Tf
+6.6 0 TD
+0 Tw
+(align)Tj
+/TT6 1 Tf
+3.48 0 TD
+0.8785 Tw
+[(boundary. The )651(align-)]TJ
+-10.08 -1.2 TD
+0.6184 Tw
+[(ment )10.4(will )10.4(always )10.4(be rounded up to the)]TJ
+T*
+0.2396 Tw
+(minimum allowable value, so)Tj
+/TT9 1 Tf
+13.31 0 TD
+0 Tw
+(align)Tj
+/TT6 1 Tf
+3.49 0 TD
+0.2185 Tw
+(can be)Tj
+-16.8 -1.2 TD
+0.0687 Tw
+[(zero whenever no special )-18.8(alignment )-18.8(is )-18.8(required.)]TJ
+/TT9 1 Tf
+T*
+0 Tw
+(name)Tj
+/TT6 1 Tf
+3.07 0 TD
+(identi)Tj
+/TT7 1 Tf
+2.2773 0 TD
+(Ş)Tj
+/TT6 1 Tf
+0.5562 0 TD
+0.4124 Tw
+(es the cache for statistics and)Tj
+-5.9035 -1.2 TD
+0 Tw
+(debugging.)Tj
+/TT9 1 Tf
+5.46 0 TD
+(constructor)Tj
+/TT6 1 Tf
+7 0 TD
+0.149 Tw
+(is a function that)Tj
+-12.46 -1.2 TD
+0.2561 Tw
+[(constructs \(that is, performs the )7.5(one-time )7.5(ini-)]TJ
+T*
+0.078 Tw
+(tialization of\) objects in the cache;)Tj
+/TT9 1 Tf
+14.8 0 TD
+0 Tw
+(destruc-)Tj
+-14.8 -1.2 TD
+(tor)Tj
+/TT6 1 Tf
+2.26 0 TD
+0.1951 Tw
+[(undoes )-17.1(this, if applicable. )-330.2(The )5.8(construc-)]TJ
+-2.26 -1.2 TD
+0.264 Tw
+[(tor )8.7(and destructor take a)]TJ
+/TT9 1 Tf
+11.5 0 TD
+0 Tw
+(size)Tj
+/TT6 1 Tf
+2.92 0 TD
+0.2645 Tw
+(argument so)Tj
+-14.42 -1.2 TD
+0.6082 Tw
+[(that )-10.6(they can support families of similar)]TJ
+T*
+2.47 Tw
+(caches, e.g. streams messages.)Tj
+/TT9 1 Tf
+T*
+0 Tw
+(kmem_cache_create)Tj
+/TT6 1 Tf
+11.14 0 TD
+0.6793 Tw
+[(returns an )7(opaque)]TJ
+-11.14 -1.2 TD
+0.0692 Tw
+(descriptor for accessing the cache.)Tj
+-2 -1.62 TD
+0.2386 Tw
+(Next, it follows from \(B\) that clients should need)Tj
+0 -1.2 TD
+0.5163 Tw
+[(just )-18.9(two simple functions to allocate and free)]TJ
+T*
+0 Tw
+(objects:)Tj
+/TT9 1 Tf
+9 0 0 9 59 148.86 Tm
+(\(2\) )Tj
+1.9996 0 TD
+-0.0019 Tw
+(void *kmem_cache_alloc\()Tj
+1.2004 -1.3333 TD
+-0.0011 Tw
+(struct kmem_cache *cp,)Tj
+T*
+(int flags\);)Tj
+/TT6 1 Tf
+10 0 0 10 79 108.66 Tm
+0.0958 Tw
+[(Gets an object from the cache. )-339.5(The )-14.7(object )-14.7(will)]TJ
+0 -1.2 TD
+0.2779 Tw
+(be in its constructed state.)Tj
+/TT9 1 Tf
+12.6 0 TD
+0 Tw
+(flags)Tj
+/TT6 1 Tf
+3.53 0 TD
+0.2766 Tw
+(is either)Tj
+/TT9 1 Tf
+-16.13 -1.2 TD
+0 Tw
+(KM_SLEEP)Tj
+/TT6 1 Tf
+5.95 0 TD
+(or)Tj
+/TT9 1 Tf
+2.25 0 TD
+(KM_NOSLEEP)Tj
+/TT6 1 Tf
+6 0 TD
+0.901 Tw
+(, indicating)Tj
+11 63.78 TD
+0.2176 Tw
+(whether it’s acceptable to wait for memory if)Tj
+0 -1.2 TD
+0.0736 Tw
+(none is currently available.)Tj
+/TT9 1 Tf
+9 0 0 9 311 694.2601 Tm
+0 Tw
+(\(3\) )Tj
+1.9996 0 TD
+-0.0017 Tw
+(void kmem_cache_free\()Tj
+1.2004 -1.3333 TD
+-0.0011 Tw
+(struct kmem_cache *cp,)Tj
+T*
+(void *buf\);)Tj
+/TT6 1 Tf
+10 0 0 10 331 654.0601 Tm
+0.3554 Tw
+[(Returns an object to the cache. )-329.9(The )-11.2(object)]TJ
+0 -1.2 TD
+0.081 Tw
+(must still be in its constructed state.)Tj
+-2 -1.62 TD
+0.0775 Tw
+[(Finally, if a cache is no longer )-7(needed )-7(the )-7(client )-7(can)]TJ
+0 -1.2 TD
+0.0827 Tw
+(destroy it:)Tj
+/TT9 1 Tf
+9 0 0 9 311 597.66 Tm
+0 Tw
+(\(4\) )Tj
+1.9996 0 TD
+-0.002 Tw
+(void kmem_cache_destroy\()Tj
+1.2004 -1.3333 TD
+-0.0011 Tw
+(struct kmem_cache *cp\);)Tj
+/TT6 1 Tf
+10 0 0 10 331 569.4601 Tm
+0.1834 Tw
+[(Destroys the cache and reclaims all )-7.2(associated)]TJ
+0 -1.2 TD
+0.489 Tw
+[(resources. )-327.3(All allocated objects must have)]TJ
+T*
+0.0715 Tw
+(been returned to the cache.)Tj
+-2 -1.62 TD
+0.1283 Tw
+[(This interface allows us to build )-7.9(a )]TJ
+/TT7 1 Tf
+14.7162 0 TD
+0 Tw
+(ß)Tj
+/TT6 1 Tf
+0.5562 0 TD
+0.1362 Tw
+(exible allocator)Tj
+-15.2724 -1.2 TD
+0.1808 Tw
+[(that is ideally suited to the )12.1(needs )12.1(of )12.1(its )12.1(clients. )-316.2(In)]TJ
+T*
+0.1939 Tw
+[(this sense it is a ‘‘custom’’ allocator. )-321.1(However, )-10.4(it)]TJ
+T*
+0.5997 Tw
+[(does not have to be built with )11.2(compile-time)]TJ
+T*
+0.2202 Tw
+[(knowledge )20.9(of its clients as most custom allocators)]TJ
+T*
+0.3384 Tw
+(do [Bozman84A, Grunwald93A, Margolin71], nor)Tj
+T*
+0.1682 Tw
+[(does it have to keep guessing as in the )-7.6(adaptive-)]TJ
+/TT7 1 Tf
+20.766 0 TD
+0 Tw
+(Ş)Tj
+/TT6 1 Tf
+0.5562 0 TD
+(t)Tj
+-21.3222 -1.2 TD
+0.5721 Tw
+(methods [Bozman84B, Leverett82, Oldehoeft85].)Tj
+T*
+0.2283 Tw
+[(Rather, the object-cache interface allows )-22.6(clients )-22.6(to)]TJ
+T*
+0.0762 Tw
+(specify the allocation services they need on the )Tj
+/TT7 1 Tf
+19.7138 0 TD
+0 Tw
+(ß)Tj
+/TT6 1 Tf
+0.5561 0 TD
+(y.)Tj
+/TT2 1 Tf
+11 0 0 11 311 391.2601 Tm
+0.4171 Tw
+[(2.4. An )335.8(Example)]TJ
+/TT6 1 Tf
+10 0 0 10 311 375.0601 Tm
+0.2049 Tw
+[(This )10.6(example )10.6(demonstrates the use of object cach-)]TJ
+0 -1.2 TD
+0.1104 Tw
+(ing for the ‘‘foo’’ objects introduced in Section 2.1.)Tj
+T*
+0.0728 Tw
+(The constructor and destructor routines are:)Tj
+/TT9 1 Tf
+9 0 0 9 311 334.86 Tm
+0 Tw
+(void)Tj
+0 -1.3333 TD
+-0.0012 Tw
+(foo_constructor\(void *buf, int size\))Tj
+T*
+0 Tw
+({)Tj
+2.4 -1.3333 TD
+-0.0005 Tw
+(struct foo *foo = buf;)Tj
+0 -2.6667 TD
+-0.0031 Tw
+(mutex_init\(&foo->foo_lock, ...\);)Tj
+0 -1.3333 TD
+-0.0026 Tw
+(cv_init\(&foo->foo_cv, ...\);)Tj
+T*
+-0.001 Tw
+(foo->foo_refcnt = 0;)Tj
+T*
+-0.0012 Tw
+(foo->foo_barlist = NULL;)Tj
+-2.4 -1.3333 TD
+0 Tw
+(})Tj
+0 -2.6667 TD
+(void)Tj
+0 -1.3333 TD
+-0.0011 Tw
+(foo_destructor\(void *buf, int size\))Tj
+T*
+0 Tw
+({)Tj
+2.4 -1.3333 TD
+-0.0005 Tw
+(struct foo *foo = buf;)Tj
+0 -2.6667 TD
+-0.0016 Tw
+(ASSERT\(foo->foo_barlist == NULL\);)Tj
+0 -1.3333 TD
+-0.0014 Tw
+(ASSERT\(foo->foo_refcnt == 0\);)Tj
+T*
+0 Tw
+(cv_destroy\(&foo->foo_cv\);)Tj
+T*
+(mutex_destroy\(&foo->foo_lock\);)Tj
+-2.4 -1.3333 TD
+(})Tj
+ET
+endstream
+endobj
+18 0 obj
+<<
+/ProcSet [/PDF /Text ]
+/Font <<
+/TT2 4 0 R
+/TT6 6 0 R
+/TT7 7 0 R
+/TT9 8 0 R
+>>
+/ExtGState <<
+/GS1 11 0 R
+>>
+>>
+endobj
+20 0 obj
+<<
+/Length 9813
+>>
+stream
+BT
+/TT6 1 Tf
+10 0 0 10 59 718.2601 Tm
+0 g
+/GS1 gs
+0 Tc
+0.0713 Tw
+(To create the foo cache:)Tj
+/TT9 1 Tf
+9 0 0 9 59 702.0601 Tm
+-0.002 Tw
+(foo_cache = kmem_cache_create\("foo_cache",)Tj
+2.4 -1.3333 TD
+-0.0007 Tw
+(sizeof \(struct foo\), 0,)Tj
+T*
+-0.0032 Tw
+(foo_constructor, foo_destructor\);)Tj
+/TT6 1 Tf
+10 0 0 10 59 657.66 Tm
+0.0745 Tw
+(To allocate, use, and free a foo object:)Tj
+/TT9 1 Tf
+9 0 0 9 59 641.4601 Tm
+-0.0014 Tw
+(foo = kmem_cache_alloc\(foo_cache, KM_SLEEP\);)Tj
+T*
+-0.0008 Tw
+(use foo;)Tj
+T*
+-0.0031 Tw
+(kmem_cache_free\(foo_cache, foo\);)Tj
+/TT6 1 Tf
+10 0 0 10 84 601.2601 Tm
+0.3185 Tw
+(This makes foo allocation fast, because the)Tj
+-2.5 -1.2 TD
+0.1076 Tw
+[(allocator )-11.2(will )-11.2(usually do nothing more than fetch an)]TJ
+T*
+1.4142 Tw
+[(already-constructed foo from )-17.3(the )-17.3(cache.)]TJ
+/TT9 1 Tf
+T*
+0 Tw
+(foo_constructor)Tj
+/TT6 1 Tf
+10.25 0 TD
+(and)Tj
+/TT9 1 Tf
+2.95 0 TD
+(foo_destructor)Tj
+/TT6 1 Tf
+-13.2 -1.2 TD
+0.3977 Tw
+[(will )7.4(be )7.4(invoked )7.4(only to populate and drain the)]TJ
+T*
+0.0536 Tw
+(cache, respectively.)Tj
+2.5 -1.62 TD
+0.4669 Tw
+[(The )16.7(example )16.7(above illustrates a bene)]TJ
+/TT7 1 Tf
+17.1005 0 TD
+0 Tw
+(Ş)Tj
+/TT6 1 Tf
+0.5562 0 TD
+(cial)Tj
+-20.1566 -1.2 TD
+0.6743 Tw
+[(side-effect of object caching: )-340(it reduces the)]TJ
+T*
+0.4246 Tw
+(instruction-cache footprint of the code that)Tj
+/TT4 1 Tf
+19.88 0 TD
+0 Tw
+(uses)Tj
+/TT6 1 Tf
+-19.88 -1.2 TD
+0.2033 Tw
+(cached objects by moving the rarely-executed con-)Tj
+T*
+0.0779 Tw
+(struction and destruction code out of the hot path.)Tj
+/TT2 1 Tf
+11 0 0 11 59 447.0601 Tm
+0.066 Tw
+[(3. )-362(Slab Allocator Implementation)]TJ
+/TT6 1 Tf
+10 0 0 10 59 430.86 Tm
+0.3676 Tw
+[(This section describes the implementation of )-10.7(the)]TJ
+T*
+0.1748 Tw
+[(SunOS )-20.7(5.4 kernel memory allocator, or ‘‘slab allo-)]TJ
+T*
+0.2458 Tw
+[(cator,’’ )18.2(in detail. )-326.5(\(The name derives from one of)]TJ
+T*
+0.2247 Tw
+(the allocator’s main data structures, the)Tj
+/TT4 1 Tf
+17.32 0 TD
+0 Tw
+(slab)Tj
+/TT6 1 Tf
+1.67 0 TD
+0.5553 Tw
+(. The)Tj
+-18.99 -1.2 TD
+0.1077 Tw
+[(name stuck within Sun because it was )-10.2(more )-10.2(distinc-)]TJ
+T*
+0.1808 Tw
+[(tive than ‘‘object’’ )16(or )16(‘‘cache.’’ )-332.2(Slabs will be dis-)]TJ
+T*
+0.0779 Tw
+(cussed in Section 3.2.\))Tj
+2.5 -1.62 TD
+0.2636 Tw
+(The terms)Tj
+/TT4 1 Tf
+4.81 0 TD
+0 Tw
+(object)Tj
+/TT6 1 Tf
+2.44 0 TD
+(,)Tj
+/TT4 1 Tf
+0.77 0 TD
+(buffer)Tj
+/TT6 1 Tf
+2.39 0 TD
+0.2762 Tw
+(, and)Tj
+/TT4 1 Tf
+2.75 0 TD
+0 Tw
+(chunk)Tj
+/TT6 1 Tf
+2.91 0 TD
+0.2805 Tw
+(will be)Tj
+-18.57 -1.2 TD
+0.3451 Tw
+[(used )-7.2(more or less interchangeably, depending on)]TJ
+T*
+0.337 Tw
+[(how )16.9(we’re )16.9(viewing that piece of memory at the)]TJ
+T*
+0 Tw
+(moment.)Tj
+/TT2 1 Tf
+11 0 0 11 59 276.66 Tm
+0.4039 Tw
+(3.1. Caches)Tj
+/TT6 1 Tf
+10 0 0 10 59 260.4601 Tm
+0.1065 Tw
+[(Each cache has )-19.7(a)]TJ
+/TT4 1 Tf
+7.52 0 TD
+0.1313 Tw
+(front end)Tj
+/TT6 1 Tf
+4.15 0 TD
+0 Tw
+(and)Tj
+/TT4 1 Tf
+1.82 0 TD
+0.1185 Tw
+(back end)Tj
+/TT6 1 Tf
+4.08 0 TD
+0.1154 Tw
+(which are)Tj
+-17.57 -1.2 TD
+0.0771 Tw
+(designed to be as decoupled as possible:)Tj
+9 0 0 9 156.8 185.4601 Tm
+0 Tw
+(cache)Tj
+ET
+0 G
+1 J 0 j 0.27 w 10 M []0 d
+1 i 
+138.2 169.26 m
+138.2 205.26 l
+138.2 205.26 m
+195.8 205.26 l
+195.8 205.26 m
+195.8 169.26 l
+195.8 169.26 m
+138.2 169.26 l
+S
+BT
+9 0 0 9 82.1 220.2601 Tm
+0.0851 Tw
+(back end)Tj
+ET
+80.6 216.06 m
+116.6 216.06 l
+S
+BT
+9 0 0 9 215.1 220.2601 Tm
+0.0845 Tw
+(front end)Tj
+ET
+212.3 216.06 m
+251.1 216.06 l
+S
+BT
+9 0 0 9 63.4 198.66 Tm
+0 Tw
+(kmem)Tj
+/TT11 1 Tf
+2.5 0 TD
+(_)Tj
+/TT6 1 Tf
+0.5 0 TD
+(cache)Tj
+/TT11 1 Tf
+2.2778 0 TD
+(_)Tj
+/TT6 1 Tf
+0.5 0 TD
+(grow)Tj
+ET
+59 194.46 m
+138.2 194.46 l
+131 192.66 m
+138.2 194.46 l
+131 196.26 m
+138.2 194.46 l
+S
+BT
+9 0 0 9 64.9 172.2601 Tm
+(kmem)Tj
+/TT11 1 Tf
+2.5 0 TD
+(_)Tj
+/TT6 1 Tf
+0.5 0 TD
+(cache)Tj
+/TT11 1 Tf
+2.2778 0 TD
+(_)Tj
+/TT6 1 Tf
+0.5 0 TD
+(reap)Tj
+ET
+138.2 180.06 m
+59 180.06 l
+66.2 181.86 m
+59 180.06 l
+66.2 178.26 m
+59 180.06 l
+S
+BT
+9 0 0 9 200.7 198.66 Tm
+(kmem)Tj
+/TT11 1 Tf
+2.5 0 TD
+(_)Tj
+/TT6 1 Tf
+0.5 0 TD
+(cache)Tj
+/TT11 1 Tf
+2.2778 0 TD
+(_)Tj
+/TT6 1 Tf
+0.5 0 TD
+(alloc)Tj
+ET
+195.8 194.46 m
+275 194.46 l
+267.8 192.66 m
+275 194.46 l
+267.8 196.26 m
+275 194.46 l
+S
+BT
+9 0 0 9 202.4 172.2601 Tm
+(kmem)Tj
+/TT11 1 Tf
+2.5 0 TD
+(_)Tj
+/TT6 1 Tf
+0.5 0 TD
+(cache)Tj
+/TT11 1 Tf
+2.2778 0 TD
+(_)Tj
+/TT6 1 Tf
+0.5 0 TD
+(free)Tj
+ET
+275 180.06 m
+195.8 180.06 l
+203 181.86 m
+195.8 180.06 l
+203 178.26 m
+195.8 180.06 l
+S
+BT
+10 0 0 10 84 145.86 Tm
+0.2875 Tw
+[(The )13.7(front )13.7(end is the public interface to the)]TJ
+-2.5 -1.2 TD
+0.1982 Tw
+[(allocator. )-322.9(It moves objects to and from the )23.6(cache,)]TJ
+T*
+0.4659 Tw
+[(calling )5.2(into )5.2(the back end when it needs more)]TJ
+T*
+0 Tw
+(objects.)Tj
+2.5 -1.62 TD
+0.5134 Tw
+(The back end manages the )Tj
+/TT7 1 Tf
+13.4367 0 TD
+0 Tw
+(ß)Tj
+/TT6 1 Tf
+0.5562 0 TD
+0.5267 Tw
+(ow of real)Tj
+-16.4929 -1.2 TD
+0.4732 Tw
+[(memory through the cache. )-332.1(The )-8.5(in)]TJ
+/TT7 1 Tf
+16.4796 0 TD
+0 Tw
+(ß)Tj
+/TT6 1 Tf
+0.5562 0 TD
+0.4817 Tw
+(ux routine)Tj
+8.1643 64.08 TD
+0 Tw
+(\()Tj
+/TT9 1 Tf
+0.33 0 TD
+(kmem_cache_grow\(\))Tj
+/TT6 1 Tf
+10.2 0 TD
+0.407 Tw
+(\) gets memory from the)Tj
+-10.53 -1.2 TD
+0.0774 Tw
+[(VM )-11.6(system, )-11.6(makes )-11.6(objects )-11.5(out of it, and feeds those)]TJ
+T*
+0.7316 Tw
+[(objects into the cache. )-333.7(The )-10.1(out)]TJ
+/TT7 1 Tf
+16.2196 0 TD
+0 Tw
+(ß)Tj
+/TT6 1 Tf
+0.5562 0 TD
+0.7417 Tw
+(ux routine)Tj
+-16.7757 -1.2 TD
+0 Tw
+(\()Tj
+/TT9 1 Tf
+0.33 0 TD
+(kmem_cache_reap\(\))Tj
+/TT6 1 Tf
+10.2 0 TD
+0.349 Tw
+[(\) )-10.2(is )-10.2(invoked by the VM)]TJ
+-10.53 -1.2 TD
+0.0977 Tw
+[(system )8.5(when )8.5(it )8.5(wants some of that memory back —)]TJ
+T*
+0.1572 Tw
+[(e.g., at the onset of )8.9(paging. )-319(Note )11.7(that )11.7(all )11.7(back-end)]TJ
+T*
+0.4202 Tw
+(activity is triggered solely by memory pressure.)Tj
+T*
+0 Tw
+(Memory )Tj
+/TT7 1 Tf
+4.189 0 TD
+(ß)Tj
+/TT6 1 Tf
+0.5562 0 TD
+0.4952 Tw
+(ows in when the cache needs more)Tj
+-4.7452 -1.2 TD
+0.097 Tw
+(objects and )Tj
+/TT7 1 Tf
+4.9704 0 TD
+0 Tw
+(ß)Tj
+/TT6 1 Tf
+0.5562 0 TD
+0.097 Tw
+[(ows back out when the rest of )-11.5(the )-11.5(sys-)]TJ
+-5.5265 -1.2 TD
+0.156 Tw
+[(tem )-8.8(needs )-8.7(more )-8.8(pages; there are no arbitrary limits)]TJ
+T*
+0.1586 Tw
+[(or )16.2(watermarks. )-325.4(Hysteresis control is provided )-9.5(by )-9.5(a)]TJ
+T*
+0.0772 Tw
+(working-set algorithm, described in Section 3.4.)Tj
+2.5 -1.62 TD
+0.212 Tw
+[(The )15.5(slab )15.5(allocator )15.5(is not a monolithic entity,)]TJ
+-2.5 -1.2 TD
+0.2536 Tw
+[(but )-13.2(rather )-13.2(is a loose confederation of independent)]TJ
+T*
+0.3031 Tw
+[(caches. )-317.7(The caches have no shared state, )-16.5(so )-16.5(the)]TJ
+T*
+0.2774 Tw
+(allocator can employ per-cache locking instead of)Tj
+T*
+0.2602 Tw
+[(protecting the entire arena \(kernel heap\) )-19(with )-19(one)]TJ
+T*
+0.1594 Tw
+[(global lock. )-309.2(Per-cache locking improves scalability)]TJ
+T*
+0.307 Tw
+[(by )8.7(allowing )8.7(any number of distinct caches to be)]TJ
+T*
+0.0673 Tw
+(accessed simultaneously.)Tj
+2.5 -1.62 TD
+0.3878 Tw
+(Each cache maintains its own statistics —)Tj
+-2.5 -1.2 TD
+0.546 Tw
+[(total allocations, number of allocated )14.8(and )14.8(free)]TJ
+T*
+0.5519 Tw
+[(buffers, )9.5(etc. )-330.4(These per-cache statistics provide)]TJ
+T*
+0.1727 Tw
+[(insight into overall )15.9(system )15.9(behavior. )-312.6(They )17.7(indicate)]TJ
+T*
+0.5584 Tw
+(which parts of the system consume the most)Tj
+T*
+0.2078 Tw
+[(memory and help to identify memory leaks. )-317.5(They)]TJ
+T*
+0.3075 Tw
+[(also indicate the activity level )-11.8(in )-11.8(various )-11.8(subsys-)]TJ
+T*
+0.1751 Tw
+[(tems, )-15.8(to )-15.8(the extent that allocator traf)]TJ
+/TT7 1 Tf
+15.5492 0 TD
+0 Tw
+(Ş)Tj
+/TT6 1 Tf
+0.5562 0 TD
+0.1751 Tw
+(c is an accu-)Tj
+-16.1053 -1.2 TD
+0.1747 Tw
+[(rate )5.3(approximation. )-330.6(\(Streams message allocation )-18.3(is)]TJ
+T*
+0.0736 Tw
+(a direct measure of streams activity, for example.\))Tj
+2.5 -1.62 TD
+0.2372 Tw
+[(The slab allocator is operationally similar )-15(to)]TJ
+-2.5 -1.2 TD
+0.5349 Tw
+(the ‘‘CustoMalloc’’ [Grunwald93A], ‘‘QuickFit’’)Tj
+T*
+0.2454 Tw
+[([Weinstock88], )11.6(and ‘‘Zone’’ [VanSciver88] alloca-)]TJ
+T*
+0.2388 Tw
+(tors, all of which maintain distinct freelists of the)Tj
+T*
+0.7549 Tw
+[(most commonly requested buffer sizes. )-330.4(The)]TJ
+T*
+0.2604 Tw
+(Grunwald and Weinstock papers each demonstrate)Tj
+T*
+0.3717 Tw
+(that a customized segregated-storage allocator —)Tj
+T*
+0.2066 Tw
+[(one that )9.6(has)]TJ
+/TT4 1 Tf
+5.63 0 TD
+0.206 Tw
+(a priori)Tj
+/TT6 1 Tf
+3.74 0 TD
+0.197 Tw
+(knowledge of the most com-)Tj
+-9.37 -1.2 TD
+0.2211 Tw
+(mon allocation sizes — is usually optimal in both)Tj
+T*
+0 Tw
+(space)Tj
+/TT4 1 Tf
+2.96 0 TD
+(and)Tj
+/TT6 1 Tf
+2.25 0 TD
+0.4962 Tw
+[(time. )-331.8(The slab allocator is in this)]TJ
+-5.21 -1.2 TD
+0.2058 Tw
+(category, but has the advantage that its customiza-)Tj
+T*
+0.1567 Tw
+[(tions are client-driven at run time )11.7(rather )11.7(than )11.7(being)]TJ
+T*
+0.2586 Tw
+[(hard-coded )14.5(at )14.5(compile )14.5(time. )-330.6(\(This is also true of)]TJ
+T*
+0.0713 Tw
+(the Zone allocator.\))Tj
+2.5 -1.62 TD
+0.2044 Tw
+[(The )16.8(standard non-caching allocation routines,)]TJ
+/TT9 1 Tf
+-2.5 -1.2 TD
+0 Tw
+(kmem_alloc\(9F\))Tj
+/TT6 1 Tf
+9.11 0 TD
+(and)Tj
+/TT9 1 Tf
+2.41 0 TD
+(kmem_free\(9F\))Tj
+/TT6 1 Tf
+7.8 0 TD
+0.447 Tw
+(, use)Tj
+-19.32 -1.2 TD
+0.4392 Tw
+[(object )27.1(caches internally. )-330.8(At startup, the system)]TJ
+T*
+0.3248 Tw
+[(creates a set of about 30 caches ranging in )9.5(size)]TJ
+T*
+0.1692 Tw
+(from 8 bytes to 9K in roughly 10-20% increments.)Tj
+/TT9 1 Tf
+T*
+0 Tw
+(kmem_alloc\(\))Tj
+/TT6 1 Tf
+9.75 0 TD
+2.2868 Tw
+(simply performs a)Tj
+/TT9 1 Tf
+-9.75 -1.2 TD
+0 Tw
+(kmem_cache_alloc\(\))Tj
+/TT6 1 Tf
+11.78 0 TD
+0.7176 Tw
+(from the nearest-size)Tj
+-11.78 -1.2 TD
+0.2052 Tw
+[(cache. )-319.1(Allocations larger than 9K, which )17.4(are )17.4(rare,)]TJ
+T*
+0.0734 Tw
+(are handled directly by the back-end page supplier.)Tj
+ET
+endstream
+endobj
+21 0 obj
+<<
+/ProcSet [/PDF /Text ]
+/Font <<
+/TT2 4 0 R
+/TT4 5 0 R
+/TT6 6 0 R
+/TT7 7 0 R
+/TT9 8 0 R
+/TT11 10 0 R
+>>
+/ExtGState <<
+/GS1 11 0 R
+>>
+>>
+endobj
+23 0 obj
+<<
+/Length 9868
+>>
+stream
+BT
+/TT2 1 Tf
+11 0 0 11 59 722.4601 Tm
+0 g
+/GS1 gs
+0 Tc
+0.4343 Tw
+(3.2. Slabs)Tj
+/TT6 1 Tf
+10 0 0 10 59 706.2601 Tm
+0 Tw
+(The)Tj
+/TT4 1 Tf
+1.93 0 TD
+(slab)Tj
+/TT6 1 Tf
+2.05 0 TD
+0.1358 Tw
+[(is )5.8(the )5.8(primary )5.8(unit of currency in the slab)]TJ
+-3.98 -1.2 TD
+0.4461 Tw
+[(allocator. )-318.2(When the allocator needs to grow a)]TJ
+T*
+0.3449 Tw
+[(cache, )13(for )13(example, )13(it acquires an entire slab of)]TJ
+T*
+0.3355 Tw
+[(objects at once. )-342.3(Similarly, the )13.1(allocator )13.1(reclaims)]TJ
+T*
+0.094 Tw
+[(unused memory \(shrinks a cache\) by )-15.4(relinquishing )-15.4(a)]TJ
+T*
+0.0741 Tw
+(complete slab.)Tj
+2.5 -1.62 TD
+0.0963 Tw
+[(A )6.3(slab )6.3(consists of one or more pages of virtu-)]TJ
+-2.5 -1.2 TD
+0.2648 Tw
+[(ally )-17(contiguous memory carved up into equal-size)]TJ
+T*
+0.0946 Tw
+(chunks, with a reference count indicating how many)Tj
+T*
+0.2032 Tw
+[(of )-13(those chunks have been allocated. )-332.1(The )-6(bene)]TJ
+/TT7 1 Tf
+20.3769 0 TD
+0 Tw
+(Ş)Tj
+/TT6 1 Tf
+0.5562 0 TD
+(ts)Tj
+-20.933 -1.2 TD
+0.278 Tw
+[(of )8(using this simple data structure to manage the)]TJ
+T*
+0.0722 Tw
+(arena are somewhat striking:)Tj
+/TT2 1 Tf
+0 -1.62 TD
+0.2086 Tw
+(\(1\) Reclaiming unused memory is trivial.)Tj
+/TT6 1 Tf
+19.22 0 TD
+0 Tw
+(When)Tj
+-19.22 -1.2 TD
+0.1456 Tw
+(the slab reference count goes to zero the associated)Tj
+T*
+0.2131 Tw
+[(pages can be returned to )-16.6(the )-16.6(VM )-16.6(system. )-346.9(Thus )-13.1(a)]TJ
+T*
+0.2359 Tw
+(simple reference count replaces the complex trees,)Tj
+T*
+0.2782 Tw
+[(bitmaps, and coalescing algorithms found in )-17(most)]TJ
+T*
+0.0755 Tw
+(other allocators [Knuth68, Korn85, Standish80].)Tj
+/TT2 1 Tf
+0 -1.62 TD
+0.5313 Tw
+(\(2\) Allocating and freeing memory are fast,)Tj
+0 -1.2 TD
+0.308 Tw
+(constant-time operations.)Tj
+/TT6 1 Tf
+12.03 0 TD
+0.3087 Tw
+(All we have to do is)Tj
+-12.03 -1.2 TD
+0.2163 Tw
+(move an object to or from a freelist and update a)Tj
+T*
+0.0501 Tw
+(reference count.)Tj
+/TT2 1 Tf
+0 -1.62 TD
+0.907 Tw
+[(\(3\) )24.6(Severe external fragmentation \(unused)]TJ
+0 -1.2 TD
+0.3458 Tw
+[(buffers on the freelist\) is )-8.4(unlikely.)]TJ
+/TT6 1 Tf
+16.99 0 TD
+0.3336 Tw
+(Over time,)Tj
+-16.99 -1.2 TD
+0.2044 Tw
+[(many allocators develop an accumulation of )-19.1(small,)]TJ
+T*
+0.1164 Tw
+[(unusable buffers. )-345.8(This occurs as the allocator splits)]TJ
+T*
+0.1078 Tw
+[(existing )18.9(free )18.9(buffers to satisfy smaller requests. )-333(For)]TJ
+T*
+0.1537 Tw
+[(example, the right sequence of )8.1(32-byte )8.1(and )8.1(40-byte)]TJ
+T*
+0.3064 Tw
+[(allocations )10.1(may result in a large accumulation of)]TJ
+T*
+0.0759 Tw
+(free 8-byte buffers — even though no 8-byte buffers)Tj
+T*
+0.5094 Tw
+[(are ever requested [Standish80]. )-338.4(A segregated-)]TJ
+T*
+0.2853 Tw
+(storage allocator cannot suffer this fate, since the)Tj
+T*
+0.0888 Tw
+(only way to populate its 8-byte freelist is to actually)Tj
+T*
+0.2204 Tw
+[(allocate )-6.9(and free 8-byte buffers. )-337.4(Any sequence of)]TJ
+T*
+0.2362 Tw
+[(32-byte and 40-byte allocations — )-11.7(no )-11.7(matter )-11.7(how)]TJ
+T*
+0.1187 Tw
+[(complex )-7.9(— can only result in population of the 32-)]TJ
+T*
+0.1555 Tw
+[(byte and 40-byte freelists. )-332.8(Since prior allocation )-17.5(is)]TJ
+T*
+0.1535 Tw
+[(a )-9.9(good )-9.9(predictor of future allocation [Weinstock88])]TJ
+T*
+0.075 Tw
+(these buffers are likely to be used again.)Tj
+0 -1.62 TD
+0.083 Tw
+(The other reason that slabs reduce external fragmen-)Tj
+0 -1.2 TD
+0.2176 Tw
+[(tation )-18.1(is that all objects in a slab are of the same)]TJ
+T*
+0.227 Tw
+[(type, so they have the )-14.4(same )-14.4(lifetime )-14.4(distribution.*)]TJ
+T*
+0.286 Tw
+(The resulting segregation of short-lived and long-)Tj
+T*
+0.2357 Tw
+[(lived )7.6(objects )7.6(at slab granularity reduces the likeli-)]TJ
+T*
+0.147 Tw
+[(hood )-8.6(of )-8.6(an )-8.6(entire page being held hostage due to a)]TJ
+T*
+0.0751 Tw
+(single long-lived allocation [Barrett93, Hanson90].)Tj
+8 0 0 8 59 135.66 Tm
+0 Tw
+(____________________________________)Tj
+2.7 -1.5 TD
+0.2577 Tw
+(* The generic caches that back)Tj
+/TT9 1 Tf
+14.3875 0 TD
+0 Tw
+(kmem_alloc\(\))Tj
+/TT6 1 Tf
+7.7375 0 TD
+0.2604 Tw
+(are a)Tj
+-24.825 -1.2 TD
+0.1935 Tw
+[(notable )11.6(exception, but they constitute a relatively small fraction)]TJ
+T*
+0.288 Tw
+[(of )6.8(the )6.8(arena )6.8(in )6.8(SunOS )6.8(5.4 — all of the major consumers of)]TJ
+T*
+0.0624 Tw
+(memory now use)Tj
+/TT9 1 Tf
+7.6125 0 TD
+0 Tw
+(kmem_cache_alloc\(\))Tj
+/TT6 1 Tf
+10.8 0 TD
+(.)Tj
+/TT2 1 Tf
+10 0 0 10 311 722.4601 Tm
+0.5221 Tw
+[(\(4\) Internal fragmentation )-7.8(\(per-buffer )-7.8(wasted)]TJ
+0 -1.2 TD
+0.1356 Tw
+(space\) is minimal.)Tj
+/TT6 1 Tf
+8.62 0 TD
+0.1248 Tw
+(Each buffer is exactly the right)Tj
+-8.62 -1.2 TD
+0.2217 Tw
+[(size \(namely, the cache’s object size\), )-18.7(so )-18.7(the )-18.7(only)]TJ
+T*
+0.1069 Tw
+[(wasted space is the unused portion at the end )9.2(of )9.2(the)]TJ
+T*
+0.2163 Tw
+[(slab. )-333.7(For example, assuming 4096-byte pages, the)]TJ
+T*
+0.1048 Tw
+[(slabs in a 400-byte object cache would each )8.2(contain)]TJ
+T*
+0.2167 Tw
+[(10 buffers, with 96 bytes left over. )-335.6(We )-7.5(can )-7.5(view)]TJ
+T*
+0.3361 Tw
+(this as equivalent 9.6 bytes of wasted space per)Tj
+T*
+0.0727 Tw
+(400-byte buffer, or 2.4% internal fragmentation.)Tj
+0 -1.62 TD
+0.3048 Tw
+[(In general, if a slab )-12.7(contains)]TJ
+/TT4 1 Tf
+13.38 0 TD
+0 Tw
+(n)Tj
+/TT6 1 Tf
+1.07 0 TD
+0.3123 Tw
+(buffers, then the)Tj
+-14.45 -1.2 TD
+0.1691 Tw
+(internal fragmentation is at most 1/)Tj
+/TT4 1 Tf
+14.87 0 TD
+0 Tw
+(n)Tj
+/TT6 1 Tf
+0.5 0 TD
+0.1603 Tw
+(; thus the allo-)Tj
+-15.37 -1.2 TD
+0.3353 Tw
+[(cator can actually control the amount of )-10.5(internal)]TJ
+T*
+0.3076 Tw
+[(fragmentation )-8.9(by )-8.9(controlling the slab size. )-325.1(How-)]TJ
+T*
+0.1948 Tw
+[(ever, )15.9(larger )15.9(slabs are more likely to cause external)]TJ
+T*
+0.1183 Tw
+(fragmentation, since the probability of being able to)Tj
+T*
+0.2428 Tw
+(reclaim a slab decreases as the number of buffers)Tj
+T*
+0.1704 Tw
+[(per slab increases. )-334.9(The )-12.4(SunOS )-12.4(5.4 implementation)]TJ
+T*
+0.2582 Tw
+(limits internal fragmentation to 12.5% \(1/8\), since)Tj
+T*
+0.1187 Tw
+[(this was found to be the )11.8(empirical )11.8(sweet-spot )11.8(in )11.8(the)]TJ
+T*
+0.2899 Tw
+[(trade-off )16.6(between )16.6(internal and external fragmenta-)]TJ
+T*
+0 Tw
+(tion.)Tj
+/TT2 1 Tf
+11 0 0 11 311 448.2601 Tm
+0.0818 Tw
+[(3.2.1. )-355.3(Slab Layout — Logical)]TJ
+/TT6 1 Tf
+10 0 0 10 311 432.0601 Tm
+0.525 Tw
+[(The )12.3(contents )12.3(of )12.3(each slab are managed by a)]TJ
+/TT9 1 Tf
+T*
+0 Tw
+(kmem_slab)Tj
+/TT6 1 Tf
+5.76 0 TD
+0.0967 Tw
+(data structure that maintains the slab’s)Tj
+-5.76 -1.2 TD
+0.1262 Tw
+(linkage in the cache, its reference count, and its list)Tj
+T*
+0.2063 Tw
+[(of free )8.3(buffers. )-330.7(In turn, each buffer in the slab is)]TJ
+T*
+0.1634 Tw
+(managed by a)Tj
+/TT9 1 Tf
+6.57 0 TD
+0 Tw
+(kmem_bufctl)Tj
+/TT6 1 Tf
+7.02 0 TD
+0.162 Tw
+[(structure that )-21(holds)]TJ
+-13.59 -1.2 TD
+0.4117 Tw
+[(the freelist linkage, buffer address, )7.8(and )7.8(a )7.8(back-)]TJ
+T*
+0.279 Tw
+[(pointer to the controlling slab. )-335(Pictorially, a )-10.2(slab)]TJ
+T*
+0.5562 Tw
+[(looks )-17.3(like this \(bufctl-to-slab back-pointers not)]TJ
+T*
+0 Tw
+(shown\):)Tj
+7.01 -21.86 TD
+0.0739 Tw
+(one or more pages)Tj
+ET
+0 G
+1 J 0 j 0.3 w 10 M []0 d
+1 i 
+318.2 127.26 m
+311 125.46 l
+318.2 123.66 m
+311 125.46 l
+311 125.46 m
+527 125.46 l
+519.8 123.66 m
+527 125.46 l
+519.8 127.26 m
+527 125.46 l
+S
+BT
+10 0 0 10 336.8 159.4601 Tm
+0 Tw
+(buf)Tj
+ET
+311 147.06 m
+311 175.86 l
+311 175.86 m
+375.8 175.86 l
+375.8 175.86 m
+375.8 147.06 l
+375.8 147.06 m
+311 147.06 l
+S
+BT
+10 0 0 10 401.6 159.4601 Tm
+(buf)Tj
+ET
+375.8 147.06 m
+375.8 175.86 l
+375.8 175.86 m
+440.6 175.86 l
+440.6 175.86 m
+440.6 147.06 l
+440.6 147.06 m
+375.8 147.06 l
+S
+BT
+10 0 0 10 466.4 159.4601 Tm
+(buf)Tj
+ET
+440.6 147.06 m
+440.6 175.86 l
+440.6 175.86 m
+505.4 175.86 l
+505.4 175.86 m
+505.4 147.06 l
+505.4 147.06 m
+440.6 147.06 l
+S
+BT
+10 0 0 10 509.6 165.4601 Tm
+(un-)Tj
+-0.25 -1.2 TD
+(used)Tj
+ET
+505.4 147.06 m
+505.4 175.86 l
+505.4 175.86 m
+527 175.86 l
+527 175.86 m
+527 147.06 l
+527 147.06 m
+505.4 147.06 l
+S
+BT
+10 0 0 10 320.1 237.4601 Tm
+(kmem)Tj
+0.09 -1.2 TD
+(bufctl)Tj
+ET
+311 219.06 m
+311 247.86 l
+311 247.86 m
+354.2 247.86 l
+354.2 247.86 m
+354.2 219.06 l
+354.2 219.06 m
+311 219.06 l
+S
+BT
+10 0 0 10 384.9 237.4601 Tm
+(kmem)Tj
+0.09 -1.2 TD
+(bufctl)Tj
+ET
+375.8 219.06 m
+375.8 247.86 l
+375.8 247.86 m
+419 247.86 l
+419 247.86 m
+419 219.06 l
+419 219.06 m
+375.8 219.06 l
+S
+BT
+10 0 0 10 449.7 237.4601 Tm
+(kmem)Tj
+0.09 -1.2 TD
+(bufctl)Tj
+ET
+440.6 219.06 m
+440.6 247.86 l
+440.6 247.86 m
+483.8 247.86 l
+483.8 247.86 m
+483.8 219.06 l
+483.8 219.06 m
+440.6 219.06 l
+S
+BT
+10 0 0 10 406.5 309.4601 Tm
+(kmem)Tj
+0.45 -1.2 TD
+(slab)Tj
+ET
+397.4 291.06 m
+397.4 319.86 l
+397.4 319.86 m
+440.6 319.86 l
+440.6 319.86 m
+440.6 291.06 l
+440.6 291.06 m
+397.4 291.06 l
+S
+BT
+10 0 0 10 447 316.6601 Tm
+0.0747 Tw
+(next slab in cache)Tj
+ET
+440.6 312.66 m
+527 312.66 l
+519.8 310.86 m
+527 312.66 l
+519.8 314.46 m
+527 312.66 l
+527 298.26 m
+440.6 298.26 l
+447.8 300.06 m
+440.6 298.26 l
+447.8 296.46 m
+440.6 298.26 l
+S
+BT
+10 0 0 10 317.2 290.2601 Tm
+0.073 Tw
+(prev slab in cache)Tj
+ET
+397.4 298.26 m
+311 298.26 l
+318.2 300.06 m
+311 298.26 l
+318.2 296.46 m
+311 298.26 l
+311 312.66 m
+397.4 312.66 l
+390.2 310.86 m
+397.4 312.66 l
+390.2 314.46 m
+397.4 312.66 l
+332.6 219.06 m
+311 175.86 l
+312.5 183.16 m
+311 175.96 l
+315.8 181.56 m
+311 175.96 l
+397.4 219.06 m
+375.8 175.86 l
+377.3 183.16 m
+375.8 175.96 l
+380.6 181.56 m
+375.8 175.96 l
+462.2 219.06 m
+440.6 175.86 l
+442.1 183.16 m
+440.6 175.96 l
+445.4 181.56 m
+440.6 175.96 l
+354.2 233.46 m
+375.8 233.46 l
+368.6 231.66 m
+375.8 233.46 l
+368.6 235.26 m
+375.8 233.46 l
+419 233.46 m
+440.6 233.46 l
+433.4 231.66 m
+440.6 233.46 l
+433.4 235.26 m
+440.6 233.46 l
+404.6 291.06 m
+332.6 247.86 l
+337.8 253.16 m
+332.6 247.96 l
+339.7 250.06 m
+332.6 247.96 l
+433.4 291.06 m
+462.2 247.86 l
+456.7 252.86 m
+462.1 247.96 l
+459.6 254.86 m
+462.1 247.96 l
+S
+endstream
+endobj
+24 0 obj
+<<
+/ProcSet [/PDF /Text ]
+/Font <<
+/TT2 4 0 R
+/TT4 5 0 R
+/TT6 6 0 R
+/TT7 7 0 R
+/TT9 8 0 R
+>>
+/ExtGState <<
+/GS1 11 0 R
+>>
+>>
+endobj
+26 0 obj
+<<
+/Length 9965
+>>
+stream
+BT
+/TT2 1 Tf
+11 0 0 11 59 722.4601 Tm
+0 g
+/GS1 gs
+0 Tc
+0.075 Tw
+[(3.2.2. )-362.1(Slab Layout for Small Objects)]TJ
+/TT6 1 Tf
+10 0 0 10 59 706.2601 Tm
+0.2771 Tw
+[(For objects smaller than 1/8 of a page, a )-14(slab )-14(is)]TJ
+0 -1.2 TD
+0.2077 Tw
+[(built by allocating a page, placing )10.1(the )10.1(slab )10.1(data )10.1(at)]TJ
+T*
+0.5584 Tw
+[(the )13.1(end, )13.1(and dividing the rest into equal-size)]TJ
+T*
+0 Tw
+(buffers:)Tj
+8.98 -6.74 TD
+0.0685 Tw
+(one page)Tj
+ET
+0 G
+1 J 0 j 0.3 w 10 M []0 d
+1 i 
+66.2 612.66 m
+59 610.86 l
+66.2 609.06 m
+59 610.86 l
+59 610.86 m
+275 610.86 l
+267.8 609.06 m
+275 610.86 l
+267.8 612.66 m
+275 610.86 l
+S
+BT
+10 0 0 10 68.9 637.66 Tm
+0 Tw
+(buf)Tj
+ET
+59 625.26 m
+59 654.06 l
+59 654.06 m
+92.1 654.06 l
+92.1 654.06 m
+92.1 625.26 l
+92.1 625.26 m
+59 625.26 l
+S
+BT
+10 0 0 10 102 637.66 Tm
+(buf)Tj
+ET
+92.1 625.26 m
+92.1 654.06 l
+92.1 654.06 m
+125.2 654.06 l
+125.2 654.06 m
+125.2 625.26 l
+125.2 625.26 m
+92.1 625.26 l
+S
+BT
+10 0 0 10 138.1 637.66 Tm
+(...)Tj
+ET
+125.2 625.26 m
+125.2 654.06 l
+125.2 654.06 m
+158.3 654.06 l
+158.3 654.06 m
+158.3 625.26 l
+158.3 625.26 m
+125.2 625.26 l
+S
+BT
+10 0 0 10 168.3 637.66 Tm
+(buf)Tj
+ET
+158.3 625.26 m
+158.3 654.06 l
+158.3 654.06 m
+191.4 654.06 l
+191.4 654.06 m
+191.4 625.26 l
+191.4 625.26 m
+158.3 625.26 l
+S
+BT
+10 0 0 10 201.4 637.66 Tm
+(buf)Tj
+ET
+191.4 625.26 m
+191.4 654.06 l
+191.4 654.06 m
+224.5 654.06 l
+224.6 654.06 m
+224.6 625.26 l
+224.6 625.26 m
+191.5 625.26 l
+S
+BT
+10 0 0 10 228.8 643.66 Tm
+(un-)Tj
+-0.25 -1.2 TD
+(used)Tj
+ET
+224.6 625.26 m
+224.6 654.06 l
+224.6 654.06 m
+246.2 654.06 l
+246.2 654.06 m
+246.2 625.26 l
+246.2 625.26 m
+224.6 625.26 l
+S
+BT
+10 0 0 10 248.1 643.66 Tm
+(kmem)Tj
+0.45 -1.2 TD
+(slab)Tj
+ET
+246.2 625.26 m
+246.2 654.06 l
+246.2 654.06 m
+275 654.06 l
+275 654.06 m
+275 625.26 l
+275 625.26 m
+246.2 625.26 l
+S
+BT
+10 0 0 10 59 580.2601 Tm
+0.2357 Tw
+[(Each buffer serves as its own bufctl while on )-12.6(the)]TJ
+T*
+0.1963 Tw
+[(freelist. )-327.3(Only the linkage is actually needed, )11(since)]TJ
+T*
+0.2156 Tw
+[(everything else is computable. )-326.7(These )-7.4(are )-7.4(essential)]TJ
+T*
+0.4063 Tw
+(optimizations for small buffers — otherwise we)Tj
+T*
+0.2692 Tw
+[(would end up allocating almost )-8.4(as )-8.4(much )-8.4(memory)]TJ
+T*
+0.0744 Tw
+(for bufctls as for the buffers themselves.)Tj
+2.5 -1.62 TD
+0.1943 Tw
+[(The freelist linkage resides at )-14(the)]TJ
+/TT4 1 Tf
+14.69 0 TD
+0 Tw
+(end)Tj
+/TT6 1 Tf
+1.9 0 TD
+0.2053 Tw
+(of the)Tj
+-19.09 -1.2 TD
+0.0846 Tw
+[(buffer, rather than the beginning, to facilitate )11.5(debug-)]TJ
+T*
+0.2592 Tw
+[(ging. )-335.1(This is driven by the )-5.1(empirical )-5.1(observation)]TJ
+T*
+0.2874 Tw
+[(that the beginning of a data )8.9(structure )8.9(is )8.9(typically)]TJ
+T*
+0.2352 Tw
+[(more active than the end. )-328.8(If )-12.5(a )-12.5(buffer )-12.5(is )-12.5(modi)]TJ
+/TT7 1 Tf
+20.1 0 TD
+0 Tw
+(Ş)Tj
+/TT6 1 Tf
+0.5562 0 TD
+(ed)Tj
+-20.6562 -1.2 TD
+0.1697 Tw
+(after being freed, the problem is easier to diagnose)Tj
+T*
+0.0749 Tw
+(if the heap)Tj
+/TT4 1 Tf
+4.7 0 TD
+0 Tw
+(structure)Tj
+/TT6 1 Tf
+3.94 0 TD
+0.0789 Tw
+(\(freelist linkage\) is still intact.)Tj
+-6.14 -1.62 TD
+0.1827 Tw
+[(The allocator reserves an additional word )-11.3(for)]TJ
+-2.5 -1.2 TD
+0.5268 Tw
+(constructed objects so that the linkage doesn’t)Tj
+T*
+0.0709 Tw
+(overwrite any constructed state.)Tj
+/TT2 1 Tf
+11 0 0 11 59 361.86 Tm
+0.0702 Tw
+[(3.2.3. )-366.9(Slab Layout for Large Objects)]TJ
+/TT6 1 Tf
+10 0 0 10 59 345.6601 Tm
+0.1258 Tw
+(The above scheme is ef)Tj
+/TT7 1 Tf
+9.888 0 TD
+0 Tw
+(Ş)Tj
+/TT6 1 Tf
+0.5562 0 TD
+0.1258 Tw
+[(cient for small objects, )-16.4(but)]TJ
+-10.4442 -1.2 TD
+0.1732 Tw
+[(not for large )6.2(ones. )-326(It could )]TJ
+/TT7 1 Tf
+12.216 0 TD
+0 Tw
+(Ş)Tj
+/TT6 1 Tf
+0.5562 0 TD
+0.1722 Tw
+(t only)Tj
+/TT4 1 Tf
+2.8978 0 TD
+0 Tw
+(one)Tj
+/TT6 1 Tf
+1.86 0 TD
+0.155 Tw
+(2K buffer)Tj
+-17.53 -1.2 TD
+0.2146 Tw
+[(on a 4K page because of the embedded slab )-9.9(data.)]TJ
+T*
+0.1263 Tw
+(Moreover, with large \(multi-page\) slabs we lose the)Tj
+T*
+0.1982 Tw
+[(ability to determine the slab data )-6.9(address )-7(from )-6.9(the)]TJ
+T*
+0.4458 Tw
+[(buffer )7.7(address. )-322.8(Therefore, )-8.2(for large objects the)]TJ
+T*
+0.35 Tw
+[(physical )12(layout is identical to the logical layout.)]TJ
+T*
+0.2654 Tw
+(The required slab and bufctl data structures come)Tj
+T*
+0.1337 Tw
+[(from their own \(small-object!\) caches. )-344.1(A )9(per-cache)]TJ
+T*
+0.6435 Tw
+[(self-scaling hash table provides )22.7(buffer-to-bufctl)]TJ
+T*
+0 Tw
+(conversion.)Tj
+/TT2 1 Tf
+11 0 0 11 59 195.66 Tm
+0.3934 Tw
+[(3.3. Freelist )335.1(Management)]TJ
+/TT6 1 Tf
+10 0 0 10 59 179.4601 Tm
+0.2221 Tw
+[(Each cache maintains a circular, doubly-linked )-25.2(list)]TJ
+T*
+0.1914 Tw
+[(of all its slabs. )-323.9(The slab list is partially )12.2(sorted, )12.2(in)]TJ
+T*
+0.3355 Tw
+[(that the empty slabs \(all buffers allocated\) )-9(come)]TJ
+/TT7 1 Tf
+T*
+0 Tw
+(Ş)Tj
+/TT6 1 Tf
+0.5562 0 TD
+0.3464 Tw
+[(rst, )-12.8(followed by the partial slabs \(some buffers)]TJ
+-0.5562 -1.2 TD
+0.1068 Tw
+[(allocated, some free\), )-22(and )]TJ
+/TT7 1 Tf
+11.0214 0 TD
+0 Tw
+(Ş)Tj
+/TT6 1 Tf
+0.5562 0 TD
+0.1288 Tw
+(nally the complete slabs)Tj
+-11.5775 -1.2 TD
+0.1798 Tw
+[(\(all buffers free, refcnt == 0\). )-335.5(The )7.4(cache’s )6.2(freelist)]TJ
+T*
+0.0817 Tw
+(pointer points to its )Tj
+/TT7 1 Tf
+8.327 0 TD
+0 Tw
+(Ş)Tj
+/TT6 1 Tf
+0.5562 0 TD
+0.0817 Tw
+[(rst non-empty slab. )-329.8(Each )-7.5(slab,)]TJ
+-8.8831 -1.2 TD
+0.339 Tw
+[(in turn, has its own freelist )17(of )17(available )17(buffers.)]TJ
+T*
+0.2578 Tw
+(This two-level freelist structure simpli)Tj
+/TT7 1 Tf
+16.3608 0 TD
+0 Tw
+(Ş)Tj
+/TT6 1 Tf
+0.5562 0 TD
+0.2675 Tw
+(es memory)Tj
+8.283 63.9 TD
+0.2681 Tw
+[(reclaiming. )-328.3(When )-7(the )-7(allocator reclaims a slab it)]TJ
+0 -1.2 TD
+0.1246 Tw
+(doesn’t have to unlink each buffer from the cache’s)Tj
+T*
+0.081 Tw
+(freelist — it just unlinks the slab.)Tj
+/TT2 1 Tf
+11 0 0 11 311 668.4601 Tm
+0.4084 Tw
+[(3.4. Reclaiming )359.3(Memory)]TJ
+/TT6 1 Tf
+10 0 0 10 311 652.2601 Tm
+0 Tw
+(When)Tj
+/TT9 1 Tf
+3.2 0 TD
+(kmem_cache_free\(\))Tj
+/TT6 1 Tf
+10.75 0 TD
+0.2964 Tw
+[(sees that the )-12.8(slab)]TJ
+-13.95 -1.2 TD
+0.3724 Tw
+(reference count is zero, it does not immediately)Tj
+T*
+0.1129 Tw
+[(reclaim )9(the )9(memory. )-319.4(Instead, it just moves )-5.8(the )-5.8(slab)]TJ
+T*
+0.3265 Tw
+[(to the tail of the freelist where )8.6(all )8.6(the )8.6(complete)]TJ
+T*
+0.3386 Tw
+[(slabs )16.3(reside. )-323.6(This )17.6(ensures that no complete slab)]TJ
+T*
+0.1368 Tw
+[(will )-13.7(be broken up unless all partial slabs have been)]TJ
+T*
+0 Tw
+(depleted.)Tj
+2.5 -1.62 TD
+0.1089 Tw
+[(When the system runs low on memory it )-8.9(asks)]TJ
+-2.5 -1.2 TD
+0.1577 Tw
+[(the )-7.1(allocator )-7.1(to )-7.1(liberate as much memory as it can.)]TJ
+T*
+0.1131 Tw
+[(The )6.2(allocator )6.2(obliges, )6.2(but retains a 15-second work-)]TJ
+T*
+0.2169 Tw
+[(ing set of recently-used slabs to )12(prevent )12(thrashing.)]TJ
+T*
+0.2759 Tw
+[(Measurements )22.5(indicate that system performance is)]TJ
+T*
+0.3276 Tw
+(fairly insensitive to the slab working-set interval.)Tj
+T*
+0.3581 Tw
+[(Presumably this is because the two )-7.2(extremes )-7.2(—)]TJ
+T*
+0.3842 Tw
+(zero working set \(reclaim all complete slabs on)Tj
+T*
+0.4471 Tw
+(demand\) and in)Tj
+/TT7 1 Tf
+7.1143 0 TD
+0 Tw
+(Ş)Tj
+/TT6 1 Tf
+0.5562 0 TD
+0.4505 Tw
+(nite working-set \(never reclaim)Tj
+-7.6705 -1.2 TD
+0.1361 Tw
+[(anything\) )-11.4(— are both reasonable, albeit suboptimal,)]TJ
+T*
+0 Tw
+(policies.)Tj
+/TT2 1 Tf
+11 0 0 11 311 414.0601 Tm
+0.0592 Tw
+[(4. )-334.9(Hardware Cache Effects)]TJ
+/TT6 1 Tf
+10 0 0 10 311 397.86 Tm
+0.2407 Tw
+[(Modern hardware relies on good cache )-24.6(utilization,)]TJ
+T*
+0.3371 Tw
+[(so )-18.1(it is important to design software with cache)]TJ
+T*
+0.204 Tw
+[(effects in mind. )-336.8(For a memory allocator there are)]TJ
+T*
+0.2026 Tw
+[(two broad classes of cache effects to )6.2(consider: )6.2(the)]TJ
+T*
+0.1742 Tw
+[(distribution of buffer addresses and )-8.8(the )-8.8(cache )-8.8(foot-)]TJ
+T*
+0.3271 Tw
+[(print )-11.2(of )-11.2(the allocator itself. )-328.2(The latter topic has)]TJ
+T*
+0.4133 Tw
+[(received some attention [Chen93, )-7.7(Grunwald93B],)]TJ
+T*
+0.0855 Tw
+[(but the effect of buffer address distribution on )20.9(cache)]TJ
+T*
+0.6843 Tw
+(utilization and bus balance has gone largely)Tj
+T*
+0 Tw
+(unrecognized.)Tj
+/TT2 1 Tf
+11 0 0 11 311 258.66 Tm
+0.2223 Tw
+[(4.1. )-336.2(Impact of Buffer )-25(Address )-25(Distribution)]TJ
+0 -1.0909 TD
+0.0755 Tw
+(on Cache Utilization)Tj
+/TT6 1 Tf
+10 0 0 10 311 230.4601 Tm
+0.4053 Tw
+[(The address distribution of mid-size buffers )-7(can)]TJ
+0 -1.2 TD
+0.1027 Tw
+[(affect the system’s overall cache utilization. )-334.3(In par-)]TJ
+T*
+0.1002 Tw
+[(ticular, power-of-two allocators — )-11.7(where )-11.7(all )-11.7(buffers)]TJ
+T*
+0.2993 Tw
+(are 2)Tj
+/TT4 1 Tf
+8 0 0 8 333.7 199.4601 Tm
+0 Tw
+(n)Tj
+/TT6 1 Tf
+10 0 0 10 343.3 194.4601 Tm
+0.2949 Tw
+(bytes and are 2)Tj
+/TT4 1 Tf
+8 0 0 8 412.4 199.4601 Tm
+0 Tw
+(n)Tj
+/TT6 1 Tf
+10 0 0 10 416.4 194.4601 Tm
+0.2938 Tw
+(-byte aligned — are pes-)Tj
+-10.54 -1.2 TD
+0.416 Tw
+[(simal.* )-328.3(Suppose, )12.6(for )12.6(example, that every inode)]TJ
+T*
+0 Tw
+(\()Tj
+/TT10 1 Tf
+0.33 0 TD
+<00be>Tj
+0 -0.15 TD
+<003c>Tj
+/TT6 1 Tf
+0.55 0.15 TD
+0.0956 Tw
+(300 bytes\) is assigned a 512-byte buffer, 512-byte)Tj
+-0.88 -1.2 TD
+0.2584 Tw
+(aligned, and that only the )Tj
+/TT7 1 Tf
+11.6785 0 TD
+0 Tw
+(Ş)Tj
+/TT6 1 Tf
+0.5562 0 TD
+0.2585 Tw
+(rst dozen )Tj
+/TT7 1 Tf
+4.4046 0 TD
+0 Tw
+(Ş)Tj
+/TT6 1 Tf
+0.5562 0 TD
+0.2585 Tw
+(elds of an)Tj
+-17.1954 -1.2 TD
+0.3186 Tw
+[(inode \(48 bytes\) are frequently referenced. )-336.7(Then)]TJ
+T*
+0.1249 Tw
+[(the majority of inode-related memory )-12.7(traf)]TJ
+/TT7 1 Tf
+17.3253 0 TD
+0 Tw
+(Ş)Tj
+/TT6 1 Tf
+0.5562 0 TD
+0.1376 Tw
+(c will be)Tj
+8 0 0 8 311 124.86 Tm
+0 Tw
+(____________________________________)Tj
+2.7 -1.5 TD
+0.2602 Tw
+[(* )15.2(Such )15.2(allocators )15.2(are )15.2(common because they are easy to)]TJ
+-2.7 -1.2 TD
+0.5579 Tw
+[(implement. )-301.1(For example, 4.4BSD and )12.5(SVr4 )12.5(both )12.5(employ)]TJ
+T*
+0.0442 Tw
+(power-of-two methods [McKusick88, Lee89].)Tj
+ET
+endstream
+endobj
+27 0 obj
+<<
+/ProcSet [/PDF /Text ]
+/Font <<
+/TT2 4 0 R
+/TT4 5 0 R
+/TT6 6 0 R
+/TT7 7 0 R
+/TT9 8 0 R
+/TT10 9 0 R
+>>
+/ExtGState <<
+/GS1 11 0 R
+>>
+>>
+endobj
+29 0 obj
+<<
+/Length 8727
+>>
+stream
+BT
+/TT6 1 Tf
+10 0 0 10 59 722.4601 Tm
+0 g
+/GS1 gs
+0 Tc
+0.2101 Tw
+[(at )22.7(addresses )22.7(between 0 and 47 modulo 512. )-329.9(Thus)]TJ
+0 -1.2 TD
+0.3288 Tw
+(the cache lines near 512-byte boundaries will be)Tj
+T*
+0.2376 Tw
+[(heavily )12.9(loaded )12.9(while the rest lie fallow. )-329.4(In )13(effect)]TJ
+T*
+0.2665 Tw
+[(only )-12.7(9% \(48/512\) of the cache will be usable by)]TJ
+T*
+0.3167 Tw
+[(inodes. )-320.4(Fully-associative )21.3(caches would not suffer)]TJ
+T*
+0.0834 Tw
+[(this problem, but current hardware )10.5(trends )10.5(are )10.5(toward)]TJ
+T*
+0.0729 Tw
+(simpler rather than more complex caches.)Tj
+2.5 -1.62 TD
+0.6364 Tw
+[(Of )21.4(course, there’s nothing special about)]TJ
+-2.5 -1.2 TD
+0.2968 Tw
+[(inodes. )-337.7(The )-7.7(kernel )-7.7(contains many other mid-size)]TJ
+T*
+0.248 Tw
+[(data )15.7(structures )15.7(\(e.g. )15.7(100-500 bytes\) with the same)]TJ
+T*
+0.3565 Tw
+(essential qualities: there are many of them, they)Tj
+T*
+0.2653 Tw
+[(contain only a few )-13.1(heavily )-13.1(used )]TJ
+/TT7 1 Tf
+14.5715 0 TD
+0 Tw
+(Ş)Tj
+/TT6 1 Tf
+0.5562 0 TD
+0.2784 Tw
+(elds, and those)Tj
+/TT7 1 Tf
+-15.1277 -1.2 TD
+0 Tw
+(Ş)Tj
+/TT6 1 Tf
+0.5562 0 TD
+0.1453 Tw
+(elds are grouped together at or near the beginning)Tj
+-0.5562 -1.2 TD
+0.104 Tw
+[(of the structure. )-338.2(This artifact of the way data struc-)]TJ
+T*
+0.1851 Tw
+[(tures )-5.5(evolve has not previously been recognized as)]TJ
+T*
+0.0759 Tw
+(an important factor in allocator design.)Tj
+/TT2 1 Tf
+11 0 0 11 59 507.0601 Tm
+0.2223 Tw
+[(4.2. )-336.2(Impact of Buffer )-25(Address )-25(Distribution)]TJ
+0 -1.0909 TD
+0.0896 Tw
+(on Bus Balance)Tj
+/TT6 1 Tf
+10 0 0 10 59 478.86 Tm
+0.0947 Tw
+[(On a machine that interleaves memory )-13.6(across )-13.6(multi-)]TJ
+0 -1.2 TD
+0.3413 Tw
+[(ple )-17(main )-17(buses, )-17(the effects described above also)]TJ
+T*
+0.2877 Tw
+(have a signi)Tj
+/TT7 1 Tf
+5.3517 0 TD
+0 Tw
+(Ş)Tj
+/TT6 1 Tf
+0.5562 0 TD
+0.2877 Tw
+[(cant impact on )-15.4(bus )-15.4(utilization. )-337.6(The)]TJ
+-5.9079 -1.2 TD
+0.1459 Tw
+[(SPARCcenter )-13.3(2000, for example, employs 256-byte)]TJ
+T*
+0.4266 Tw
+[(interleaving )14.1(across )14.1(two main buses [Cekleov92].)]TJ
+T*
+0.3848 Tw
+[(Continuing )-23(the example above, we see that any)]TJ
+T*
+0.1938 Tw
+(power-of-two allocator maps the )Tj
+/TT7 1 Tf
+14.1039 0 TD
+0 Tw
+(Ş)Tj
+/TT6 1 Tf
+0.5562 0 TD
+0.1938 Tw
+(rst half of every)Tj
+-14.6601 -1.2 TD
+0.1385 Tw
+[(inode \(the hot part\) to bus 0 )11.5(and )11.5(the )11.5(second )11.5(half )11.5(to)]TJ
+T*
+0.2145 Tw
+[(bus 1. )-325.5(Thus almost all inode-related cache misses)]TJ
+T*
+0.1446 Tw
+[(are serviced by bus 0. )-330.7(The )-11.1(situation )15.1(is )15.1(exacerbated)]TJ
+T*
+0.1585 Tw
+(by an in)Tj
+/TT7 1 Tf
+3.5387 0 TD
+0 Tw
+(ß)Tj
+/TT6 1 Tf
+0.5562 0 TD
+0.1666 Tw
+[(ated )8.1(miss )8.1(rate, since all of the inodes are)]TJ
+/TT7 1 Tf
+-4.0949 -1.2 TD
+0 Tw
+(Ş)Tj
+/TT6 1 Tf
+0.5562 0 TD
+0.0759 Tw
+(ghting over a small fraction of the cache.)Tj
+1.9438 -1.62 TD
+0.7395 Tw
+[(These effects can be dramatic. )-348.3(On )-16.7(a)]TJ
+-2.5 -1.2 TD
+0.6455 Tw
+[(SPARCcenter )-13.7(2000 running LADDIS under a)]TJ
+T*
+0.3154 Tw
+[(SunOS )5.2(5.4 )5.2(development kernel, replacing the old)]TJ
+T*
+0.4278 Tw
+[(allocator )-7.3(\(a power-of-two buddy-system [Lee89]\))]TJ
+T*
+0.1621 Tw
+(with the slab allocator reduced bus imbalance from)Tj
+T*
+0.2709 Tw
+[(43% to just 17%. )-326.1(In addition, )18.4(the )18.4(primary )18.4(cache)]TJ
+T*
+0.0769 Tw
+(miss rate dropped by 13%.)Tj
+/TT2 1 Tf
+11 0 0 11 59 228.66 Tm
+0.4326 Tw
+[(4.3. Slab )351.3(Coloring)]TJ
+/TT6 1 Tf
+10 0 0 10 59 212.4601 Tm
+0.3462 Tw
+[(The )13(slab )13(allocator incorporates a simple coloring)]TJ
+T*
+0.3546 Tw
+[(scheme )-13.1(that )-13.1(distributes buffers evenly throughout)]TJ
+T*
+0.3523 Tw
+[(the cache, resulting in excellent cache )-23(utilization)]TJ
+T*
+0.1581 Tw
+[(and )6.2(bus )6.2(balance. )-327.2(The concept is simple: each time)]TJ
+T*
+0.1149 Tw
+[(a new slab is created, the )-8.7(buffer )-8.7(addresses )-8.7(start )-8.7(at )-8.7(a)]TJ
+T*
+0.2652 Tw
+(slightly different offset \(color\) from the slab base)Tj
+T*
+0.1343 Tw
+[(\(which )9.7(is )9.7(always )11.4(page-aligned\). )-336.5(For example, for a)]TJ
+T*
+0.0787 Tw
+(cache of 200-byte objects with 8-byte alignment, the)Tj
+/TT7 1 Tf
+T*
+0 Tw
+(Ş)Tj
+/TT6 1 Tf
+0.5562 0 TD
+0.2959 Tw
+[(rst slab’s buffers would be at addresses 0, )-14.1(200,)]TJ
+-0.5562 -1.2 TD
+0.2583 Tw
+[(400, ... relative to the slab )15.2(base. )-317(The )10.6(next )10.6(slab’s)]TJ
+T*
+0.2066 Tw
+[(buffers would be at offsets 8, 208, 408, )-12.4(... )-12.4(and )-12.4(so)]TJ
+25.2 63 TD
+0.1689 Tw
+[(on. )-336.4(The maximum slab color is determined by the)]TJ
+0 -1.2 TD
+0.1675 Tw
+[(amount )10(of unused space in the slab. )-329.5(In this exam-)]TJ
+T*
+0.3364 Tw
+[(ple, assuming 4K pages, we )8(can )]TJ
+/TT7 1 Tf
+15.0545 0 TD
+0 Tw
+(Ş)Tj
+/TT6 1 Tf
+0.5562 0 TD
+0.3284 Tw
+(t 20 200-byte)Tj
+-15.6107 -1.2 TD
+0.2239 Tw
+[(buffers in a 4096-byte )-15.3(slab. )-341.4(The )-7.7(buffers )-7.7(consume)]TJ
+T*
+0.3787 Tw
+(4000 bytes, the)Tj
+/TT9 1 Tf
+7.74 0 TD
+0 Tw
+(kmem_slab)Tj
+/TT6 1 Tf
+6.02 0 TD
+0.3653 Tw
+(data consumes 32)Tj
+-13.76 -1.2 TD
+0.1756 Tw
+[(bytes, and the remaining 64 bytes are available )-8.4(for)]TJ
+T*
+0.1687 Tw
+[(coloring. )-338.8(Thus )-12.9(the )-12.9(maximum slab color is 64, and)]TJ
+T*
+0.1677 Tw
+[(the slab color sequence is 0, 8, 16, 24, )-12.3(32, )-12.3(40, )-12.3(48,)]TJ
+T*
+0.08 Tw
+(56, 64, 0, 8, ...)Tj
+2.5 -1.62 TD
+0.1006 Tw
+[(One particularly nice property )-19.3(of )-19.3(this )-19.3(coloring)]TJ
+-2.5 -1.2 TD
+0.6823 Tw
+(scheme is that mid-size power-of-two buffers)Tj
+T*
+0.4058 Tw
+[(receive the maximum amount )-10.8(of )-10.8(coloring, )-10.8(since)]TJ
+T*
+0.207 Tw
+(they are the worst-)Tj
+/TT7 1 Tf
+8.0904 0 TD
+0 Tw
+(Ş)Tj
+/TT6 1 Tf
+0.5562 0 TD
+0.197 Tw
+[(tting. )-333.8(For example, while 128)]TJ
+-8.6465 -1.2 TD
+0.5864 Tw
+(bytes goes perfectly into 4096, it goes near-)Tj
+T*
+0.16 Tw
+[(pessimally into 4096 - 32, which )12.7(is )12.7(what’s )12.7(actually)]TJ
+T*
+0.0717 Tw
+(available \(because of the embedded slab data\).)Tj
+/TT2 1 Tf
+11 0 0 11 311 508.2601 Tm
+0.4022 Tw
+[(4.4. Arena )343.9(Management)]TJ
+/TT6 1 Tf
+10 0 0 10 311 492.0601 Tm
+0.4299 Tw
+[(An )12.3(allocator’s arena management strategy deter-)]TJ
+T*
+0.1371 Tw
+[(mines its dynamic cache footprint. )-325.2(These )13.5(strategies)]TJ
+T*
+0.6588 Tw
+[(fall into three broad categories: )-340(sequential-)]TJ
+/TT7 1 Tf
+20.766 0 TD
+0 Tw
+(Ş)Tj
+/TT6 1 Tf
+0.5562 0 TD
+(t)Tj
+-21.3222 -1.2 TD
+0.4796 Tw
+[(methods, buddy methods, and )35.7(segregated-storage)]TJ
+T*
+0.0805 Tw
+(methods [Standish80].)Tj
+2.5 -1.62 TD
+0.0743 Tw
+(A sequential-)Tj
+/TT7 1 Tf
+5.4337 0 TD
+0 Tw
+(Ş)Tj
+/TT6 1 Tf
+0.5562 0 TD
+0.0875 Tw
+[(t )13.2(allocator must typically search)]TJ
+-8.4898 -1.2 TD
+0.3074 Tw
+(several nodes to )Tj
+/TT7 1 Tf
+7.6165 0 TD
+0 Tw
+(Ş)Tj
+/TT6 1 Tf
+0.5562 0 TD
+0.3093 Tw
+(nd a good-)Tj
+/TT7 1 Tf
+4.8955 0 TD
+0 Tw
+(Ş)Tj
+/TT6 1 Tf
+0.5562 0 TD
+0.3093 Tw
+[(tting buffer. )-330.7(Such)]TJ
+-13.6243 -1.2 TD
+0.1127 Tw
+[(methods )7.4(are, )7.4(by nature, condemned to a large cache)]TJ
+T*
+0.088 Tw
+[(footprint: )-8.6(they )-8.6(have to examine a signi)]TJ
+/TT7 1 Tf
+15.9856 0 TD
+0 Tw
+(Ş)Tj
+/TT6 1 Tf
+0.5562 0 TD
+0.088 Tw
+(cant number)Tj
+-16.5418 -1.2 TD
+0.0834 Tw
+[(of nodes that are generally )-6.7(nowhere )-6.6(near )-6.6(each )-6.6(other.)]TJ
+T*
+0.1394 Tw
+[(This )-7.8(causes )-7.8(not only cache misses, but TLB misses)]TJ
+T*
+0.3855 Tw
+[(as )10.2(well. )-329.8(The coalescing stages of buddy-system)]TJ
+T*
+0.0729 Tw
+(allocators [Knuth68, Lee89] have similar properties.)Tj
+2.5 -1.62 TD
+0.4061 Tw
+[(A )34.4(segregated-storage allocator, such as the)]TJ
+-2.5 -1.2 TD
+0.303 Tw
+[(slab allocator, maintains separate freelists )7.9(for )7.9(dif-)]TJ
+T*
+0.1459 Tw
+[(ferent buffer sizes. )-336.4(These )-6.9(allocators )-15.1(generally )-15.1(have)]TJ
+T*
+0.0949 Tw
+[(good )-7.9(cache )-7.9(locality because allocating a buffer is so)]TJ
+T*
+0.1174 Tw
+[(simple. )-338.3(All the allocator has to )-10.9(do )-10.9(is )-10.9(determine )-10.9(the)]TJ
+T*
+0.2586 Tw
+[(right freelist \(by computation, by table lookup, )11.6(or)]TJ
+T*
+0.2477 Tw
+[(by having it supplied as an argument\) and )-7.6(take )-7.6(a)]TJ
+T*
+0.5947 Tw
+[(buffer from it. )-330.6(Freeing a buffer is similarly)]TJ
+T*
+0.6159 Tw
+[(straightforward. )-308(There are only a )-10.3(handful )-10.3(of)]TJ
+T*
+0.0787 Tw
+(pointers to load, so the cache footprint is small.)Tj
+2.5 -1.62 TD
+0.2769 Tw
+(The slab allocator has the additional advan-)Tj
+-2.5 -1.2 TD
+0.167 Tw
+[(tage )-11.7(that )-11.7(for )-11.6(small )-11.6(to mid-size buffers, most of the)]TJ
+T*
+0.2461 Tw
+[(relevant information — the slab data, )-11.1(bufctls, )-11.1(and)]TJ
+T*
+0.4059 Tw
+[(buffers themselves — resides on a single )13.6(page.)]TJ
+T*
+0.0779 Tw
+(Thus a single TLB entry covers most of the action.)Tj
+ET
+endstream
+endobj
+30 0 obj
+<<
+/ProcSet [/PDF /Text ]
+/Font <<
+/TT2 4 0 R
+/TT6 6 0 R
+/TT7 7 0 R
+/TT9 8 0 R
+>>
+/ExtGState <<
+/GS1 11 0 R
+>>
+>>
+endobj
+32 0 obj
+<<
+/Length 11024
+>>
+stream
+BT
+/TT2 1 Tf
+11 0 0 11 59 722.4601 Tm
+0 g
+/GS1 gs
+0 Tc
+0.3659 Tw
+(5. Performance)Tj
+/TT6 1 Tf
+10 0 0 10 59 706.2601 Tm
+0.2131 Tw
+[(This )7.6(section )7.6(compares )7.6(the performance of the slab)]TJ
+0 -1.2 TD
+0.1938 Tw
+(allocator to three other well-known kernel memory)Tj
+T*
+0 Tw
+(allocators:)Tj
+/TT2 1 Tf
+2 -1.62 TD
+0.5876 Tw
+(SunOS 4.1.3)Tj
+/TT6 1 Tf
+5.84 0 TD
+0.5656 Tw
+(, based on [Stephenson83], a)Tj
+-5.84 -1.2 TD
+0 Tw
+(sequential-)Tj
+/TT7 1 Tf
+4.3872 0 TD
+(Ş)Tj
+/TT6 1 Tf
+0.5562 0 TD
+0.0815 Tw
+(t method;)Tj
+/TT2 1 Tf
+-4.9434 -1.62 TD
+0 Tw
+(4.4BSD)Tj
+/TT6 1 Tf
+3.2 0 TD
+0.2215 Tw
+[(, )8.4(based on [McKusick88], a power-of-)]TJ
+-3.2 -1.2 TD
+0.0683 Tw
+(two segregated-storage method;)Tj
+/TT2 1 Tf
+0 -1.62 TD
+0 Tw
+(SVr4)Tj
+/TT6 1 Tf
+2.22 0 TD
+0.6509 Tw
+[(, )7.8(based on [Lee89], a power-of-two)]TJ
+-2.22 -1.2 TD
+0.6496 Tw
+[(buddy-system method. )-332.6(This )7.6(allocator )14.8(was)]TJ
+T*
+0.0785 Tw
+(employed in all previous)Tj
+/TT2 1 Tf
+10.48 0 TD
+0.0976 Tw
+(SunOS 5.x)Tj
+/TT6 1 Tf
+4.93 0 TD
+0 Tw
+(releases.)Tj
+-17.41 -1.62 TD
+0.2351 Tw
+[(To get a fair comparison, )-8.3(each )-8.3(of )-8.3(these )-8.3(allocators)]TJ
+0 -1.2 TD
+0.2191 Tw
+[(was )-8.1(ported )-8.1(into the same SunOS 5.4 base system.)]TJ
+T*
+0.1842 Tw
+[(This ensures that we are )-13(comparing )-13(just )-13(allocators,)]TJ
+T*
+0.0775 Tw
+(not entire operating systems.)Tj
+/TT2 1 Tf
+11 0 0 11 59 503.4601 Tm
+0.4211 Tw
+[(5.1. Speed )340.3(Comparison)]TJ
+/TT6 1 Tf
+10 0 0 10 59 487.2601 Tm
+0.1855 Tw
+(On a SPARCstation-2 the time required to allocate)Tj
+T*
+0.1817 Tw
+(and free a buffer under the various allocators is as)Tj
+T*
+0 Tw
+(follows:)Tj
+/TT11 1 Tf
+0 -0.62 TD
+(_ )Tj
+0.07 0 TD
+(___________________________________________)Tj
+/TT6 1 Tf
+3.94 -1.2 TD
+0.0777 Tw
+(Memory Allocation + Free Costs)Tj
+/TT11 1 Tf
+-4.01 -0.1 TD
+0 Tw
+(_ )Tj
+0.07 0 TD
+(___________________________________________)Tj
+-0.07 -0.2 TD
+(_ )Tj
+0.07 0 TD
+(___________________________________________)Tj
+/TT6 1 Tf
+0.44 -1.1 TD
+2.9546 Tw
+[(allocator time )2877.6(\()]TJ
+/TT11 1 Tf
+9.14 0 TD
+0 Tw
+(µ)Tj
+/TT6 1 Tf
+0.58 0 TD
+1.2531 Tw
+(sec\) interface)Tj
+/TT11 1 Tf
+-10.23 -0.2 TD
+0 Tw
+(_ )Tj
+0.07 0 TD
+(___________________________________________)Tj
+/TT6 1 Tf
+0.44 -1.2 TD
+6.7692 Tw
+[(slab 3.8 )4048.7(kmem)]TJ
+/TT11 1 Tf
+15.35 0 TD
+0 Tw
+(_)Tj
+/TT6 1 Tf
+0.5 0 TD
+(cache)Tj
+/TT11 1 Tf
+2.26 0 TD
+(_)Tj
+/TT6 1 Tf
+0.5 0 TD
+(alloc)Tj
+-18.61 -1.2 TD
+5.1847 Tw
+[(4.4BSD 4.1 )2464.2(kmem)]TJ
+/TT11 1 Tf
+15.35 0 TD
+0 Tw
+(_)Tj
+/TT6 1 Tf
+0.5 0 TD
+(alloc)Tj
+-15.85 -1.2 TD
+6.7692 Tw
+[(slab 4.7 )4048.7(kmem)]TJ
+/TT11 1 Tf
+15.35 0 TD
+0 Tw
+(_)Tj
+/TT6 1 Tf
+0.5 0 TD
+(alloc)Tj
+-15.85 -1.2 TD
+6.2687 Tw
+[(SVr4 9.4 )3548.2(kmem)]TJ
+/TT11 1 Tf
+15.35 0 TD
+0 Tw
+(_)Tj
+/TT6 1 Tf
+0.5 0 TD
+(alloc)Tj
+-15.85 -1.2 TD
+0.0855 Tw
+[(SunOS 4.1.3 )-2624.5(25.0 )-2635(kmem)]TJ
+/TT11 1 Tf
+15.35 0 TD
+0 Tw
+(_)Tj
+/TT6 1 Tf
+0.5 0 TD
+(alloc)Tj
+/TT11 1 Tf
+-16.36 -0.2 TD
+(_ )Tj
+0.07 0 TD
+(___________________________________________ )Tj
+/TT10 1 Tf
+-0.4538 0 TD
+<00b2>Tj
+0.3838 1 TD
+<00b2>Tj
+T*
+<00b2>Tj
+T*
+<00b2>Tj
+T*
+<00b2>Tj
+T*
+<00b2>Tj
+T*
+<00b2>Tj
+T*
+<00b2>Tj
+T*
+<00b2>Tj
+6.44 -8 TD
+<00b2>Tj
+0 0.5 TD
+<00b2>Tj
+0 1 TD
+<00b2>Tj
+T*
+<00b2>Tj
+T*
+<00b2>Tj
+T*
+<00b2>Tj
+T*
+<00b2>Tj
+T*
+<00b2>Tj
+6.15 -6.5 TD
+<00b2>Tj
+0 0.5 TD
+<00b2>Tj
+0 1 TD
+<00b2>Tj
+T*
+<00b2>Tj
+T*
+<00b2>Tj
+T*
+<00b2>Tj
+T*
+<00b2>Tj
+T*
+<00b2>Tj
+8.98 -6.5 TD
+<00b2>Tj
+0 1 TD
+<00b2>Tj
+T*
+<00b2>Tj
+T*
+<00b2>Tj
+T*
+<00b2>Tj
+T*
+<00b2>Tj
+T*
+<00b2>Tj
+T*
+<00b2>Tj
+T*
+<00b2>Tj
+/TT6 1 Tf
+-21.57 -10.04 TD
+0.2465 Tw
+[(Note: )12.9(The 4.4BSD allocator offers both functional)]TJ
+0 -1.2 TD
+0.1545 Tw
+[(and preprocessor macro interfaces. )-337.8(These measure-)]TJ
+T*
+0.3143 Tw
+[(ments are for the )-11.7(functional )-11.7(version. )-335.8(Non-binary)]TJ
+T*
+0.4394 Tw
+(interfaces in general were not considered, since)Tj
+T*
+0.2084 Tw
+[(these )15.9(cannot )15.9(be )15.9(exported to drivers without expos-)]TJ
+T*
+0.1602 Tw
+[(ing the implementation. )-325.1(The 4.4BSD allocator )15.4(was)]TJ
+T*
+0 Tw
+(compiled)Tj
+/TT4 1 Tf
+4.16 0 TD
+(without)Tj
+/TT9 1 Tf
+3.72 0 TD
+(KMEMSTATS)Tj
+/TT6 1 Tf
+5.84 0 TD
+(de)Tj
+/TT7 1 Tf
+0.9438 0 TD
+(Ş)Tj
+/TT6 1 Tf
+0.5562 0 TD
+0.1877 Tw
+[(ned \(it’s on )-12.3(by)]TJ
+-15.22 -1.2 TD
+0.0765 Tw
+(default\) to get the fastest possible code.)Tj
+2.5 -1.62 TD
+0 Tw
+(A)Tj
+/TT9 1 Tf
+1.47 0 TD
+(mutex_enter\(\)/mutex_exit\(\))Tj
+/TT6 1 Tf
+16.08 0 TD
+(pair)Tj
+-20.05 -1.2 TD
+0.25 Tw
+(costs 1.0)Tj
+/TT11 1 Tf
+4.25 0 TD
+0 Tw
+(µ)Tj
+/TT6 1 Tf
+0.58 0 TD
+0.2358 Tw
+(sec, so the locking required to allocate)Tj
+-4.83 -1.2 TD
+0.3273 Tw
+[(and )15.3(free )15.3(a )15.3(buffer )15.3(imposes a lower bound of 2.0)]TJ
+/TT11 1 Tf
+T*
+0 Tw
+(µ)Tj
+/TT6 1 Tf
+0.58 0 TD
+0.0868 Tw
+[(sec. )-331.7(The slab and 4.4BSD allocators are both very)]TJ
+-0.58 -1.2 TD
+0.1786 Tw
+[(close to this limit because they do very )-12.3(little )-12.3(work)]TJ
+T*
+0.1461 Tw
+[(in the common cases. )-329.2(The )-8.6(4.4BSD implementation)]TJ
+T*
+0 Tw
+(of)Tj
+/TT9 1 Tf
+1.56 0 TD
+(kmem_alloc\(\))Tj
+/TT6 1 Tf
+7.66 0 TD
+0.2097 Tw
+(is slightly faster, since it has)Tj
+-9.22 -1.2 TD
+0.2571 Tw
+[(less accounting to do \(it never )13.5(reclaims )13.5(memory\).)]TJ
+T*
+0.7921 Tw
+(The slab allocator’s)Tj
+/TT9 1 Tf
+10.8 0 TD
+0 Tw
+(kmem_cache_alloc\(\))Tj
+/TT6 1 Tf
+-10.8 -1.2 TD
+0.1386 Tw
+(interface is even faster, however, because it doesn’t)Tj
+T*
+0.201 Tw
+[(have to determine which freelist \(cache\) )-18.7(to )-18.7(use )-18.7(—)]TJ
+T*
+0.305 Tw
+(the cache descriptor is passed as an argument to)Tj
+/TT9 1 Tf
+T*
+0 Tw
+(kmem_cache_alloc\(\))Tj
+/TT6 1 Tf
+10.8 0 TD
+0.103 Tw
+[(. )-324(In )6.8(any event, the differ-)]TJ
+-10.8 -1.2 TD
+0.5388 Tw
+(ences in speed between the slab and 4.4BSD)Tj
+25.2 63.2 TD
+0.2167 Tw
+[(allocators )24.6(are )-6.8(small. )-335.5(This is to be expected, since)]TJ
+0 -1.2 TD
+0.5579 Tw
+[(all segregated-storage methods )6.2(are )6.2(operationally)]TJ
+T*
+0.2401 Tw
+[(similar. )-340.4(Any good segregated-storage implementa-)]TJ
+T*
+0.0707 Tw
+(tion should achieve excellent performance.)Tj
+2.5 -1.62 TD
+0.0981 Tw
+(The SVr4 allocator is slower than most buddy)Tj
+-2.5 -1.2 TD
+0.3946 Tw
+[(systems )-20.6(but still provides reasonable, predictable)]TJ
+T*
+0.6095 Tw
+[(speed. )-319(The SunOS 4.1.3 allocator, like )-15.7(most)]TJ
+T*
+0 Tw
+(sequential-)Tj
+/TT7 1 Tf
+4.3872 0 TD
+(Ş)Tj
+/TT6 1 Tf
+0.5562 0 TD
+0.3578 Tw
+[(t methods, is comparatively )9.3(slow )9.3(and)]TJ
+-4.9434 -1.2 TD
+0.0703 Tw
+(quite variable.)Tj
+2.5 -1.62 TD
+0.156 Tw
+(The bene)Tj
+/TT7 1 Tf
+3.8484 0 TD
+0 Tw
+(Ş)Tj
+/TT6 1 Tf
+0.5562 0 TD
+0.1664 Tw
+[(ts )10.4(of )10.4(object caching are not visible)]TJ
+-6.9046 -1.2 TD
+0.1764 Tw
+(in the numbers above, since they only measure the)Tj
+T*
+0.177 Tw
+[(cost of the allocator itself. )-328.3(The table below shows)]TJ
+T*
+0.2618 Tw
+(the effect of object caching on some of the most)Tj
+T*
+0.6356 Tw
+[(frequent allocations in the )-13.4(SunOS )-13.4(5.4 )-13.4(kernel)]TJ
+T*
+0.0838 Tw
+(\(SPARCstation-2 timings, in microseconds\):)Tj
+/TT11 1 Tf
+0 -0.62 TD
+0 Tw
+(_ )Tj
+0.07 0 TD
+(___________________________________________)Tj
+/TT6 1 Tf
+5.59 -1.2 TD
+0.0722 Tw
+(Effect of Object Caching)Tj
+/TT11 1 Tf
+-5.66 -0.1 TD
+0 Tw
+(_ )Tj
+0.07 0 TD
+(___________________________________________)Tj
+-0.07 -0.2 TD
+(_ )Tj
+0.07 0 TD
+(___________________________________________)Tj
+/TT6 1 Tf
+0.44 -1.1 TD
+3.4615 Tw
+[(allocation without )1499.3(with )1527(improve-)]TJ
+0 -1.2 TD
+5.6489 Tw
+[(type caching )4378.3(caching )3538.4(ment)]TJ
+/TT11 1 Tf
+-0.51 -0.2 TD
+0 Tw
+(_ )Tj
+0.07 0 TD
+(___________________________________________)Tj
+/TT6 1 Tf
+0.44 -1.2 TD
+6.3566 Tw
+[(allocb 8.3 )3476.6(6.0 )3446.6(1.4x)]TJ
+T*
+6.3 Tw
+[(dupb 13.4 )3420(8.7 )3390(1.5x)]TJ
+T*
+5.4675 Tw
+[(shalloc 29.3 )2587.5(5.7 )2557.5(5.1x)]TJ
+T*
+5.8566 Tw
+[(allocq 40.0 )3476.6(10.9 )2946.6(3.7x)]TJ
+T*
+0 Tw
+(anonmap)Tj
+/TT11 1 Tf
+3.66 0 TD
+(_)Tj
+/TT6 1 Tf
+0.5 0 TD
+2.1966 Tw
+[(alloc 16.3 )-183.4(10.1 )-713.4(1.6x)]TJ
+-4.16 -1.2 TD
+3.9128 Tw
+[(makepipe 126.0 )1532.8(98.0 )1002.8(1.3x)]TJ
+/TT11 1 Tf
+-0.51 -0.2 TD
+0 Tw
+(_ )Tj
+0.07 0 TD
+(___________________________________________ )Tj
+/TT10 1 Tf
+-0.4538 0 TD
+<00b2>Tj
+0.3838 0.4 TD
+<00b2>Tj
+0 1 TD
+<00b2>Tj
+T*
+<00b2>Tj
+T*
+<00b2>Tj
+T*
+<00b2>Tj
+T*
+<00b2>Tj
+T*
+<00b2>Tj
+T*
+<00b2>Tj
+T*
+<00b2>Tj
+T*
+<00b2>Tj
+T*
+<00b2>Tj
+7.37 -10.4 TD
+<00b2>Tj
+0 0.9 TD
+<00b2>Tj
+0 1 TD
+<00b2>Tj
+T*
+<00b2>Tj
+T*
+<00b2>Tj
+T*
+<00b2>Tj
+T*
+<00b2>Tj
+T*
+<00b2>Tj
+T*
+<00b2>Tj
+T*
+<00b2>Tj
+4.63 -8.9 TD
+<00b2>Tj
+0 0.9 TD
+<00b2>Tj
+0 1 TD
+<00b2>Tj
+T*
+<00b2>Tj
+T*
+<00b2>Tj
+T*
+<00b2>Tj
+T*
+<00b2>Tj
+T*
+<00b2>Tj
+T*
+<00b2>Tj
+T*
+<00b2>Tj
+4.63 -8.9 TD
+<00b2>Tj
+0 0.9 TD
+<00b2>Tj
+0 1 TD
+<00b2>Tj
+T*
+<00b2>Tj
+T*
+<00b2>Tj
+T*
+<00b2>Tj
+T*
+<00b2>Tj
+T*
+<00b2>Tj
+T*
+<00b2>Tj
+T*
+<00b2>Tj
+4.94 -8.9 TD
+<00b2>Tj
+0 0.4 TD
+<00b2>Tj
+0 1 TD
+<00b2>Tj
+T*
+<00b2>Tj
+T*
+<00b2>Tj
+T*
+<00b2>Tj
+T*
+<00b2>Tj
+T*
+<00b2>Tj
+T*
+<00b2>Tj
+T*
+<00b2>Tj
+T*
+<00b2>Tj
+T*
+<00b2>Tj
+/TT6 1 Tf
+-19.07 -12.44 TD
+0.2369 Tw
+[(All of the numbers presented in )-14.4(this )-14.4(section)]TJ
+-2.5 -1.2 TD
+0.2417 Tw
+(measure the performance of the allocator in isola-)Tj
+T*
+0.2134 Tw
+[(tion. )-336.2(The allocator’s effect on overall system per-)]TJ
+T*
+0.0775 Tw
+(formance will be discussed in Section 5.3.)Tj
+/TT2 1 Tf
+11 0 0 11 311 339.4601 Tm
+0.0793 Tw
+[(5.2. )-306.1(Memory Utilization Comparison)]TJ
+/TT6 1 Tf
+10 0 0 10 311 323.2601 Tm
+0.1068 Tw
+[(An )17(allocator )17(generally consumes more memory than)]TJ
+T*
+0.4271 Tw
+[(its clients actually request due )7.8(to )7.8(imperfect )]TJ
+/TT7 1 Tf
+20.3769 0 TD
+0 Tw
+(Ş)Tj
+/TT6 1 Tf
+0.5562 0 TD
+(ts)Tj
+-20.933 -1.2 TD
+0.1215 Tw
+[(\(internal fragmentation\), unused buffers on )-9.3(the )-9.3(free-)]TJ
+T*
+0.3328 Tw
+[(list \(external fragmentation\), and )9.2(the )9.2(overhead )9.2(of)]TJ
+T*
+0.1454 Tw
+[(the )17.3(allocator’s internal data structures. )-329.9(The ratio of)]TJ
+T*
+0.4785 Tw
+[(memory )-5.6(requested )-5.6(to memory consumed is the)]TJ
+T*
+0 Tw
+(allocator’s)Tj
+/TT4 1 Tf
+4.65 0 TD
+0.1927 Tw
+(memory utilization)Tj
+/TT6 1 Tf
+7.72 0 TD
+0.5153 Tw
+[(. The )325(complementary)]TJ
+-12.37 -1.2 TD
+0.1494 Tw
+(ratio is the)Tj
+/TT4 1 Tf
+4.92 0 TD
+0.141 Tw
+(memory wastage)Tj
+/TT6 1 Tf
+7.29 0 TD
+0 Tw
+(or)Tj
+/TT4 1 Tf
+1.23 0 TD
+0.16 Tw
+(total fragmentation)Tj
+/TT6 1 Tf
+7.91 0 TD
+0 Tw
+(.)Tj
+-21.35 -1.2 TD
+0.142 Tw
+(Good memory utilization is essential, since the ker-)Tj
+T*
+0.0754 Tw
+(nel heap consumes physical memory.)Tj
+2.5 -1.62 TD
+0.3327 Tw
+(An allocator’s space ef)Tj
+/TT7 1 Tf
+10.1879 0 TD
+0 Tw
+(Ş)Tj
+/TT6 1 Tf
+0.5562 0 TD
+0.3327 Tw
+(ciency is harder to)Tj
+-13.2441 -1.2 TD
+0.2258 Tw
+(characterize than its speed because it is workload-)Tj
+T*
+0.2574 Tw
+[(dependent. )14.4(The )14.4(best )14.4(we can do is to measure the)]TJ
+T*
+0.1379 Tw
+(various allocators’ memory utilization under a )Tj
+/TT7 1 Tf
+19.6 0 TD
+0 Tw
+(Ş)Tj
+/TT6 1 Tf
+0.5562 0 TD
+(xed)Tj
+-20.1562 -1.2 TD
+0.2253 Tw
+[(set )10.2(of )10.2(workloads. )-323.9(To this end, each allocator was)]TJ
+T*
+0.0752 Tw
+(subjected to the following workload sequence:)Tj
+0 -1.62 TD
+0.5649 Tw
+[(\(1\) )-24.3(System boot. )-327.3(This measures the system’s)]TJ
+2 -1.2 TD
+0.1298 Tw
+[(memory utilization at the console login )8.5(prompt)]TJ
+T*
+0.0659 Tw
+(after rebooting.)Tj
+ET
+endstream
+endobj
+33 0 obj
+<<
+/ProcSet [/PDF /Text ]
+/Font <<
+/TT2 4 0 R
+/TT4 5 0 R
+/TT6 6 0 R
+/TT7 7 0 R
+/TT9 8 0 R
+/TT10 9 0 R
+/TT11 10 0 R
+>>
+/ExtGState <<
+/GS1 11 0 R
+>>
+>>
+endobj
+35 0 obj
+<<
+/Length 10760
+>>
+stream
+BT
+/TT6 1 Tf
+10 0 0 10 59 718.2601 Tm
+0 g
+/GS1 gs
+0 Tc
+0.327 Tw
+[(\(2\) )-254.8(A )14.7(brief spike in load, generated by the)]TJ
+2 -1.2 TD
+0.0788 Tw
+(following trivial program:)Tj
+/TT9 1 Tf
+9 0 0 9 89 690.0601 Tm
+-0.001 Tw
+(fork\(\); fork\(\); fork\(\); fork\(\);)Tj
+0 -1.3333 TD
+(fork\(\); fork\(\); fork\(\); fork\(\);)Tj
+T*
+-0.0009 Tw
+(fd = socket\(AF_UNIX, SOCK_STREAM, 0\);)Tj
+T*
+0 Tw
+(sleep\(60\);)Tj
+T*
+(close\(fd\);)Tj
+/TT6 1 Tf
+10 0 0 10 79 621.66 Tm
+0.4708 Tw
+[(This creates 256 processes, each )-15.8(of )-15.8(which)]TJ
+0 -1.2 TD
+0.4623 Tw
+[(creates )-5.7(a )-5.7(socket. )-349.9(This causes a temporary)]TJ
+T*
+0.2645 Tw
+[(surge )8.3(in demand for a variety of kernel data)]TJ
+T*
+0 Tw
+(structures.)Tj
+-2 -2.04 TD
+0.7288 Tw
+[(\(3\) )138.8(Find. )-333.4(This is another trivial )-7.4(spike-)]TJ
+2 -1.2 TD
+0 Tw
+(generator:)Tj
+/TT9 1 Tf
+9 0 0 9 89 537.0601 Tm
+-0.0005 Tw
+(find /usr -mount -exec file {} \\;)Tj
+/TT6 1 Tf
+10 0 0 10 59 516.66 Tm
+0.1259 Tw
+[(\(4\) )-452.9(Kenbus. )-326.3(This is a standard timesharing bench-)]TJ
+2 -1.2 TD
+0.3939 Tw
+[(mark. )-326.2(Kenbus generates a large amount of)]TJ
+T*
+0.2489 Tw
+[(concurrent activity, creating large )-15.3(demand )-15.3(for)]TJ
+T*
+0.0753 Tw
+(both user and kernel memory.)Tj
+-2 -1.62 TD
+0.2818 Tw
+(Memory utilization was measured after each step.)Tj
+0 -1.2 TD
+0.1083 Tw
+[(The )-5.6(table )-5.6(below )-5.6(summarizes the results for a 16MB)]TJ
+T*
+0.4388 Tw
+[(SPARCstation-1. )-328.5(The )9.6(slab allocator signi)]TJ
+/TT7 1 Tf
+18.6005 0 TD
+0 Tw
+(Ş)Tj
+/TT6 1 Tf
+0.5562 0 TD
+(cantly)Tj
+-19.1566 -1.2 TD
+0.3166 Tw
+(outperformed the others, ending up with half the)Tj
+T*
+0.1838 Tw
+[(fragmentation of the nearest competitor \(results )-5.5(are)]TJ
+T*
+0.226 Tw
+(cumulative, so the ‘‘kenbus’’ column indicates the)Tj
+T*
+0.0725 Tw
+(fragmentation after all four steps were completed\):)Tj
+/TT11 1 Tf
+9 0 0 9 59 385.2601 Tm
+0 Tw
+(________________________________________________)Tj
+/TT6 1 Tf
+8.0444 -1.3333 TD
+0.0851 Tw
+(Total Fragmentation \(waste\))Tj
+/TT11 1 Tf
+-8.0444 -0.2222 TD
+0 Tw
+(________________________________________________)Tj
+T*
+(________________________________________________)Tj
+/TT6 1 Tf
+0.8222 -1.2222 TD
+2.763 Tw
+[(allocator boot )1179.4(spike )]TJ
+/TT7 1 Tf
+14.1661 0 TD
+0 Tw
+(Ş)Tj
+/TT6 1 Tf
+0.5562 0 TD
+1.2059 Tw
+[(nd kenbus )611.8(s/m)]TJ
+/TT11 1 Tf
+-15.5444 -0.3333 TD
+0 Tw
+(________________________________________________)Tj
+/TT6 1 Tf
+0.8222 -1.3333 TD
+4.6284 Tw
+[(slab 11% )2944.7(13% )2933.6(14% )3067(14% )3556.2(233)]TJ
+T*
+0.0933 Tw
+[(SunOS 4.1.3 )-1379.2(7% )-1679.2(19% )-1601.5(19% )-1468.1(27% )-978.9(210)]TJ
+T*
+3.0439 Tw
+[(4.4BSD 20% )1360.2(43% )1349.1(43% )1482.5(45% )1971.7(205)]TJ
+T*
+4.1279 Tw
+[(SVr4 23% )2444.2(45% )2433.1(45% )2566.5(46% )3055.7(199)]TJ
+/TT11 1 Tf
+-0.8222 -0.3333 TD
+0 Tw
+(________________________________________________ )Tj
+/TT10 1 Tf
+-0.3838 0 TD
+<00b2>Tj
+0.3838 1 TD
+<00b2>Tj
+T*
+<00b2>Tj
+T*
+<00b2>Tj
+T*
+<00b2>Tj
+T*
+<00b2>Tj
+T*
+<00b2>Tj
+T*
+<00b2>Tj
+T*
+<00b2>Tj
+6.4111 -8 TD
+<00b2>Tj
+0 1 TD
+<00b2>Tj
+T*
+<00b2>Tj
+T*
+<00b2>Tj
+T*
+<00b2>Tj
+T*
+<00b2>Tj
+T*
+<00b2>Tj
+T*
+<00b2>Tj
+T*
+<00b2>Tj
+3.6333 -8 TD
+<00b2>Tj
+0 0.2222 TD
+<00b2>Tj
+0 1 TD
+<00b2>Tj
+T*
+<00b2>Tj
+T*
+<00b2>Tj
+T*
+<00b2>Tj
+T*
+<00b2>Tj
+T*
+<00b2>Tj
+3.9111 -6.2222 TD
+<00b2>Tj
+0 0.2222 TD
+<00b2>Tj
+0 1 TD
+<00b2>Tj
+T*
+<00b2>Tj
+T*
+<00b2>Tj
+T*
+<00b2>Tj
+T*
+<00b2>Tj
+T*
+<00b2>Tj
+3.6333 -6.2222 TD
+<00b2>Tj
+0 0.2222 TD
+<00b2>Tj
+0 1 TD
+<00b2>Tj
+T*
+<00b2>Tj
+T*
+<00b2>Tj
+T*
+<00b2>Tj
+T*
+<00b2>Tj
+T*
+<00b2>Tj
+3.6556 -6.2222 TD
+<00b2>Tj
+0 1 TD
+<00b2>Tj
+T*
+<00b2>Tj
+T*
+<00b2>Tj
+T*
+<00b2>Tj
+T*
+<00b2>Tj
+T*
+<00b2>Tj
+T*
+<00b2>Tj
+T*
+<00b2>Tj
+2.7333 -8 TD
+<00b2>Tj
+0 1 TD
+<00b2>Tj
+T*
+<00b2>Tj
+T*
+<00b2>Tj
+T*
+<00b2>Tj
+T*
+<00b2>Tj
+T*
+<00b2>Tj
+T*
+<00b2>Tj
+T*
+<00b2>Tj
+/TT6 1 Tf
+10 0 0 10 84 283.86 Tm
+0.3689 Tw
+[(The last column shows )-9.3(the )-9.3(kenbus )-9.3(results,)]TJ
+-2.5 -1.2 TD
+0.233 Tw
+(which measure peak throughput in units of scripts)Tj
+T*
+0.1809 Tw
+[(executed )31(per minute \(s/m\). )-323.9(Kenbus )10.5(performance )10.5(is)]TJ
+T*
+0.4223 Tw
+[(primarily memory-limited on this 16MB )10.1(system,)]TJ
+T*
+0.2761 Tw
+[(which )7.7(is )7.7(why )7.7(the SunOS 4.1.3 allocator achieved)]TJ
+T*
+0.4573 Tw
+(better results than the 4.4BSD allocator despite)Tj
+T*
+0.654 Tw
+(being signi)Tj
+/TT7 1 Tf
+5.0705 0 TD
+0 Tw
+(Ş)Tj
+/TT6 1 Tf
+0.5562 0 TD
+0.655 Tw
+[(cantly slower. )-330.3(The slab allocator)]TJ
+-5.6266 -1.2 TD
+0.2337 Tw
+(delivered the best performance by an 11% margin)Tj
+T*
+0.0778 Tw
+(because it is both fast)Tj
+/TT4 1 Tf
+9.25 0 TD
+0 Tw
+(and)Tj
+/TT6 1 Tf
+1.83 0 TD
+(space-ef)Tj
+/TT7 1 Tf
+3.3306 0 TD
+(Ş)Tj
+/TT6 1 Tf
+0.5562 0 TD
+(cient.)Tj
+-12.4667 -1.62 TD
+0.21 Tw
+(To get a handle on real-life performance the)Tj
+-2.5 -1.2 TD
+0.1837 Tw
+[(author used each of these allocators for a )8.6(week )8.6(on)]TJ
+T*
+1.2059 Tw
+[(his personal desktop machine, a )-17.9(32MB)]TJ
+T*
+0.3379 Tw
+[(SPARCstation-2. )-356.3(This machine is primarily used)]TJ
+T*
+0.2691 Tw
+[(for )18.5(reading )18.5(e-mail, running simple commands and)]TJ
+T*
+0.2469 Tw
+[(scripts, and connecting to test machines and )11.6(com-)]TJ
+T*
+0.3607 Tw
+[(pute )24.4(servers. )-324.6(The results of this obviously non-)]TJ
+T*
+0.0685 Tw
+(controlled experiment were:)Tj
+/TT11 1 Tf
+25.2 64.48 TD
+0 Tw
+(_ )Tj
+0.08 0 TD
+(___________________________________________)Tj
+/TT6 1 Tf
+1.99 -1.2 TD
+0.0742 Tw
+(Effect of One Week of Light Desktop Use)Tj
+/TT11 1 Tf
+-2.07 -0.1 TD
+0 Tw
+(_ )Tj
+0.08 0 TD
+(___________________________________________)Tj
+-0.08 -0.2 TD
+(_ )Tj
+0.08 0 TD
+(___________________________________________)Tj
+/TT6 1 Tf
+11.59 -1.1 TD
+2.9769 Tw
+(kernel fragmen-)Tj
+-11.15 -1.2 TD
+7.6943 Tw
+[(allocator heap )3701.6(tation)]TJ
+/TT11 1 Tf
+-0.52 -0.2 TD
+0 Tw
+(_ )Tj
+0.08 0 TD
+(___________________________________________)Tj
+/TT6 1 Tf
+0.44 -1.2 TD
+8.9592 Tw
+[(slab 6.0 )8875.4(MB )5122.2(9%)]TJ
+T*
+0.0846 Tw
+[(SunOS 4.1.3 )-5315.4(6.7 MB )-3502.4(17%)]TJ
+T*
+8.4587 Tw
+[(SVr4 8.5 )8374.9(MB )4871.7(35%)]TJ
+T*
+7.3747 Tw
+[(4.4BSD 9.0 )7290.9(MB )3787.7(38%)]TJ
+/TT11 1 Tf
+-0.52 -0.2 TD
+0 Tw
+(_ )Tj
+0.08 0 TD
+(___________________________________________ )Tj
+/TT10 1 Tf
+-0.4638 0 TD
+<00b2>Tj
+0.3838 1 TD
+<00b2>Tj
+T*
+<00b2>Tj
+T*
+<00b2>Tj
+T*
+<00b2>Tj
+T*
+<00b2>Tj
+T*
+<00b2>Tj
+T*
+<00b2>Tj
+T*
+<00b2>Tj
+9.2 -8 TD
+<00b2>Tj
+0 0.5 TD
+<00b2>Tj
+0 1 TD
+<00b2>Tj
+T*
+<00b2>Tj
+T*
+<00b2>Tj
+T*
+<00b2>Tj
+T*
+<00b2>Tj
+T*
+<00b2>Tj
+7.43 -6.5 TD
+<00b2>Tj
+0 0.5 TD
+<00b2>Tj
+0 1 TD
+<00b2>Tj
+T*
+<00b2>Tj
+T*
+<00b2>Tj
+T*
+<00b2>Tj
+T*
+<00b2>Tj
+T*
+<00b2>Tj
+4.95 -6.5 TD
+<00b2>Tj
+0 1 TD
+<00b2>Tj
+T*
+<00b2>Tj
+T*
+<00b2>Tj
+T*
+<00b2>Tj
+T*
+<00b2>Tj
+T*
+<00b2>Tj
+T*
+<00b2>Tj
+T*
+<00b2>Tj
+/TT6 1 Tf
+-19.08 -10.04 TD
+0.1563 Tw
+(These numbers are consistent with the results)Tj
+-2.5 -1.2 TD
+0.3258 Tw
+[(from the synthetic workload )15.4(described )15.4(above. )-321.2(In)]TJ
+T*
+0.2639 Tw
+[(both )8.6(cases, )8.6(the slab allocator generates about half)]TJ
+T*
+0.328 Tw
+[(the fragmentation of SunOS 4.1.3, )8.8(which )8.8(in )8.8(turn)]TJ
+T*
+0.1542 Tw
+(generates about half the fragmentation of SVr4 and)Tj
+T*
+0 Tw
+(4.4BSD.)Tj
+/TT2 1 Tf
+11 0 0 11 311 532.0601 Tm
+0.0508 Tw
+[(5.3. )-359.8(Overall System Performance)]TJ
+/TT6 1 Tf
+10 0 0 10 311 515.8601 Tm
+0.1604 Tw
+[(The kernel memory allocator affects )-17.5(overall )-17.5(system)]TJ
+T*
+0.1523 Tw
+[(performance in a variety of ways. )-324.7(In )9.2(previous )9.2(sec-)]TJ
+T*
+0.1145 Tw
+(tions we considered the effects of several individual)Tj
+T*
+0.4105 Tw
+[(factors: )-7.6(object caching, hardware cache and bus)]TJ
+T*
+0.3544 Tw
+[(effects, speed, and memory utilization. )-327.9(We )-13.4(now)]TJ
+T*
+0.1922 Tw
+[(turn )-7.6(to )-7.6(the most important metric: )-326.1(the bottom-line)]TJ
+T*
+0.3592 Tw
+[(performance of interesting workloads. )-337.8(In )-26.3(SunOS)]TJ
+T*
+0.2829 Tw
+[(5.4 )-15.4(the SVr4-based allocator was replaced by the)]TJ
+T*
+0.4796 Tw
+[(slab allocator described here. )-335.7(The )-16.8(table )-16.8(below)]TJ
+T*
+0.1937 Tw
+(shows the net performance improvement in several)Tj
+T*
+0.0624 Tw
+(key areas.)Tj
+/TT11 1 Tf
+0 -0.62 TD
+0 Tw
+(_ )Tj
+0.04 0 TD
+(___________________________________________)Tj
+/TT6 1 Tf
+3.69 -1.2 TD
+0.0698 Tw
+(System Performance Improvement)Tj
+2.88 -1.2 TD
+0.079 Tw
+(with Slab Allocator)Tj
+/TT11 1 Tf
+-6.61 -0.1 TD
+0 Tw
+(_ )Tj
+0.04 0 TD
+(___________________________________________)Tj
+-0.04 -0.2 TD
+(_ )Tj
+0.04 0 TD
+(___________________________________________)Tj
+/TT6 1 Tf
+0.65 -1.1 TD
+0.0768 Tw
+[(workload )-4104.7(gain )-1799.3(what it measures)]TJ
+/TT11 1 Tf
+-0.69 -0.2 TD
+0 Tw
+(_ )Tj
+0.04 0 TD
+(___________________________________________)Tj
+/TT6 1 Tf
+0.65 -1.2 TD
+3.2971 Tw
+[(DeskBench 12% )1479.3(window )3214.9(system)]TJ
+T*
+5.074 Tw
+[(kenbus 17% )3255.2(timesharing)]TJ
+T*
+5.323 Tw
+[(TPC-B 4% )3265.4(database)]TJ
+T*
+4.4905 Tw
+[(LADDIS 3% )2415(NFS )4422(service)]TJ
+T*
+0.0664 Tw
+[(parallel make )-2610.6(5% )-1995.6(parallel )-16.7(compilation)]TJ
+T*
+2.0631 Tw
+[(terminal )1998(server 5% many-user )1978.8(typing)]TJ
+/TT11 1 Tf
+-0.69 -0.2 TD
+0 Tw
+(_ )Tj
+0.04 0 TD
+(___________________________________________ )Tj
+/TT10 1 Tf
+-0.4238 0 TD
+<00b2>Tj
+0.3838 0.4 TD
+<00b2>Tj
+0 1 TD
+<00b2>Tj
+T*
+<00b2>Tj
+T*
+<00b2>Tj
+T*
+<00b2>Tj
+T*
+<00b2>Tj
+T*
+<00b2>Tj
+T*
+<00b2>Tj
+T*
+<00b2>Tj
+T*
+<00b2>Tj
+T*
+<00b2>Tj
+7.81 -10.4 TD
+<00b2>Tj
+0 0.7 TD
+<00b2>Tj
+0 1 TD
+<00b2>Tj
+T*
+<00b2>Tj
+T*
+<00b2>Tj
+T*
+<00b2>Tj
+T*
+<00b2>Tj
+T*
+<00b2>Tj
+T*
+<00b2>Tj
+3.9 -7.7 TD
+<00b2>Tj
+0 0.7 TD
+<00b2>Tj
+0 1 TD
+<00b2>Tj
+T*
+<00b2>Tj
+T*
+<00b2>Tj
+T*
+<00b2>Tj
+T*
+<00b2>Tj
+T*
+<00b2>Tj
+T*
+<00b2>Tj
+9.83 -7.7 TD
+<00b2>Tj
+0 0.4 TD
+<00b2>Tj
+0 1 TD
+<00b2>Tj
+T*
+<00b2>Tj
+T*
+<00b2>Tj
+T*
+<00b2>Tj
+T*
+<00b2>Tj
+T*
+<00b2>Tj
+T*
+<00b2>Tj
+T*
+<00b2>Tj
+T*
+<00b2>Tj
+T*
+<00b2>Tj
+/TT6 1 Tf
+-21.54 -12.44 TD
+(Notes:)Tj
+0 -1.62 TD
+0.5653 Tw
+[(\(1\) )-8.8(DeskBench )8.7(and )8.7(kenbus are both memory-)]TJ
+2 -1.2 TD
+0.2208 Tw
+(bound in 16MB, so most of the improvement)Tj
+T*
+0.5667 Tw
+(here is due to the slab allocator’s space)Tj
+T*
+0 Tw
+(ef)Tj
+/TT7 1 Tf
+0.7769 0 TD
+(Ş)Tj
+/TT6 1 Tf
+0.5562 0 TD
+(ciency.)Tj
+-3.333 -1.62 TD
+0.2054 Tw
+[(\(2\) )-373.9(The )5.8(TPC-B )5.8(workload causes very little kernel)]TJ
+2 -1.2 TD
+0.2166 Tw
+(memory allocation, so the allocator’s speed is)Tj
+T*
+0.1549 Tw
+(not a signi)Tj
+/TT7 1 Tf
+4.4763 0 TD
+0 Tw
+(Ş)Tj
+/TT6 1 Tf
+0.5562 0 TD
+0.1565 Tw
+[(cant factor here. )-328.8(The test was run)]TJ
+-5.0324 -1.2 TD
+0.2006 Tw
+(on a large server with enough memory that it)Tj
+T*
+0.2285 Tw
+[(never paged \(under either )-14.5(allocator\), )-14.5(so )-14.5(space)]TJ
+T*
+0 Tw
+(ef)Tj
+/TT7 1 Tf
+0.7769 0 TD
+(Ş)Tj
+/TT6 1 Tf
+0.5562 0 TD
+0.2063 Tw
+[(ciency is not a )15.3(factor )15.3(either. )-319(The )12.7(4% )12.7(per-)]TJ
+-1.333 -1.2 TD
+0.2358 Tw
+[(formance improvement is due solely )-12.1(to )-12.1(better)]TJ
+T*
+0.5306 Tw
+[(cache utilization \(5% fewer primary )16(cache)]TJ
+T*
+0.071 Tw
+(misses, 2% fewer secondary cache misses\).)Tj
+ET
+endstream
+endobj
+36 0 obj
+<<
+/ProcSet [/PDF /Text ]
+/Font <<
+/TT2 4 0 R
+/TT4 5 0 R
+/TT6 6 0 R
+/TT7 7 0 R
+/TT9 8 0 R
+/TT10 9 0 R
+/TT11 10 0 R
+>>
+/ExtGState <<
+/GS1 11 0 R
+>>
+>>
+endobj
+38 0 obj
+<<
+/Length 8504
+>>
+stream
+BT
+/TT6 1 Tf
+10 0 0 10 59 722.4601 Tm
+0 g
+/GS1 gs
+0 Tc
+0.2653 Tw
+[(\(3\) )-314.5(Parallel )10.8(make was run on a large server that)]TJ
+2 -1.2 TD
+0.1446 Tw
+[(never )13(paged. )-337.6(This workload generates a lot )7.6(of)]TJ
+T*
+0.3556 Tw
+(allocator traf)Tj
+/TT7 1 Tf
+5.4914 0 TD
+0 Tw
+(Ş)Tj
+/TT6 1 Tf
+0.5562 0 TD
+0.3556 Tw
+(c, so the improvement here is)Tj
+-6.0475 -1.2 TD
+0.1258 Tw
+[(attributable to the slab allocator’s speed, )9.2(object)]TJ
+T*
+0.205 Tw
+[(caching, and the system’s )-5.5(lower )-5.5(overall )-5.5(cache)]TJ
+T*
+0.1226 Tw
+[(miss )-13.1(rate )-13.1(\(5% fewer primary cache misses, 4%)]TJ
+T*
+0.065 Tw
+(fewer secondary cache misses\).)Tj
+-2 -1.62 TD
+0.1345 Tw
+[(\(4\) )-444.4(Terminal server was also run )-9.2(on )-9.2(a )-9.2(large )-9.2(server)]TJ
+2 -1.2 TD
+0.2046 Tw
+[(that )-6.4(never )-6.4(paged. )-337.6(This benchmark spent 25%)]TJ
+T*
+0.1396 Tw
+[(of its time in the kernel with the )-7.5(old )-7.5(allocator,)]TJ
+T*
+0.1769 Tw
+[(versus )-4.9(20% with the new allocator. )-333.1(Thus, the)]TJ
+T*
+0.1895 Tw
+[(5% bottom-line improvement is due )-8.9(to )-8.9(a )-8.9(20%)]TJ
+T*
+0.0766 Tw
+(reduction in kernel time.)Tj
+/TT2 1 Tf
+11 0 0 11 59 544.2601 Tm
+0.4241 Tw
+[(6. Debugging )367.5(Features)]TJ
+/TT6 1 Tf
+10 0 0 10 59 528.0601 Tm
+0.1439 Tw
+[(Programming errors that corrupt the kernel heap )-16.1(—)]TJ
+T*
+0.2323 Tw
+[(such )-12.3(as )-12.3(modifying )-12.3(freed memory, freeing a buffer)]TJ
+T*
+0.3435 Tw
+[(twice, freeing an uninitialized )-15.1(pointer, )-15.1(or )-15.1(writing)]TJ
+T*
+0.1554 Tw
+(beyond the end of a buffer — are often dif)Tj
+/TT7 1 Tf
+18.3643 0 TD
+0 Tw
+(Ş)Tj
+/TT6 1 Tf
+0.5562 0 TD
+0.1522 Tw
+(cult to)Tj
+-18.9205 -1.2 TD
+0.1587 Tw
+[(debug. )-327.1(Fortunately, a thoroughly )-5.8(instrumented )-5.8(ker-)]TJ
+T*
+0.4146 Tw
+[(nel )-11.2(memory allocator can detect many of these)]TJ
+T*
+0 Tw
+(problems.)Tj
+2.5 -1.62 TD
+0.1821 Tw
+(This section describes the debugging features)Tj
+-2.5 -1.2 TD
+0.1011 Tw
+[(of )-14.4(the )-14.4(slab )-14.4(allocator. )-341.2(These features can be enabled)]TJ
+T*
+0.0889 Tw
+[(in any SunOS 5.4 kernel \(not )-10.1(just )-10.1(special )-10.1(debugging)]TJ
+T*
+0.6866 Tw
+[(versions\) by booting under kadb \(the )15.1(kernel)]TJ
+T*
+0.1344 Tw
+(debugger\) and setting the appropriate )Tj
+/TT7 1 Tf
+15.8608 0 TD
+0 Tw
+(ß)Tj
+/TT6 1 Tf
+0.5562 0 TD
+0.4623 Tw
+(ags.* When)Tj
+-16.417 -1.2 TD
+0.1661 Tw
+(the allocator detects a problem, it provides detailed)Tj
+T*
+0.0788 Tw
+(diagnostic information on the system console.)Tj
+/TT2 1 Tf
+11 0 0 11 59 337.86 Tm
+0.4343 Tw
+(6.1. Auditing)Tj
+/TT6 1 Tf
+10 0 0 10 59 321.6601 Tm
+0.1683 Tw
+[(In )11.8(audit )11.8(mode )11.8(the )11.8(allocator records its activity in a)]TJ
+T*
+0.0907 Tw
+[(circular transaction log. )-338.5(It )-10.4(stores )-10.4(this information in)]TJ
+T*
+0.4268 Tw
+[(an )20(extended version of the bufctl structure that)]TJ
+T*
+0.3064 Tw
+[(includes the thread pointer, hi-res timestamp, )10.2(and)]TJ
+T*
+0.2227 Tw
+[(stack trace of the )-10.1(transaction. )-339.6(When )-16(corruption )-16(is)]TJ
+T*
+0.1764 Tw
+(detected by any of the other methods, the previous)Tj
+T*
+0.252 Tw
+[(owners )8.4(of )8.4(the affected buffer \(the likely suspects\))]TJ
+T*
+0.0702 Tw
+(can be determined.)Tj
+/TT2 1 Tf
+11 0 0 11 59 207.66 Tm
+0.3907 Tw
+[(6.2. Freed-Address )322.7(Veri)]TJ
+/TT12 1 Tf
+10.6785 0 TD
+0 Tw
+(Ş)Tj
+/TT2 1 Tf
+0.5562 0 TD
+(cation)Tj
+/TT6 1 Tf
+10 0 0 10 59 191.4601 Tm
+0.2125 Tw
+(The buffer-to-bufctl hash table employed by large-)Tj
+0 -1.2 TD
+0.1041 Tw
+[(object caches can be used as a debugging )11.1(feature: )11.1(if)]TJ
+8 0 0 8 59 169.86 Tm
+0 Tw
+(____________________________________)Tj
+2.7 -1.5 TD
+0.0847 Tw
+[(* The availability of these debugging features adds no )-17(cost)]TJ
+-2.7 -1.2 TD
+0.4154 Tw
+[(to most allocations. )-342.4(The per-cache )]TJ
+/TT7 1 Tf
+16.4125 0 TD
+0 Tw
+(ß)Tj
+/TT6 1 Tf
+0.5562 0 TD
+0.4095 Tw
+(ag word that indicates)Tj
+-16.9687 -1.2 TD
+0.3593 Tw
+(whether a hash table is present — i.e., whether the cache’s)Tj
+T*
+0.4139 Tw
+[(objects )17.1(are larger than 1/8 of a page — also contains the)]TJ
+T*
+0 Tw
+(debugging )Tj
+/TT7 1 Tf
+5.0233 0 TD
+(ß)Tj
+/TT6 1 Tf
+0.5562 0 TD
+0.5626 Tw
+[(ags. )-340.2(A single test checks all of these )]TJ
+/TT7 1 Tf
+19.5313 0 TD
+0 Tw
+(ß)Tj
+/TT6 1 Tf
+0.5562 0 TD
+(ags)Tj
+-25.667 -1.2 TD
+0.7178 Tw
+[(simultaneously, so the common case \(small objects, )-7.2(no)]TJ
+T*
+0.042 Tw
+(debugging\) is unaffected.)Tj
+10 0 0 10 311 722.4601 Tm
+0.2599 Tw
+(the hash lookup in)Tj
+/TT9 1 Tf
+8.92 0 TD
+0 Tw
+(kmem_cache_free\(\))Tj
+/TT6 1 Tf
+10.71 0 TD
+(fails,)Tj
+-19.63 -1.2 TD
+0.2069 Tw
+[(then the caller must be attempting to free a )6.1(bogus)]TJ
+T*
+0.0722 Tw
+[(address. )-324.1(The allocator can verify)]TJ
+/TT4 1 Tf
+14.02 0 TD
+0 Tw
+(all)Tj
+/TT6 1 Tf
+1.39 0 TD
+0.0543 Tw
+(freed addresses)Tj
+-15.41 -1.2 TD
+0.0741 Tw
+(by changing the ‘‘large object’’ threshold to zero.)Tj
+/TT2 1 Tf
+11 0 0 11 311 656.4601 Tm
+0.0622 Tw
+[(6.3. )-325(Detecting Use of Freed Memory)]TJ
+/TT6 1 Tf
+10 0 0 10 311 640.2601 Tm
+0.297 Tw
+[(When )18.5(an object is freed, the allocator applies its)]TJ
+T*
+0.2492 Tw
+(destructor and )Tj
+/TT7 1 Tf
+6.4408 0 TD
+0 Tw
+(Ş)Tj
+/TT6 1 Tf
+0.5562 0 TD
+0.2492 Tw
+[(lls it with the pattern )27.6(0xdeadbeef.)]TJ
+-6.9969 -1.2 TD
+0.1679 Tw
+[(The next time that object is allocated, )-7.2(the )-7.2(allocator)]TJ
+T*
+0 Tw
+(veri)Tj
+/TT7 1 Tf
+1.5547 0 TD
+(Ş)Tj
+/TT6 1 Tf
+0.5562 0 TD
+0.1128 Tw
+[(es )-20.7(that )-20.7(it )-20.7(still contains the deadbeef pattern. )-336.4(It)]TJ
+-2.1108 -1.2 TD
+0 Tw
+(then )Tj
+/TT7 1 Tf
+2.1098 0 TD
+(Ş)Tj
+/TT6 1 Tf
+0.5562 0 TD
+0.1381 Tw
+(lls the object with 0xbaddcafe and applies its)Tj
+-2.6659 -1.2 TD
+0.0686 Tw
+[(constructor. )-338.2(The deadbeef and baddcafe patterns are)]TJ
+T*
+0.5735 Tw
+(chosen to be readily human-recognizable in a)Tj
+T*
+0.3064 Tw
+[(debugging )-12.8(session. )-338.9(They represent freed memory)]TJ
+T*
+0.0737 Tw
+(and uninitialized data, respectively.)Tj
+/TT2 1 Tf
+11 0 0 11 311 514.2601 Tm
+0.4022 Tw
+[(6.4. Redzone )317.4(Checking)]TJ
+/TT6 1 Tf
+10 0 0 10 311 498.0601 Tm
+0.2148 Tw
+(Redzone checking detects writes past the end of a)Tj
+T*
+0.1733 Tw
+[(buffer. )-319.1(The allocator checks for redzone violations)]TJ
+T*
+0.2052 Tw
+(by adding a guard word to the end of each buffer)Tj
+T*
+0.1796 Tw
+[(and verifying that it is )13.7(unmodi)]TJ
+/TT7 1 Tf
+13.0216 0 TD
+0 Tw
+(Ş)Tj
+/TT6 1 Tf
+0.5562 0 TD
+0.1659 Tw
+(ed when the buffer)Tj
+-13.5778 -1.2 TD
+0.0693 Tw
+(is freed.)Tj
+/TT2 1 Tf
+11 0 0 11 311 420.0601 Tm
+0.4378 Tw
+[(6.5. Synchronous )336.3(Unmapping)]TJ
+/TT6 1 Tf
+10 0 0 10 311 403.86 Tm
+0.416 Tw
+[(Normally, the slab working-set )-12.1(algorithm )-12.1(retains)]TJ
+T*
+0.6359 Tw
+[(complete slabs for a while. )-331.1(In )14.1(synchronous-)]TJ
+T*
+0.3846 Tw
+[(unmapping )6(mode )6(the allocator destroys complete)]TJ
+T*
+0.9315 Tw
+(slabs immediately.)Tj
+/TT9 1 Tf
+10.2 0 TD
+0 Tw
+(kmem_slab_destroy\(\))Tj
+/TT6 1 Tf
+-10.2 -1.2 TD
+0.0946 Tw
+[(returns )9.1(the )9.1(underlying )9.1(memory to the back-end page)]TJ
+T*
+0.3448 Tw
+[(supplier, which unmaps the page\(s\). )-323(Any )10(subse-)]TJ
+T*
+0.1134 Tw
+[(quent reference to any object in )-14.9(that )-14.9(slab )-14.9(will )-14.9(cause)]TJ
+T*
+0.0732 Tw
+(a kernel data fault.)Tj
+/TT2 1 Tf
+11 0 0 11 311 289.86 Tm
+0.374 Tw
+[(6.6. Page-per-buffer )304.2(Mode)]TJ
+/TT6 1 Tf
+10 0 0 10 311 273.66 Tm
+0.3344 Tw
+[(In page-per-buffer mode each buffer )-24.8(is )-24.8(given )-24.8(an)]TJ
+T*
+0.2238 Tw
+[(entire )-6.2(page )-6.2(\(or pages\) so that every buffer can be)]TJ
+T*
+0.4255 Tw
+[(unmapped when it is freed. )-329.8(The )-10.1(slab )-10.1(allocator)]TJ
+T*
+0.1788 Tw
+[(implements this by increasing the alignment for )8.3(all)]TJ
+T*
+0.4956 Tw
+[(caches to the system )-8.2(page )-8.2(size. )-343.6(\(This feature)]TJ
+T*
+0.074 Tw
+(requires an obscene amount of physical memory.\))Tj
+/TT2 1 Tf
+11 0 0 11 311 183.66 Tm
+0.4194 Tw
+[(6.7. Leak )368.6(Detection)]TJ
+/TT6 1 Tf
+10 0 0 10 311 167.4601 Tm
+0.1985 Tw
+[(The timestamps provided by auditing make )-10.2(it )-10.2(easy)]TJ
+T*
+0.2059 Tw
+[(to implement a crude kernel memory )13.8(leak )13.8(detector)]TJ
+T*
+0.1657 Tw
+[(at user level. )-336.5(All the user-level program has to do)]TJ
+T*
+0.474 Tw
+[(is )-13.1(periodically scan the arena \(via /dev/kmem\),)]TJ
+T*
+0.0819 Tw
+[(looking for the appearance of )-11.9(new, )-11.8(persistent )-11.9(alloca-)]TJ
+T*
+0.2434 Tw
+[(tions. )-352.6(For )-11.1(example, )-11.1(any buffer that was allocated)]TJ
+T*
+0.1595 Tw
+[(an )12.4(hour )12.4(ago )12.4(and )12.4(is still allocated now is a)]TJ
+/TT4 1 Tf
+18.32 0 TD
+0 Tw
+(possible)Tj
+/TT6 1 Tf
+-18.32 -1.2 TD
+(leak.)Tj
+ET
+endstream
+endobj
+39 0 obj
+<<
+/ProcSet [/PDF /Text ]
+/Font <<
+/TT2 4 0 R
+/TT4 5 0 R
+/TT6 6 0 R
+/TT7 7 0 R
+/TT9 8 0 R
+/TT12 40 0 R
+>>
+/ExtGState <<
+/GS1 11 0 R
+>>
+>>
+endobj
+42 0 obj
+<<
+/Length 8347
+>>
+stream
+BT
+/TT2 1 Tf
+11 0 0 11 59 722.4601 Tm
+0 g
+/GS1 gs
+0 Tc
+0.4171 Tw
+[(6.8. An )335.8(Example)]TJ
+/TT6 1 Tf
+10 0 0 10 59 706.2601 Tm
+0.0846 Tw
+[(This )6.2(example )6.2(illustrates the slab allocator’s response)]TJ
+0 -1.2 TD
+0.0771 Tw
+(to modi)Tj
+/TT7 1 Tf
+3.1606 0 TD
+0 Tw
+(Ş)Tj
+/TT6 1 Tf
+0.5562 0 TD
+0.0771 Tw
+(cation of a free snode:)Tj
+8 0 0 8 59 681.0601 Tm
+0.0482 Tw
+(kernel memory allocator: buffer modi)Tj
+/TT7 1 Tf
+15.2984 0 TD
+0 Tw
+(Ş)Tj
+/TT6 1 Tf
+0.5562 0 TD
+0.0482 Tw
+(ed after being freed)Tj
+-15.8545 -1.125 TD
+0 Tw
+(modi)Tj
+/TT7 1 Tf
+2.0557 0 TD
+(Ş)Tj
+/TT6 1 Tf
+0.5562 0 TD
+0.0532 Tw
+(cation occurred at offset 0x18 \(0xdeadbeef replaced by 0x34\))Tj
+-2.6118 -1.125 TD
+0.3193 Tw
+[(buffer=ff8eea20 bufctl=ff8efef0 cache: )252.3(snode)]TJ
+/TT11 1 Tf
+18.9625 0 TD
+0 Tw
+(_)Tj
+/TT6 1 Tf
+0.5 0 TD
+(cache)Tj
+-19.4625 -1.125 TD
+0.0435 Tw
+(previous transactions on buffer ff8eea20:)Tj
+0 -2.25 TD
+0.3515 Tw
+[(thread=ff8b93a0 time=T-0.000089 slab=ff8ca8c0 cache: )284.5(snode)]TJ
+/TT11 1 Tf
+26.3875 0 TD
+0 Tw
+(_)Tj
+/TT6 1 Tf
+0.5 0 TD
+(cache)Tj
+-26.8875 -1.125 TD
+(kmem)Tj
+/TT11 1 Tf
+2.4875 0 TD
+(_)Tj
+/TT6 1 Tf
+0.5 0 TD
+(cache)Tj
+/TT11 1 Tf
+2.25 0 TD
+(_)Tj
+/TT6 1 Tf
+0.5 0 TD
+(alloc+f8)Tj
+-5.7375 -1.125 TD
+(specvp+48)Tj
+T*
+(ufs)Tj
+/TT11 1 Tf
+1.2125 0 TD
+(_)Tj
+/TT6 1 Tf
+0.5 0 TD
+(lookup+148)Tj
+-1.7125 -1.125 TD
+(lookuppn+3ac)Tj
+T*
+(lookupname+28)Tj
+T*
+(vn)Tj
+/TT11 1 Tf
+1 0 TD
+(_)Tj
+/TT6 1 Tf
+0.5 0 TD
+(open+a4)Tj
+-1.5 -1.125 TD
+(copen+6c)Tj
+T*
+(syscall+3e8)Tj
+0 -2.25 TD
+0.3515 Tw
+[(thread=ff8b94c0 time=T-1.830247 slab=ff8ca8c0 cache: )284.5(snode)]TJ
+/TT11 1 Tf
+26.3875 0 TD
+0 Tw
+(_)Tj
+/TT6 1 Tf
+0.5 0 TD
+(cache)Tj
+-26.8875 -1.125 TD
+(kmem)Tj
+/TT11 1 Tf
+2.4875 0 TD
+(_)Tj
+/TT6 1 Tf
+0.5 0 TD
+(cache)Tj
+/TT11 1 Tf
+2.25 0 TD
+(_)Tj
+/TT6 1 Tf
+0.5 0 TD
+(free+128)Tj
+-5.7375 -1.125 TD
+(spec)Tj
+/TT11 1 Tf
+1.7625 0 TD
+(_)Tj
+/TT6 1 Tf
+0.5 0 TD
+(inactive+208)Tj
+-2.2625 -1.125 TD
+(closef+94)Tj
+T*
+(syscall+3e8)Tj
+0 -2.25 TD
+0.0477 Tw
+(\(transaction log continues at ff31f410\))Tj
+0 -1.125 TD
+0 Tw
+(kadb[0]:)Tj
+10 0 0 10 59 466.86 Tm
+0.2283 Tw
+[(Other errors are handled )-26.5(similarly. )-344(These )-7.1(features)]TJ
+0 -1.2 TD
+0.2077 Tw
+(have proven helpful in debugging a wide range of)Tj
+T*
+0.0795 Tw
+(problems during SunOS 5.4 development.)Tj
+/TT2 1 Tf
+11 0 0 11 59 412.86 Tm
+0.4016 Tw
+[(7. Future )339.3(Directions)]TJ
+0 -2.7273 TD
+0.0684 Tw
+[(7.1. )-356.7(Managing Other Types of Memory)]TJ
+/TT6 1 Tf
+10 0 0 10 59 366.6601 Tm
+0.1368 Tw
+[(The slab allocator gets its pages from segkmem )-11.5(via)]TJ
+0 -1.2 TD
+1.8966 Tw
+(the routines)Tj
+/TT9 1 Tf
+9.01 0 TD
+0 Tw
+(kmem_getpages\(\))Tj
+/TT6 1 Tf
+11.15 0 TD
+(and)Tj
+/TT9 1 Tf
+-20.16 -1.2 TD
+(kmem_freepages\(\))Tj
+/TT6 1 Tf
+9.6 0 TD
+0.389 Tw
+(; it assumes nothing about)Tj
+-9.6 -1.2 TD
+0.0936 Tw
+[(the underlying segment driver, resource maps, )10.5(trans-)]TJ
+T*
+0.2651 Tw
+[(lation setup, etc. )-333.2(Since the allocator respects this)]TJ
+/TT7 1 Tf
+T*
+0 Tw
+(Ş)Tj
+/TT6 1 Tf
+0.5562 0 TD
+0.3888 Tw
+[(rewall, )-11(it )-11(would be trivial to plug in alternate)]TJ
+-0.5562 -1.2 TD
+0.5485 Tw
+[(back-end page suppliers. )-346.8(The )-9.3(‘‘getpages’’ )-9.3(and)]TJ
+T*
+0.379 Tw
+(‘‘freepages’’ routines could be supplied as addi-)Tj
+T*
+0.5696 Tw
+(tional arguments to)Tj
+/TT9 1 Tf
+9.95 0 TD
+0 Tw
+(kmem_cache_create\(\))Tj
+/TT6 1 Tf
+11.4 0 TD
+(.)Tj
+-21.35 -1.2 TD
+0.2588 Tw
+[(This would allow us to manage )7.8(multiple )7.8(types )7.8(of)]TJ
+T*
+0.7435 Tw
+(memory \(e.g. normal kernel memory, device)Tj
+T*
+0.2824 Tw
+(memory, pageable kernel memory, NVRAM, etc.\))Tj
+T*
+0.0772 Tw
+(with a single allocator.)Tj
+/TT2 1 Tf
+11 0 0 11 59 192.66 Tm
+0.0643 Tw
+[(7.2. )-298.7(Per-Processor Memory Allocation)]TJ
+/TT6 1 Tf
+10 0 0 10 59 176.4601 Tm
+0.1881 Tw
+[(The per-processor allocation techniques )-14.4(of )-14.4(McKen-)]TJ
+T*
+0.2121 Tw
+(ney and Slingwine [McKenney93] would )Tj
+/TT7 1 Tf
+17.8618 0 TD
+0 Tw
+(Ş)Tj
+/TT6 1 Tf
+0.5562 0 TD
+0.2109 Tw
+(t nicely)Tj
+-18.4179 -1.2 TD
+0.2655 Tw
+[(on top of the slab allocator. )-329.8(They de)]TJ
+/TT7 1 Tf
+16.6283 0 TD
+0 Tw
+(Ş)Tj
+/TT6 1 Tf
+0.5562 0 TD
+0.2644 Tw
+(ne a four-)Tj
+-17.1844 -1.2 TD
+0.259 Tw
+(layer allocation hierarchy of decreasing speed and)Tj
+T*
+0.5892 Tw
+(locality: per-CPU, global, coalesce-to-page, and)Tj
+T*
+0.2536 Tw
+[(coalesce-to-VM-block. )-305.6(The latter three )16.5(correspond)]TJ
+T*
+0.2586 Tw
+(closely to the slab allocator’s front-end, back-end,)Tj
+T*
+0.1816 Tw
+[(and page-supplier layers, respectively. )-333.7(Even )-8.6(in )-8.6(the)]TJ
+25.2 63 TD
+0.5147 Tw
+[(absence )22.3(of lock contention, small per-processor)]TJ
+0 -1.2 TD
+0.2047 Tw
+(freelists could improve performance by eliminating)Tj
+T*
+0.0767 Tw
+(locking costs and reducing invalidation traf)Tj
+/TT7 1 Tf
+17.74 0 TD
+0 Tw
+(Ş)Tj
+/TT6 1 Tf
+0.5562 0 TD
+(c.)Tj
+/TT2 1 Tf
+11 0 0 11 311 668.4601 Tm
+0.3837 Tw
+[(7.3. User-level )287.5(Applications)]TJ
+/TT6 1 Tf
+10 0 0 10 311 652.2601 Tm
+0.0953 Tw
+(The slab allocator could also be used as a user-level)Tj
+0 -1.2 TD
+0.5213 Tw
+[(memory allocator. )-334(The back-end page supplier)]TJ
+T*
+0.0745 Tw
+(could be)Tj
+/TT9 1 Tf
+4.09 0 TD
+0 Tw
+(mmap\(2\))Tj
+/TT6 1 Tf
+4.53 0 TD
+(or)Tj
+/TT9 1 Tf
+1.43 0 TD
+(sbrk\(2\))Tj
+/TT6 1 Tf
+4.2 0 TD
+(.)Tj
+/TT2 1 Tf
+11 0 0 11 311 598.2601 Tm
+0.4315 Tw
+(8. Conclusions)Tj
+/TT6 1 Tf
+10 0 0 10 311 582.0601 Tm
+0.3965 Tw
+[(The slab allocator is )-9.2(a )-9.1(simple, )-9.2(fast, )-9.1(and )-9.2(space-)]TJ
+0 -1.2 TD
+0 Tw
+(ef)Tj
+/TT7 1 Tf
+0.7769 0 TD
+(Ş)Tj
+/TT6 1 Tf
+0.5562 0 TD
+0.1148 Tw
+[(cient kernel memory allocator. )-330.5(The )16.6(object-cache)]TJ
+-1.333 -1.2 TD
+0.1361 Tw
+[(interface )11.6(upon )11.6(which )11.6(it is based reduces the cost of)]TJ
+T*
+0.1939 Tw
+(allocating and freeing complex objects and enables)Tj
+T*
+0.2249 Tw
+[(the allocator to segregate objects by )-10.4(size )-10.4(and )-10.4(life-)]TJ
+T*
+0.3237 Tw
+[(time )-17.6(distribution. )-339.3(Slabs take advantage of object)]TJ
+T*
+0.1749 Tw
+[(size )10.8(and )10.8(lifetime )10.8(segregation to reduce internal and)]TJ
+T*
+0.5749 Tw
+[(external fragmentation, respectively. )-348.1(Slabs )-14.3(also)]TJ
+T*
+0.4158 Tw
+(simplify reclaiming by using a simple reference)Tj
+T*
+0.4664 Tw
+[(count instead of )16.6(coalescing. )-318.9(The )10.8(slab )10.8(allocator)]TJ
+T*
+0.5671 Tw
+[(establishes a push/pull relationship between )-18.1(its)]TJ
+T*
+0.1087 Tw
+[(clients and the VM system, eliminating the need )14.7(for)]TJ
+T*
+0.1344 Tw
+[(arbitrary )5.1(limits or watermarks to govern reclaiming.)]TJ
+T*
+0.2513 Tw
+[(The allocator’s coloring scheme )5.6(distributes )5.6(buffers)]TJ
+T*
+0.8355 Tw
+[(evenly )8.4(throughout )8.4(the cache, improving the)]TJ
+T*
+0.2247 Tw
+[(system’s )-8.9(overall cache utilization and bus balance.)]TJ
+T*
+0.2838 Tw
+[(In several important areas, the slab allocator )-10.2(pro-)]TJ
+T*
+0.0708 Tw
+(vides measurably better system performance.)Tj
+/TT2 1 Tf
+11 0 0 11 311 348.0601 Tm
+0 Tw
+(Acknowledgements)Tj
+/TT6 1 Tf
+10 0 0 10 311 331.86 Tm
+0.478 Tw
+(Neal Nuckolls )Tj
+/TT7 1 Tf
+6.9545 0 TD
+0 Tw
+(Ş)Tj
+/TT6 1 Tf
+0.5562 0 TD
+0.478 Tw
+[(rst suggested that )-7.1(the )-7.1(allocator)]TJ
+-7.5107 -1.2 TD
+0.1556 Tw
+(should retain an object’s state between uses, as our)Tj
+T*
+0.1382 Tw
+(old streams allocator did \(it now uses the slab allo-)Tj
+T*
+0.1286 Tw
+[(cator )14.3(directly\). )-329.7(Steve Kleiman suggested using )9.9(VM)]TJ
+T*
+0.58 Tw
+[(pressure to regulate )-14.1(reclaiming. )-344.8(Gordon )-14.5(Irlam)]TJ
+T*
+0.3748 Tw
+[(pointed out the negative effects )15.3(of )15.3(power-of-two)]TJ
+T*
+0.3935 Tw
+(alignment on cache utilization; Adrian Cockcroft)Tj
+T*
+0.1616 Tw
+(hypothesized that this might explain the bus imbal-)Tj
+T*
+0.0748 Tw
+(ance we were seeing on some machines \(it did\).)Tj
+2.5 -1.62 TD
+0.5391 Tw
+[(I’d like to thank Cathy Bonwick, )-7.1(Roger)]TJ
+-2.5 -1.2 TD
+0.1653 Tw
+(Faulkner, Steve Kleiman, Tim Marsland, Rob Pike,)Tj
+T*
+0.2092 Tw
+[(Andy )7.9(Roach, )7.9(Bill Shannon, and Jim Voll for their)]TJ
+T*
+0.0891 Tw
+[(thoughtful comments on draft versions of this )19.8(paper.)]TJ
+T*
+0.2603 Tw
+[(Thanks )15(also to David Robinson, Chaitanya Tikku,)]TJ
+T*
+0.259 Tw
+[(and Jim Voll for providing some of the )23.5(measure-)]TJ
+T*
+0.1106 Tw
+[(ments, )11.2(and )11.2(to )11.2(Ashok Singhal for providing the tools)]TJ
+T*
+0.0746 Tw
+(to measure cache and bus activity.)Tj
+2.5 -1.62 TD
+0.1101 Tw
+(Most of all, I thank Cathy for putting up with)Tj
+-2.5 -1.2 TD
+0.0782 Tw
+(me \(and without me\) during this project.)Tj
+ET
+endstream
+endobj
+43 0 obj
+<<
+/ProcSet [/PDF /Text ]
+/Font <<
+/TT2 4 0 R
+/TT6 6 0 R
+/TT7 7 0 R
+/TT9 8 0 R
+/TT11 10 0 R
+>>
+/ExtGState <<
+/GS1 11 0 R
+>>
+>>
+endobj
+47 0 obj
+<<
+/Length 9406
+>>
+stream
+BT
+/TT2 1 Tf
+11 0 0 11 59 722.4601 Tm
+0 g
+/GS1 gs
+0 Tc
+0 Tw
+(References)Tj
+10 0 0 10 59 706.2601 Tm
+([Barrett93])Tj
+/TT6 1 Tf
+5.52 0 TD
+0.4667 Tw
+(David A. Barrett and Benjamin G.)Tj
+-5.52 -1.2 TD
+0 Tw
+(Zorn,)Tj
+/TT4 1 Tf
+2.54 0 TD
+0.096 Tw
+(Using Lifetime Predictors to Improve Memory)Tj
+-2.54 -1.2 TD
+0.2833 Tw
+(Allocation Performance.)Tj
+/TT6 1 Tf
+11.04 0 TD
+0.2838 Tw
+[(Proceedings of the )-16.2(1993)]TJ
+-11.04 -1.2 TD
+0.3318 Tw
+(SIGPLAN Conference on Programming Language)Tj
+T*
+0.0765 Tw
+(Design and Implementation, pp. 187-196 \(1993\).)Tj
+/TT2 1 Tf
+0 -1.62 TD
+0 Tw
+([Boehm88])Tj
+/TT6 1 Tf
+5.3 0 TD
+0.3951 Tw
+[(H. )5.9(Boehm and M. Weiser,)]TJ
+/TT4 1 Tf
+12.75 0 TD
+0 Tw
+(Garbage)Tj
+-18.05 -1.2 TD
+0.8279 Tw
+[(Collection in an Uncooperative )13.4(Environment.)]TJ
+/TT6 1 Tf
+T*
+0.12 Tw
+[(Software )21(- )21(Practice )21(and )21(Experience, v. 18, no. 9, pp)]TJ
+T*
+0.071 Tw
+(807-820 \(1988\).)Tj
+/TT2 1 Tf
+0 -1.62 TD
+0 Tw
+([Bozman84A])Tj
+/TT6 1 Tf
+6.32 0 TD
+0.1974 Tw
+[(G. )12.1(Bozman, W. Buco, T. Daly, and)]TJ
+-6.32 -1.2 TD
+0.1321 Tw
+(W. Tetzlaff,)Tj
+/TT4 1 Tf
+5.38 0 TD
+0.1388 Tw
+(Analysis of Free Storage Algorithms --)Tj
+-5.38 -1.2 TD
+0 Tw
+(Revisited.)Tj
+/TT6 1 Tf
+4.7 0 TD
+0.2105 Tw
+[(IBM Systems Journal, v. 23, no. 1, )-9.5(pp.)]TJ
+-4.7 -1.2 TD
+0.071 Tw
+(44-64 \(1984\).)Tj
+/TT2 1 Tf
+0 -1.62 TD
+0 Tw
+([Bozman84B])Tj
+/TT6 1 Tf
+6.24 0 TD
+0.1553 Tw
+(G. Bozman,)Tj
+/TT4 1 Tf
+5.37 0 TD
+0.1617 Tw
+(The Software Lookaside)Tj
+-11.61 -1.2 TD
+0.1608 Tw
+(Buffer Reduces Search Overhead with Linked Lists.)Tj
+/TT6 1 Tf
+T*
+0.37 Tw
+[(Communications )8.7(of )8.7(the )8.7(ACM, v. 27, no. 3, pp.)]TJ
+T*
+0.071 Tw
+(222-227 \(1984\).)Tj
+/TT2 1 Tf
+0 -1.62 TD
+0 Tw
+([Cekleov92])Tj
+/TT6 1 Tf
+5.72 0 TD
+0.3708 Tw
+[(Michel )5.8(Cekleov, Jean-Marc Frailong)]TJ
+-5.72 -1.2 TD
+0.0857 Tw
+(and Pradeep Sindhu,)Tj
+/TT4 1 Tf
+8.76 0 TD
+0.0668 Tw
+(Sun-4D Architecture.)Tj
+/TT6 1 Tf
+9.28 0 TD
+0 Tw
+(Revision)Tj
+-18.04 -1.2 TD
+0.08 Tw
+(1.4, 1992.)Tj
+/TT2 1 Tf
+0 -1.62 TD
+0 Tw
+([Chen93])Tj
+/TT6 1 Tf
+4.45 0 TD
+0.2569 Tw
+[(J. Bradley Chen and )-9.5(Brian )-9.5(N. )-9.5(Bershad,)]TJ
+/TT4 1 Tf
+-4.45 -1.2 TD
+0.5782 Tw
+[(The Impact of Operating )11(System )11(Structure )11(on)]TJ
+T*
+0.2811 Tw
+[(Memory System )-18.2(Performance.)]TJ
+/TT6 1 Tf
+13.55 0 TD
+0.3038 Tw
+(Proceedings of the)Tj
+-13.55 -1.2 TD
+0.1192 Tw
+[(Fourteenth )-16(ACM )-16(Symposium on Operating Systems)]TJ
+T*
+0.0788 Tw
+(Principles, v. 27, no. 5, pp. 120-133 \(1993\).)Tj
+/TT2 1 Tf
+0 -1.62 TD
+0 Tw
+([Grunwald93A])Tj
+/TT6 1 Tf
+7.69 0 TD
+0.6653 Tw
+(Dirk Grunwald and Benjamin)Tj
+-7.69 -1.2 TD
+0 Tw
+(Zorn,)Tj
+/TT4 1 Tf
+2.84 0 TD
+0.3936 Tw
+(CustoMalloc: Ef)Tj
+/TT13 1 Tf
+7.0318 0 TD
+0 Tw
+(Ş)Tj
+/TT4 1 Tf
+0.5 0 TD
+0.3936 Tw
+(cient Synthesized Memory)Tj
+-10.3718 -1.2 TD
+0 Tw
+(Allocators.)Tj
+/TT6 1 Tf
+5.21 0 TD
+0.213 Tw
+[(Software )14.5(- )14.5(Practice and Experience, v.)]TJ
+-5.21 -1.2 TD
+0.0782 Tw
+(23, no. 8, pp. 851-869 \(1993\).)Tj
+/TT2 1 Tf
+0 -1.62 TD
+0 Tw
+([Grunwald93B])Tj
+/TT6 1 Tf
+7.47 0 TD
+0.4849 Tw
+[(Dirk Grunwald, Benjamin )-11.3(Zorn)]TJ
+-7.47 -1.2 TD
+0.1312 Tw
+(and Robert Henderson,)Tj
+/TT4 1 Tf
+9.9 0 TD
+0.1322 Tw
+(Improving the Cache Local-)Tj
+-9.9 -1.2 TD
+0.1482 Tw
+(ity of Memory Allocation.)Tj
+/TT6 1 Tf
+11.45 0 TD
+0.1592 Tw
+[(Proceedings )19.9(of the 1993)]TJ
+-11.45 -1.2 TD
+0.3318 Tw
+(SIGPLAN Conference on Programming Language)Tj
+T*
+0.0765 Tw
+(Design and Implementation, pp. 177-186 \(1993\).)Tj
+/TT2 1 Tf
+0 -1.62 TD
+0 Tw
+([Hanson90])Tj
+/TT6 1 Tf
+5.37 0 TD
+0.167 Tw
+(David R. Hanson,)Tj
+/TT4 1 Tf
+7.92 0 TD
+0.1831 Tw
+(Fast Allocation and)Tj
+-13.29 -1.2 TD
+0.1263 Tw
+[(Deallocation of Memory Based on )7.3(Object )7.3(Lifetimes.)]TJ
+/TT6 1 Tf
+T*
+0.087 Tw
+[(Software )18.5(- )18.5(Practice and Experience, v. 20, no. 1, pp.)]TJ
+T*
+0.071 Tw
+(5-12 \(1990\).)Tj
+/TT2 1 Tf
+0 -1.62 TD
+0 Tw
+([Knuth68])Tj
+/TT6 1 Tf
+4.88 0 TD
+0.1777 Tw
+(Donald E. Knuth,)Tj
+/TT4 1 Tf
+7.84 0 TD
+0.1914 Tw
+(The Art of Computer)Tj
+-12.72 -1.2 TD
+0.6885 Tw
+[(Programming, Vol I, )7.2(Fundamental )7.2(Algorithms.)]TJ
+/TT6 1 Tf
+T*
+0.0751 Tw
+(Addison-Wesley, Reading, MA, 1968.)Tj
+/TT2 1 Tf
+0 -1.62 TD
+0 Tw
+([Korn85])Tj
+/TT6 1 Tf
+4.41 0 TD
+0.2264 Tw
+(David G. Korn and Kiem-Phong Vo,)Tj
+/TT4 1 Tf
+16.36 0 TD
+0 Tw
+(In)Tj
+-20.77 -1.2 TD
+0.428 Tw
+[(Search )-7.3(of a Better Malloc.)]TJ
+/TT6 1 Tf
+13.31 0 TD
+0.4238 Tw
+(Proceedings of the)Tj
+-13.31 -1.2 TD
+0.0754 Tw
+(Summer 1985 Usenix Conference, pp. 489-506.)Tj
+/TT2 1 Tf
+0 -1.62 TD
+0 Tw
+([Lee89])Tj
+/TT6 1 Tf
+4.08 0 TD
+0.6269 Tw
+[(T. )5.6(Paul Lee and R. E. Barkley,)]TJ
+/TT4 1 Tf
+16.91 0 TD
+0 Tw
+(A)Tj
+-20.99 -1.2 TD
+0.4151 Tw
+(Watermark-based Lazy Buddy System for Kernel)Tj
+T*
+0.382 Tw
+(Memory Allocation.)Tj
+/TT6 1 Tf
+9.35 0 TD
+0.3838 Tw
+[(Proceedings of the )-17.5(Summer)]TJ
+-9.35 -1.2 TD
+0.0739 Tw
+(1989 Usenix Conference, pp. 1-13.)Tj
+/TT2 1 Tf
+25.2 62.64 TD
+0 Tw
+([Leverett82])Tj
+/TT6 1 Tf
+5.63 0 TD
+0.127 Tw
+[(B. W. Leverett and P. )-8.5(G. )-8.5(Hibbard,)]TJ
+/TT4 1 Tf
+14.86 0 TD
+0 Tw
+(An)Tj
+-20.49 -1.2 TD
+0.343 Tw
+(Adaptive System for Dynamic Storage Allocation.)Tj
+/TT6 1 Tf
+T*
+0.087 Tw
+[(Software )18.5(- )18.5(Practice and Experience, v. 12, no. 3, pp.)]TJ
+T*
+0.071 Tw
+(543-555 \(1982\).)Tj
+/TT2 1 Tf
+0 -1.62 TD
+0 Tw
+([Margolin71])Tj
+/TT6 1 Tf
+6.25 0 TD
+0.3482 Tw
+(B. Margolin, R. Parmelee, and M.)Tj
+-6.25 -1.2 TD
+0 Tw
+(Schatzoff,)Tj
+/TT4 1 Tf
+4.81 0 TD
+0.4789 Tw
+[(Analysis )-14.6(of Free Storage Algorithms.)]TJ
+/TT6 1 Tf
+-4.81 -1.2 TD
+0.3207 Tw
+[(IBM Systems Journal, v. 10, )-8.5(no. )-8.5(4, )-8.5(pp. )-8.6(283-304)]TJ
+T*
+0 Tw
+(\(1971\).)Tj
+/TT2 1 Tf
+0 -1.62 TD
+([McKenney93])Tj
+/TT6 1 Tf
+7.32 0 TD
+0.7444 Tw
+(Paul E. McKenney and Jack)Tj
+-7.32 -1.2 TD
+0 Tw
+(Slingwine,)Tj
+/TT4 1 Tf
+4.86 0 TD
+(Ef)Tj
+/TT13 1 Tf
+0.8887 0 TD
+(Ş)Tj
+/TT4 1 Tf
+0.5 0 TD
+0.2971 Tw
+(cient Kernel Memory Allocation on)Tj
+-6.2487 -1.2 TD
+0.502 Tw
+(Shared-Memory Multiprocessors.)Tj
+/TT6 1 Tf
+15.11 0 TD
+0.5193 Tw
+(Proceedings of)Tj
+-15.11 -1.2 TD
+0.0746 Tw
+(the Winter 1993 Usenix Conference, pp. 295-305.)Tj
+/TT2 1 Tf
+0 -1.62 TD
+0 Tw
+([McKusick88])Tj
+/TT6 1 Tf
+7.19 0 TD
+0.8831 Tw
+[(Marshall Kirk McKusick )-13.1(and)]TJ
+-7.19 -1.2 TD
+0.3323 Tw
+(Michael J. Karels,)Tj
+/TT4 1 Tf
+8.53 0 TD
+0.3373 Tw
+(Design of a General Purpose)Tj
+-8.53 -1.2 TD
+0.3672 Tw
+[(Memory Allocator for the 4.3BSD UNIX )-11.1(Kernel.)]TJ
+/TT6 1 Tf
+T*
+0.3072 Tw
+[(Proceedings of the Summer 1988 Usenix )17.1(Confer-)]TJ
+T*
+0.0727 Tw
+(ence, pp. 295-303.)Tj
+/TT2 1 Tf
+0 -1.62 TD
+0 Tw
+([Oldehoeft85])Tj
+/TT6 1 Tf
+6.28 0 TD
+0.1478 Tw
+(Rodney R. Oldehoeft and Stephen J.)Tj
+-6.28 -1.2 TD
+0 Tw
+(Allan,)Tj
+/TT4 1 Tf
+3.28 0 TD
+0.5528 Tw
+(Adaptive Exact-Fit Storage Management.)Tj
+/TT6 1 Tf
+-3.28 -1.2 TD
+0.261 Tw
+[(Communications of the ACM, v. )-8(28, )-8(pp. )-8(506-511)]TJ
+T*
+0 Tw
+(\(1985\).)Tj
+/TT2 1 Tf
+0 -1.62 TD
+([Standish80])Tj
+/TT6 1 Tf
+6.29 0 TD
+0.6435 Tw
+(Thomas Standish,)Tj
+/TT4 1 Tf
+8.7 0 TD
+0.6383 Tw
+(Data Structure)Tj
+-14.99 -1.2 TD
+0 Tw
+(Techniques.)Tj
+/TT6 1 Tf
+5.46 0 TD
+0.0751 Tw
+(Addison-Wesley, Reading, MA, 1980.)Tj
+/TT2 1 Tf
+-5.46 -1.62 TD
+0 Tw
+([Stephenson83])Tj
+/TT6 1 Tf
+7.08 0 TD
+0.2815 Tw
+(C. J. Stephenson,)Tj
+/TT4 1 Tf
+8.01 0 TD
+0.2828 Tw
+(Fast Fits: New)Tj
+-15.09 -1.2 TD
+0.1481 Tw
+(Methods for Dynamic Storage Allocation.)Tj
+/TT6 1 Tf
+18.06 0 TD
+0 Tw
+(Proceed-)Tj
+-18.06 -1.2 TD
+0.2611 Tw
+[(ings )10.9(of )10.9(the )10.9(Ninth ACM Symposium on Operating)]TJ
+T*
+0.0797 Tw
+(Systems Principles, v. 17, no. 5, pp. 30-32 \(1983\).)Tj
+/TT2 1 Tf
+0 -1.62 TD
+0 Tw
+([VanSciver88])Tj
+/TT6 1 Tf
+6.67 0 TD
+0.3139 Tw
+[(James Van Sciver and )-15.3(Richard )-15.3(F.)]TJ
+-6.67 -1.2 TD
+0 Tw
+(Rashid,)Tj
+/TT4 1 Tf
+3.55 0 TD
+0.2594 Tw
+(Zone Garbage Collection.)Tj
+/TT6 1 Tf
+11.83 0 TD
+0.2493 Tw
+(Proceedings of)Tj
+-15.38 -1.2 TD
+0.236 Tw
+[(the )7.1(Summer )7.1(1990 )7.1(Usenix Mach Workshop, pp. 1-)]TJ
+T*
+0 Tw
+(15.)Tj
+/TT2 1 Tf
+0 -1.62 TD
+([Weinstock88])Tj
+/TT6 1 Tf
+6.65 0 TD
+0.2476 Tw
+[(Charles )9.3(B. Weinstock and William)]TJ
+-6.65 -1.2 TD
+0.1231 Tw
+(A. Wulf,)Tj
+/TT4 1 Tf
+4.03 0 TD
+0.1209 Tw
+(QuickFit: An Ef)Tj
+/TT13 1 Tf
+6.6285 0 TD
+0 Tw
+(Ş)Tj
+/TT4 1 Tf
+0.5 0 TD
+0.1198 Tw
+(cient Algorithm for Heap)Tj
+-11.1585 -1.2 TD
+0.3831 Tw
+(Storage Allocation.)Tj
+/TT6 1 Tf
+9.13 0 TD
+0.3881 Tw
+(ACM SIGPLAN Notices, v.)Tj
+-9.13 -1.2 TD
+0.0782 Tw
+(23, no. 10, pp. 141-144 \(1988\).)Tj
+/TT2 1 Tf
+0 -1.62 TD
+0 Tw
+([Zorn93])Tj
+/TT6 1 Tf
+4.42 0 TD
+0.338 Tw
+(Benjamin Zorn,)Tj
+/TT4 1 Tf
+7.27 0 TD
+0.3497 Tw
+(The Measured Cost of)Tj
+-11.69 -1.2 TD
+0.1462 Tw
+(Conservative Garbage Collection.)Tj
+/TT6 1 Tf
+14.77 0 TD
+0.1386 Tw
+(Software - Prac-)Tj
+-14.77 -1.2 TD
+0.4294 Tw
+[(tice )17.5(and )17.5(Experience, )17.5(v. 23, no. 7, pp. 733-756)]TJ
+T*
+0 Tw
+(\(1993\).)Tj
+/TT2 1 Tf
+11 0 0 11 311 198.66 Tm
+0.0711 Tw
+(Author Information)Tj
+10 0 0 10 311 182.4601 Tm
+0.077 Tw
+(Jeff Bonwick)Tj
+/TT6 1 Tf
+5.99 0 TD
+0.0756 Tw
+[(is a kernel hacker at Sun. )-338.4(He )-16.1(likes )-16.1(to)]TJ
+-5.99 -1.2 TD
+0.0786 Tw
+[(rip )-12.7(out big, slow, old code and replace it with small,)]TJ
+T*
+0.1875 Tw
+[(fast, )6.3(new )6.3(code. )-326.5(He still can’t believe he )-11.2(gets )-11.2(paid)]TJ
+T*
+0.0968 Tw
+[(for )-12.4(this. )-338.5(The )-8.5(author received a B.S. in Mathematics)]TJ
+T*
+0.3935 Tw
+[(from )9(the University of Delaware \(1987\) and an)]TJ
+T*
+0.1539 Tw
+[(M.S. in Statistics from )18.8(Stanford )18.8(\(1990\). )-310.1(He )19.7(can )19.7(be)]TJ
+/TT7 1 Tf
+T*
+0 Tw
+(ß)Tj
+/TT6 1 Tf
+0.5562 0 TD
+0.0726 Tw
+(amed electronically at)Tj
+/TT4 1 Tf
+9.3038 0 TD
+0 Tw
+(bonwick)Tj
+/TT6 1 Tf
+3.33 0 TD
+(@)Tj
+/TT4 1 Tf
+0.92 0 TD
+(eng.sun.com)Tj
+/TT6 1 Tf
+4.99 0 TD
+(.)Tj
+ET
+endstream
+endobj
+48 0 obj
+<<
+/ProcSet [/PDF /Text ]
+/Font <<
+/TT2 4 0 R
+/TT4 5 0 R
+/TT6 6 0 R
+/TT7 7 0 R
+/TT13 49 0 R
+>>
+/ExtGState <<
+/GS1 11 0 R
+>>
+>>
+endobj
+11 0 obj
+<<
+/Type /ExtGState
+/SA false
+/SM 0.02
+/OP false
+/op false
+/OPM 1
+/BG2 /Default
+/UCR2 /Default
+/HT /Default
+/TR2 /Default
+>>
+endobj
+50 0 obj
+<<
+/Type /FontDescriptor
+/Ascent 701
+/CapHeight 0
+/Descent -298
+/Flags 4
+/FontBBox [-167 -299 1094 827]
+/FontName /EINMPI+Symbol
+/ItalicAngle 0
+/StemV 0
+/FontFile2 51 0 R
+>>
+endobj
+51 0 obj
+<<
+/Filter /FlateDecode
+/Length 20119
+/Length1 39460
+>>
+stream
+H‰äW}tÕ¿ovgvfwv³r´BÎ¡µ"T0¡bI1pbêA§åP³»o³#³ÌÌ’­’)ß4…H#ZKS«)¥)¥ÔR …&‘±EEZ>* Ò„bé}³³› =ZÿÌ{gæ÷~÷Ş÷æŞûŞ›y nÂ›ü?r÷=§Í ·£tNÀĞbÀô@¾·âà|3ï»²8ù nB8dİ5–uÆ2*…:¾³|òQ •O„åÑ–»ŞØ
+ğØ´‡r­2<ìêùJ€µÃp„*¡ãÛ×4<sû @ŞË­Xˆö0,5Skİ¥UÈßpä=š4Lâªz`Q'ê5-Tné¸¥`İ½8ŞSQ%•H¯ãxûQŸ¥¦òVò"@u@ÜS¢4şÀ ®í	&.ähX‰6âÅ„OTîŸ= ¶õ_‡³–¬œÜvn9¸2äÜ]Ğ§ ‹9Ü\˜æ‰Jİ lwöğõWê„\ˆ¥±O—¼ëøç(p îƒ%°Œ›3 fÃ9ÒO“0’,Cí}°	š ¯q0æ@ƒ£ºálÃk·{„a4âša*”¡U=pÜ`.‰òµ¤|ÜD®‘l€zn!yfB.Üál†KğmØâˆB>¼ÈÍ†G‹9pğöò=˜ÄMå8©.;ÇÁ~l‡ÍĞ QÇn¶«:I"pNÂÇ`¸e°‘­ä0y‡”ra7é&H1Ïj˜¸#iæ·ÂmÜ<À%·ÁDp:ÒúbÔçÂè?»Âû>~Æ?t`¯Ñ°Ö |=ó›‘Õ9F¢'ùğ>”`½y²j¾vÃ“P
+‡ø™P>&Ì±t[M$[Õ|+a¼Î0 Ş#ƒ…ñ0Ôy7[X‚cmæïçsP—¹j~9«øÌÇ RÏWs’ÎÉT(åW æfÌÌPÄY8#¹p‰/…WÈHÎsóR67¯òg8™›"„àßA:ÉİÂ—„&ÒÉWÍdŒp?t“|a/ø„>7€\ü½…‹ ·ßpl"=*`.ÑÄI8†‰|u<î¦ÀñÅ0Ä^ƒ|EyÄdíŠaˆ[ßdŠxÂX 2@LÑÂÖŠåğ€MÇ­¸”°ôàâwÕâş1…G*£¸=ı´xg3âğã;Å»úm6Ò%÷ÙlNàÒkÁ…3©¿çdÚşlNpgaëä¡ş“°–Í‰`R€TÒßsbÉæd À77à‘hmÏ	~”29‘ğœ…ç>iZÏIú$éşÖçûüúÙ7SéÉï.%Óıxjı²}ÀÔ3'MdúÕ—ÉtöÍÇâ°Nød683¸sqã;ßpøÄï!¾óñ€«×r¶\)û¤à&Î;¼H¦Xã~Æ$sÖÀRU%Äâfˆ†`ã"«m|ÂÆÅ6şĞÆ%6.µq™Ëm\aãJWÙXcã“6®¶qOÙø´µ6şÈÆµ6®³±ÎÆgl\oãm¬·ñY7ØøœÏ;''õøOÄé	CÕâ±Ñ/Q5–4éO%—T´bXW‚¦ıLTca5¦š•BX‹ëjìçÎ –¼è
+©Jÿà~Áão˜n¾Ä	%D_–]Wâf¤1İÔhØü¥Ëj&›ÜVCWñøø«´>¯ˆmB´\§ô×RBKÌ£I0h‡ÿŒ
+Å¤ºå×1šÔL5¡UşVf¿_qù¨h[=	ôAU´ÿN$5šÛ„:_Ñß‹·Õı‚:_Ñh,HÿàQ8FÊÒl©¦©˜ãË­ùT7ij‡l‘Æ½€¦vú‚HU¥½1“zl#%"Íâƒ˜­¹(ù“Xj·v{*¨JuÃÔÃØãªzP£ßÿìNsl‹H£	³Ò f«¬Æ0N›ÅÔÆ'c¯úX˜(M²5÷útÖh*Ã÷I›‘`s¿œ1eì€œ1dì5ÅÇÓ˜yĞÍr‘n¿Î+±rşE,×•Š‚¿zuZ®–º>äâ®5WÃ‡Ñ„hTÑçZüM>0”šo¹Ø AE;ì
+ÅÍ¨bFŞvkñr&Á§É´•Xèo’İëO§6ĞØb9šel½sgX2qÜ›i[œÈ²…ÓîÒâh¬œ”¬XXçSr6
+%f¼ãíé»ŞŞ¾'É(:Œ™>Í–±ÌÄ™^BSg{IÀ|ßÀ1—šiÃúRšú°/˜ç<ŒÒ´é?ä,‰ª¡^UÀü§Ë"4uÇ5©Ñn+ËëD¶,pŠ´‹îLËL\Ê¶iê_ÙvÀ¼,[¾Z=ÍÄÇ}Muöaóß>ÛUÛ¶ëNSŸ\ÃfwÚ}ÛúŠ·—a4Wû(fë«é7Mæ.­ï[œ¶„\ºVs}M÷t_æ‰ˆ ¶yËdİ%ğe|cNërêØ¾¡:u”·±êú¢Øæ©q7zj¤½R‹<VjğÔğeî(ëò}ÍSã©‘K<GÅÓRJjñ¸]‚\â.•·I-|™÷5´[Š£¹Z#u	â¡Vjà‹¤&‘
+ÄÖSğ.5¸©Àqw¹ŞÅë¬k“ã^×&”j„ÿKõœ•Î9.‰m\#Ë‚lcÎ^©]BXlj™>wV:n±ÍRƒÜK½#Ü]ò¶œ½r‰\âÁîHßÊ¸¼QŞèûºwË¨'"5`Ïìø®³|ÓËµˆ0¬·â³¬*oä‹œw«7êÓó¸Ú:„A®@äğoâwß²Røì%·ı¿ónàRa/#Ÿ:d^xÖ­[Û÷¶:¹´[Ï9ÿ¸ˆ%
+®öuÈ*·Û>:ª²>>~šµ>êc´p»µÛ>&€wúsOíQäoì~²xe‰<äâ®É_hÉŸ*8ÿpîÇĞ¤ä—ÛšÛÙ¿mhsç™ç.Ü¹óÂ.9÷ÈÁ8‰ƒªâØ˜Ù­İ¾ –v‚cà.';˜Ye8À0wm¡í#ùõeÛÄyÆñçı°}1—øìx`RFÎÎ¬(Xi—‘‹ã‡Ñ’QPi×‰$|j]Û4-%ç`¨¡A$!”PP)›Ô¡2ºVÕPéä|” ÚÒJ0MºRFº­É0ö;Û$Et€„„ö¾º¿Ï{Ïóû?ïÇ¥®ã9İAoUg.\’Õã0Y¥hÑK•JwXô¸óÊEÙ½Môìc™şlë‘Âï¡ûbÁenÁ+TúÇIrGë¬#cE÷îÖ&K³^nô%iªÁèÔÃ0ÜË°Zò[-h4ê¥ÀzR‰Œl×úlÁÂ‚C©ò:~/«É1 s‘ÛıQ£Œ@FÅO<øuê(>Vó;uFT¼¡Ü#’œ\ÙŞâ÷+Ê|¥	éx£Ó`´k²ÁÈuÇ88,ÃêV`Õ~&€”Š/èŒáAFz|óp{ëñe´.·)_îL3B%˜ìÏwd/±îªâv!£dmË]—_»<'„Œ|äÓêƒ]ª¦ğkêC\&UìP+Û_­Ì?w·g©¡`£âBÆ¬O«^œô«P·}Ò¡ë#Ú>ØÆ¿à)Q ¨ŠÈXë> –P„K(Ä‹$°FÑ_±Ësæh¾§H-şè\,^7}`Wv(ÛäY*tõ*‰É®lUšÛÆÎ$£Cl²®=3Ö:B@FqEyÿŒ¥¥P5®{FİÒŸ{ls8ô^seş„Ïskºe]Ä§3æ4}:{ü›ï”=9Ó.]¬ˆ]³)ÏîV
+µÀŞ»ªvEÇiÕ:ÈÌ~¿”‹èŒ_ŠŸ)‹'¹¼]ª,;ì ©2òmò\:íDÀ<®—»·ÊÍ{ÑY×¡3–‰9¥MVú£åfdt8„œÒÿ!±Î¥r_MĞß/ù7ª¡–­˜Ç'‚œËjHÓ|úXÛ¥ærG…çÑñV»ĞYáª–±D©÷,íWEG\{m üú;H `oy‰%çã4óÍCgêª,‰Y¶i:»Û×6àÉN´ÅO|h÷]›İÈ¨$}ÎĞ¦b:îØôœDq³CÂ¥j( óì‹İŠÏ_¸åPKSe~¾S@F¤ÃôŒ¯—5ÏôTLt2~Àİ;@eÂ¼?$®]Ã8”ˆ!cØç+ç]k$‰8sQÇ/OÉ ŒŒØÁŠc²·1Ã=¢˜ÇßüÌ·UÑ¨‘Ç¾d]¢ÕI+‚f‡GÙv.
+aA\„ŒpÍl´ó]Múš‘q2@€'ÊÈ8Án7yÓŒoQ‹ª°§7/>ğÍõt	¼q¨˜Ä¸>Öõ)­GÇ˜`·j0dÍ:zÑdÔ¬ö<#'6yZv ×çã‚ôš©
+:éÆ“›$A]X¸°uÎ‰Ì·q>ª‚²,?ß+Hş¿ä¡Æã¸÷ø¸«¹J^'véóñà®çÇoğÌ«ØóxÙ’ŸúÚ¹sìÖğ@@_3¸¾K÷×^˜Ÿšú²7?&•ö¥@â=çOMm=¾$„eG	ÎÇ¤ñJ —€Uê0æãËúŞ‚Î8û|’17tÖmxq92V>½ÚRëzv¬®·.Ñ3jZlEÛ–£ı=»Vœ,>™•õuâ\W¬«8
+âiçÃ=fÏÂPäoEÇ/¿îúuï•Uµ}¸÷DŠÃ€BM®k¿Ä¦I #:§VŸµ°}°%7¹®ëAK ¢3ŠBØX×”ËÑ"\{kÄòÎ½î‘b¹-šÚîåÁ7Ù››Iîˆún'å¤ÔF‡9Cù¶HåMO»p
+¤‹–:°ÔF†„Ñ]æö#£Ê»=È(¤Èéî0xssÉÂèÑ¨¨3Ü`TäŠ$#d„!±SßiF[?Ä-ÃHÆ³-5V•óGrÄr)mØ’¥Ÿ,±E@ªN1ÂÆirmFdTŸNu.¸mÃĞ°6#,ğ¢Q¶ÃUw€v'…€ì0s<&Â$˜#Ÿ_Ù3á1˜OÂXÏàwÍJXxB°	š Ú`/ìƒwá}è†¿À)8çá2\CœXˆƒ<@òÈÉòñ’
+2‡Ì'5ä²’¼D4"¯²“¼Aö‘·ÉAògÒE‘ÉiÒK.Kä*ù%ÔBmÔIs¨›¡Ò‡¨JËél:>EN«è’{PŸ£+é4@7Ğ-ôUÚFGß¢ïÑ.ú	=C¿ ÿ }´Ÿ&˜™e²ï±˜ÌÆ²‰l*+b3˜Ÿ=Á°¥ìy¶šÕ³WXkco²wØ!ö!;ÉN³»È®°N¹È‡s7ŸÀ'ó)ü'¼Œ?ÊŸâKùsüE^Ï7òÍ|;ßÃ÷ñwùŸøAşïàü0?ÆOğOø)ŞË#üïü¿Ì£üŸü_|€_çq5™M¦L¬NÂ7•t¾î ÎL$ƒX¨€3w1StN-D Ì88Z,Ä¨ôÆ™¡(*¬ÔŒÇ0ša©;ôG­ÄJ3ñŞj‚nÅV†±ô^&l5+Ñ#eè¾p¬ÍØı^…dMYô«n†Ş,º¬Lo¿…·Ñ\¨ÿ’ê4tÃŠQl$)ğĞ±ÃnI“1›)ƒØˆ•‰¨DÔs‡Ù±®|ÈŠ;²‹¨E¢gÂğOõÔkØ±Ÿy°rŒÅ±¢ÍD¸ÙjFoÔl2lú™ Ÿ‚9hÔ×q²ñtà²nÇ³Û–Ü£=â¾3nŠİxõrI
+Æ¿Ñû^„ÛwÚWĞR÷f[Ô…Z&wòÜÈç¶ØÿçP-BŒZæur©ªEä÷IÿÖ¯»Ñâ¢%K(PQ‹¿µ4Ü-¹ı0íÖ!ı²¿¹Ü¥’ˆ¤û,¢e¸®Å~oğ®´ŒúßfØRQÃú9õ†iäÖ*SZRFƒ“uõ|·ÿp8­¥¿|5j‰ÑµdÉ~¯/©%"lè`šñ=Æ£¥=á¼èÒoz4üµ
+„âFIu]]‰1ÏÚ~©Ö]STûU"Ñ¶õ$Š‹Úh#Èa°kÿe¾şc›¸î €ß{û€‹sNRïsùAŠ6Vc‚šáK!Û²¤õÇ¤­:'(Œ‚Y»MQr	‰“LIF'9ƒ2ñG·v+”M[ûÇ8Ç§j:Ø´NLšŠ­H0¤z‚ º¹½w¶C(¿´­Òö,YöùîŞ}üŞ÷û¾Ïê
+kìİûBk7È°£ÃºÃ’«oÛo[¶ßØm]Õ­/?±Ä,ŒyÈ0Äü6Ç°¥o¸°e–[&Vl*­Š¢ÉkZgz8»‡Éæ€—.ó¢ëˆE«%U”’¤`¸Şî×ô†‹‘g6 Î[$]¶ú²,¢¾ôiVÓMœ\z>z”«	Xv‹ĞBO‡ÍöØğ2	RâÂ"³pÁ°Ôê‡Vf¹:ÑÖ\“³\'µÌB»/Z1Û­]&¼§[³,©SlP¶¥õXÔ/é‡ÇÙ‘Œs~›ÏÊÙ¾sÉ"À2‹Âş»ÉâÕ@ˆÔ¢k‚'dıêa–Jvºí¶¥;SO-´£Â¬W-K5ÖºlÎ¯†¼Ì2ÄsB«Og–³7/,Y.]_p¬·œ)ŸĞa•ÃP‚WÂ³Ì¢4(î)=6uÄW¹"’Nï¢øì)	æŒœKtÚCd“>/#qoàdÒ~ıòç>r]¢ù”QL-ïæ…Œ(òğà9I¶q³ğyKO¨ºoÔ'K‹ìƒ`/TÌgûÓ·àgk¾S°°‹«è¦uˆ?Ú–Øºİ`–¤9²d™­”möÆºÒãÔ"J|_Ò¨½Øk£8Q+¯÷ùÆôØ‘ó«¡İår•Áœ{ºK1”Õ)7?g$lÌBj/.ézµøüĞÍÆt$vºïäÛÇn~°Æ¦%G~@-ê5T&¸µ ó"İ/P†ŒxØŒôOes–gG:7‹ç«‚İIÇĞ¦E.WAÿà¨4é¬1•N-vqı÷FFK}U[·ka^iÚfòmÍå¢vÈ²<úa´Dr¹ËRyYÛ«UG{İ¦²º¡¶Â0ÚÔbFãj©-c–3»RšâU4÷Âsıƒ–ÅV~ÎåN¿>:6ºIKG‚é?.\|·ÌEÔváÇÌ"h±PJÏôù0«r2Œè˜m:ƒÎdWz|%,Ë6m£Ï^Ä“@—q1µ¡ÁQ7*Xú²³ªÏä'v”Öá–	…ZZ·™œep$Ñ$óş#¢—YÊCíÑÖ+ÛæR"l‘4ã+Ö¸Dã/Ã`Y­ó0³tª²â[ AkÙ<q—’~mrlÊ­SKğ‡J&³›¸ªİ–ÅŒ<*ï¥µí¢UEYé'ë’PqƒeyZùëìü¾kòñrĞEÔ/bP[0Ìr£ÇÃPŞÂ.¦ñ22±ÃÃ,ò—¤e‘­qa–ÚıÓ‹«_¿eR‹È¬WÚ¯Ät 2ôI>-¬ä,k \V+¶æèÔ"Vòár>.(o¾¶ƒZbÓ¿e	æ-¶êıª 3aqÜ4/İ´Šu¾ÏL¨2hÍbÒÌgYâ]TŸ7üvÑqQY¨¥Ï„Y:Çèú2;l¾¸Î,ß|ešÎ1š†¬x°,,^ğp†ß³ßğz&Ø¸Ä@¡ãÑŒ )TgJ~%lÅ~4îîÇÎsâï­ØG@-|ly‹D-iËœÔßXfA5‡LêF©¥oüJa\jtél\JòsÌØŸ’üÉªàÊ~u%‚œEmã!ôõôç³t•\——èYq²Ö.ıE–%ÑÖ,ä-*?J¸$]‡J~Æ£ì¡– .Ñrú£u>’ËÉq)F¨e¿•“1§Jûµ9Ky\¢–Ê±)§¿lÌ<½ıäDS5µôGX¼´ƒ#”7öø/<àG@¶!g2‘ k!sášT-ê“eD]E@Æ-,^ÚDÑœ\°âeH¤9™¦{f9»ÌÃ*™ê©— éhrQÛÛ:½4)Ewº	]+©¥Kê bXT¬µÒU„ŠsQ<ZËck/—»;^©û¹oMÅ¸ÇÿüŸßŒÆæ«ŸúÖùs§b4'G€Ã{½D×X*¢;Aú/´£A{–´”1<½¾ù£#t}	«+Â Ùv
+4)2È´Kúó@LÌç±"ÌÓµ0áFèZÉr² jZóÇğ¶[ÃÇgDjI]7¯»Æìs^Ú—ß<hş.`šñxl>ÛØkgeÅÆ@¯·b<›Ø³æb "«uš ™¿lp4†*#ÉXEñ?yop|£b±ˆox>õwºV
+4ÒÙZ‰@cK}ÑØ·g¹\=fYÔÆ-ñØc¡ÍöD·Êw÷ÖsA¦5LÎÒ$æ×Œy/Jı#Ër€o{YnïÅ°xYñ°üó}šV’;Ó¨ÙÃ²ğdş$Y_QS8Ÿ>{¬{´BİØúñcrşJ§î¸Àª}Jn1Ë	p¶u3‹¸d¡õØeéPj¹ÿ­î¶”˜t¼L]¾çé…:qmŠzœ#ª km¹…»ëä5û– ~/Jé›ò–âÜ«`iyh¯ù–ë”ZÆ È<µôE`ÉbÕüÿN³çŞu/Rù«Õ»-†ZÈ}t<à^Ë}vtw·‚e¬Z–bĞ„e–ÿe{è¾òŞÑ
+•Z€Wÿ?–ÿ°!Ï[„OĞ‚i8<Ÿ¦Õ|=|š`+İ1>	OÓÍLtÁ^xz`"ğ"…ğ*œ†_Á¯áÌÂø¼ƒ°ˆV RäE¢:TšĞ—Ñ×Ğnô=4€ÆÑtııÍ ·Ñ{èºŠşna‚í¸¯Ák±‚p3ş~?…¿»ğ·ñwq/Æx
+OãŸá7ğ[8ßÁÄ)|_Ç‹¤ˆ¬$«ˆH¤OàUE>K#õ¤´vòé Ï‘d„DÉ49EŞ"¿%Iò.y¼OşJ> 7H–+âœ‹«áÖr¹fîKÜ“\ÛÇ}Ÿâ&¹—¸Ÿr¿äîÑ^5@Q]WøÜûî{{÷÷íBÊj™Ù·Ë¢`£"Ú"•?
+Q;@0ÚÚb%ÓÉDÔ¦Õ©‘6ºËÔQ5­t¦ÑÎÔ‰I[@Q£1¢3™ÔÎ˜´Æ¤1v¢Œ?¯ç^ü‹Q;æ=ïí»?ç|÷Üß}Ä>aÿb—Ø•«	ª¡NQg¨êlµD]¨.V«ÔU_Wwªê[ê»êQõCµ_ıT=¯^P¿T/«Cêhª¦in-QKÒ|š_› MÒ&kÓµ§´ÚÓZV¤ÍCyT¼¬Ü‘@½Á|ˆ*ÕHX‰8Éà+Ø¨&UÅ+Ü&â‹¨TØ°'6ˆ#´`ÇçbGÕÀs*\øµaëpÌq ÑY£-ÚÀA„-«´Å±¦h/rì1EÁ.­Šb¥VÂ(¶}˜> ÿÂ“è"
+cè©ñÔy¨„ã›K„¿ü'0Q7åÅIâ°…[ôUDûN¤Pñ-ã 'ØZ¡vj'ñ¸^ì€ŠñÔbqŠ#! EÁ8+(X‚£ áÕ–:À¢Ê2ù´Š¸)ØM³Q¬cSkæeŒKİÿÅ±YğXvˆÿ?yÈ¦¨O„¿5¾ÜB’;õq#Ño;—€Äƒ³E¾¯O3`CšwÃúÁGñ”s¯ë;²–ò"!òˆ!ÉlÈ3º›S\ÑuúıÜº	¦@•<y»YèÒ¬1R¡x£z’×Áë\ê#Õ5òµÜ>ñ^Øç‹t$‰=.Ì‚r‰2s~xv é…Ïy ·:Ë\;çíÙŞ¤Ï†úºÌ³Nøqõ€‘D˜0$®-ò¾æ •İ–ıAC
+†šo²ÅÎI¤oãK`4%7W­¾ÔNGbâËÎ¾ts"áÉ"&=ÅÑ¤&Ï{«òŸÇÍíaÅaŸ^(2òÆZİî@IsDïÚÕä	¹…Ä9 Ã1ƒÕ´¹zâÂºt¤U	í‘z£‘·4XR‘^‹¥µáWùF‘”ææ.ÊE$“ÏI$ñ½šQO·ö‚§-¼7´S÷x8ÙkjSÒ‚¹{êm		…zÉ@ù®Ú<D²äşií¿üAEÊ;
+úş²«°5Åjè\›Ôt¨õ¤áÆÁB";5¡xoÅ(“%-K6<S‘¾é=oß¡Ë—¯ô³‚•ó}…z(@Ü¥Zæû<y9ÿ•H;ı;dïÚ±­}ìÌÁÖq•çuº~-»¹î\k¨cÏ3¶'>Ì×K` ,l~­`^E}çºÀök3J[2Ê;­ã«#ŒÕGûû«MÓeFœ]Éfïu°˜5™I«šò—íKHÕ@>ã^0'·Ä·Ä,2w›Í»ÛK\†y9’¥‰›‹ıÇw8{!µCóEı—Bä·çòg¹Íµh°£h¢í‰¿…u¿±ØËÅèD¢…»Ëê¯ÊJgMÕ%’´F®ÍÛŠ@›ˆIôü²«œˆÑYèx±íxE†Ç£ëBî4õ´•¹×ÚSIi›†£SZv ¬"&Éº„ÍWS¦*V©»,ŸDızåyÃÒ[äò­A$>wÑ8®ûõÓ%’HäpY}gô—ÃIwâ•¾®F1O&èŞÙ°/ç&o®ãÅ¹§+¦K$ÎS´9àA²²lw¸’/‡g,/NÉ¨ãˆäw½Sëı†Ç<PÜÖ®×š\n«˜±.İo5ÂÆ™B°%ù °¾³((=‹‰Á!˜xyı÷#ÁÎ’…t±vª+/TáÚIM0Œ@˜Yúƒz8>D½rtü¹¹ æÉ”á;6²àó¯p0*«3'¯H:0ázõ»¦™utíó]]ŞÈgY's2—07äœY6ûfO‹DW¤¿“¼iÆI¾ôƒíË–íŞn½†Šı÷XçÀM.V1o ãüê#oz[ß‹ï3vP7õU«	D¹˜±v6ä!’ñ½IlmÙî³3…ŠM£&H<ÜkRäS#M6ÔïmÂb†c[ÉhşÊÜ–g&àË;ò|ÑØ¹Ó(}İ7I–'‘Ô?’òáç øİmUhÂÆƒÖä:ßĞ6¸½Á7¦r³jàˆ$CÂŒ£İâmÜÉƒqGrğ+O×„ªş·—ˆkIÍãBBğ:ñğ]H†	È¨&AdÁdU¹x,!³*ç`ÆşçğX†Üêeø5¼u…×`2¬è„}ğ6ò«Ãpú$Ãú¾€¯àQñŞì&â%ãÉDdZY$7®9äY2ŸüŒTHy™¬!5äURÌkÙFZÉN²‡¼EşDŞ!=äyŸœ&‘³äŸäßä"ùŠ\#&Ê¨í1ˆ›zÑùh2H'Ñét†äuói9­¤Ëé*º†ÖÑİ@·ĞVdv»‘Ûí¥ûéŸéaz„¦gh?=OéB‘İ%(IJ@yR™®dKfVŠÜ¬\©T–!;«Q¢J£Ò„­UéPş Pº”ãÊ)dig”äiƒÊå25`Ùš•9˜“¹Y<Kb^ægãÙö=6…¥³é,“e±± Ëc³Pæ‚r;P‰K)”‰û<X%X‘;!ùÅ¤*xÓ×à.!
+æË[=–á­ù†gG;Tò¹Â0ó¹\”fÃÜ„!Cõ„=.ùƒàmB-ÀFøz>†ù…*m‹\b¢Â÷càRm‹ŞPdsÈ"‡E²6qû•*ú)xfq(¬3ÌÿlÈs$Ç‚»xg¬ÿBìXÓ¢`d¤}©Æk„¥ª·y¬F5ÁhÅˆ0ÎÇªÈ2ùe®_Ë(—BVeŞ¼Uyí‰/ûá¶€™ßP—g™ô¯-7d%*+e]jáñ;ò†¾¶ê½I‘gGzìmËèQ3 !uxÃG¿Îıøæ·5´\•~¤ßœŸdŒõ¤Ôoï	õ,ø»Ay²%|ñB7îäOõ]ùÇ¯’7~|ñâoÌ/,_2ë`µAl˜
+2€°÷;UüH­!ÿ“bˆÔ‡ä©ƒãÔ1È¬;thG‡.ğ‘½4¿~f;úu§J¿ÅËR‘ØN{sn2%òÓå©…á‚€¯áıÿ‘_>ÀQTwÿ½÷6»\s›d£ïGš(Ú% ¤$L±&AêŸş[Jk'ƒ Ş‘ 9jŒ¡&2-AD8Šƒıc;C÷rf2¢iu¤õ"ÁÕˆíôbâmo÷’\‚ZÿLÇñ½Û¿ïÏï÷û¼ıí}wŞm_S¡í'h7,hb Ø·Œ›jwàÇjĞ—âÜŞn¡Í¸]²±ÊWXpiÆ”Ğ²º—Kİ™[¹»¦³$ïî¢ˆ°{,qWñ‰:¨kZvzé<ÃZ];ë’ëß,XZT{ó¡ÜšRÑ93´-;§îè|õû%•ÕW­úàÁ‚F·¯Ô0óßXİ4Líáx¾©ù‹L½şêœÃ…Å½eî7ÓÿêºKxfÆ»
+¼òè²ÊÎ’â!´;KçíKOıÚxê"•Ü<ÙÁk{rÖµ/¨:"ì~û·M_ó-d’ ¹ùĞ¿úÛS/W—<İYhE·Õ<¦©76Üß›ƒ‚¡™×ïY¯8–Ó¢;g=´¾º(™[s´İ·¨ËáÓ¦%Ÿ>ÿÌ¡g—Ut–T	»¡Ş¨î|ıX]óæ’¶3 š5ã­*Š¬{$·fŸ”­ÚR6Úºç@õáÜªºƒ+Ol«-ìm¥mU"İ“7pí|˜kGŠ¶èAóù0s‚»ùêí9{_î–¡+ë¥æ¹ñt»ñújªûŒ­ĞÖZQÒfì€HÑ¾Ê¦‚ªP$´gŞm†²s4ÍD»W·İùxõ¡Uø	rÚ­éV4Øù×7Î‰x9Ğ=?W’/jìüN«ˆ´çšá"sk®yÇÆ.šõOˆxw^qÔDa›w¿·¾Í·¼4ÿ-ßålëÛÕnXxı/ÎĞ÷½÷õ§O¼óîÚwJO£]”€SÅ=7ÜS¿n×ãgçì¹vEK7”–o¡&Ö7g|Ä´
+È"_WûTéš7§îu×7Y2…İ…¸¾3¤P%Ÿ±»$¯¸(²¿ĞËßÌT.~”BÂì#¨Ğ¤"hòd–‘M»a,OMb§új"Í*=!¦‰fãJéèLSw@Ú¥E/í/ÔÜ;rÊnz¾œ“4*6şí	»¶gwMVƒh3RyÄÇíŞ,ãddÒL¢õ¡Óieì¬õ–>Añ”TäA µT!Ãl˜ƒjj>”¢*C=µªá&X
+· ú¬€•p'¬†5¨§îƒ-°~
+mĞ¿€Çà £ğjªã®¢:gà-ÔTïCÂÈE$›\Šªjêª"r*«ùä:RN“jò-TW·’ï‹ÜAîB}µl"[Hi&-äATX}¤›<I’ß Âú=9FbŸA=AN’?’?“×Èd€¼MŞJfP?Í¥—£¾*¤WRƒ^C¿NMZA+é´ŞB¿KWĞ•ônºn¢a¡­ôaúKÔYOÒ£ôw4J{éIú'úÓúwú:Ì2ØÅl*j­KY ÕÖÕl>ª­E¬šÕ²›ÙwX=»‹5°µlj®ûØ&¶•WÛÁšÙÏP}µ£şêDÖÅö±ÇØ¬›F-ö{ësä%5z‡|,%EPâ{jŸ{”P£â¥îÆH^Mª8BŒA]A½qŞØÑ3Ñ&ê÷®×"»-®Š„Q…âæÎçYÏp÷¢JŞQè¥´Ï’Ïëv©°ıé•”ĞFè±.ôÊ­èûlÁJc)i>Ê4“‰v/>Ít}óª2Zİ™<¨¸DÜ4Å3AÌ=%e]´#*W†¶ğ©É ‚'“IÌ(1	}ñö¢Á Uä±—âî-Ğ!]ÓİÑöÏæñÅ+VUgø¿	â‡jùKR‚bãã×eƒ¬EC%¨p;ìğ÷ÀI|iXÔÀDG‚†$ù"Ş&<¶ïÅ‚Š±Í01‚†O°4ŞŠ,¶ıYXÿóşÉ¡'±ĞTØ)Ÿ'‹-	PlğYÏ¿ ‡ú@ıÅ¼ğ–7Iø³>OSÇL|A¦± Æ¥ oÈBı“•1%ı_ŠjA¶=Ó‚ÔØøXóéT¼ÄÖ&A˜q”®w÷ŠS¶7u#yÁÈñ¢Ëé_
+ÆÂï¼á±P E,üŠ“¿Aá »İfÚva‰ü-0;å=j¯gµ@Òu¿CW¼—ˆ”¨“ô7&ËPyÄâ°Ùïô'¶8	ø‰ç„n€6Æ¢À;0cÌ½ /(ÍªVÑiìk‹X÷rÍc‘F>ÅB93€g#0ÂH×˜3àÆáÆ9ıë%Sâ‚â°À+×ÂJ…,!‹¦Qƒ°0HÖ¶ª6~w‰R¸üşSœÎ#å=c9·5Yf`õ1•¶%oHºaá/ÖáWçrNb8/ZGdÔ1úØ³N¼ƒ¬¹‡1ş5³OŠ,ÑieZ@Óp[èÓBîÅ8=Á‚†UVC1€E&—.Y–U_Õ¨O`‘z_ğ™8Œês!ä±øç›’9Îâl’zC·As±ÏÛ¼6_‘ Jôj)ï7›—Ê4·–¸,ì,bÏ.•İÒ-#Ú"«Ùœ³p/Üº¼KMg‘?™…äùçw¸ˆcC^¦¿V§âi,Æé	Yc¯lÆĞ-²}NÄG›hjzğÙ>Û°òEÈB›Ì"l.&ÛÉÖÜZî±˜:|ş=–n'Œ¨´äšÖÕ¯ÎŒWÂ¸|Y`±JeX¡[*S‰åKÅzô8Uµ(Ê6Á‚ë£,úÜÆ,¥0üLtµ´nñ-o«¥ÊĞ‡=§E·XY0ÕpÉºÌ5¶åz^aº,$Î¤o˜À"vN²W¡Ïè%ÁÍ>$#ÌÙáø“eg’˜•™<ëi,|Á‚#‹%‰¾†ÜÛç²˜î|€,¶²ph<oê\–c·æqC½ß©.,%ÿ›Ô,–ÈS=1È"ÖìÙ£,bøî’\%}97R,XÓ†U1E]{[tølŞûşFYo˜«;o«ÉÀ°Ó_¨êêªã&²¨á><VÄ‡ãƒ©åï%ˆÑÅÉ	,úÏ©}L‰l¯4jhv¸4\7UÒ1—lÕA+»,3ëßä×_lG ğov·»ëtíÛs‚Y“knã„¨HÌ‘’¸Rª[»!aD
+©ë$J@Bí¥/QÙs¾ÓùÜÆâ¯+$šD_/ˆ½^êk%“¶o–Ú‡3¥<TÙ¨‚\ÄqÃ÷íîùÎµ“¶	 $æÁ{¾ÛıÍì÷}SøZ¸T>h6;²ğÜy·Z>U^ò»ëıfÙ[FAñ¿í&Î‘,Z<ºŒà¨4´ø,Z˜%,øò
+ìfşÔ!-ĞıQaÕj8Kg¿ÓÙ}Ú÷®T—~¹ööìèÏÓhÁGs‹ƒãWÏN/ê\ÏšWÉÂÂ‡ĞñıoåÙMy³eâÉBxM|Hòìt3Y(áª5¾¦gß¼Æ9×vãZ´!`Ë&Ç»\J?<Z-÷Y¸Ô#Y¸nÙ^*ç´±á%[deMóŠJ×âOŠæ±ÛbhNõ>éáÍ–Ñ‚ŸSWB=ë8Œ²ZøÜÿTôÑ’N3gVÑ‚Oˆ,–¦j"@ëL+Ö9ğYèÊLáĞàšöùsÎÑÜ^×ĞgÄÊ-¦ÔÆ¶e•ëÜZhaâœË¸+È«·å{m\İóğ!}ç†Ôa@^×‹™+ó¶ÅÃ6Z˜#ğ-<Íƒ%<Ñc€t‚Vxy"¸Úv™æœlÎÉ›ÚœİrÚ.ç`,m;‘Å¬Ê"²˜h1©h_— “QÌ‘…?S‡ë–2İEáƒéçƒTŒÛh‘’Öòø@‹ıe²xaµ.|1u˜î]„`Ób_³N ,ë¹Ë’5]ß_{Ü/ù±E¾SºTõ‚}Æ?å­K1œ&Ñ3dàh^ø})!Õ³šX<¦>g]³¼ÂÌ1ù’½F|Û.¦<²Ğú,õHëÂt«‰…e“ÅùØ‚‘…®5sÁé³,ÁMß»8N!Ü÷ÀäÜ·˜Ú]N¦û‹Îb×¢Çm²PÛh]ç0ÿNb!uÇB‹Åkrß××ë±Ex
+8WN»µÕ-<Êíx½MëBWŠf)%©@µ‰Å ›Œˆ,\³ÌœÉ¬Îµ¬/Ü@ZKõHš[İe·ĞÂ¶u;YÍ‰…èZèO×í|ğ¹'Ú2D‹ gä¨nåêkÕFÇÆå8‚I¼pœk‘…{5~GŠêY(à3ÑµP—qÿ¢urŒ,‚íZ¤ _®Ã×­¿+;9¨•ó²E¬¨< §¤'$eOüE(¯ƒ‡ @ïˆ·iá’…”-ö¢Õ~IÊ´†›[¨î‡i]Da$‰­Ä"Š^52í\ñŠ<Š±“9£BÄ~“GëB@¶ÅÇ)¬’äÇi€W³İóqì…e¶Xàº&‹¦Sqô©mÓÆZñº¨ËÈâ}ëb^Ñ)0’x¡6„*ñK;ÅV¼Èk~´â”ÉWsç÷÷ÖÅ•_îA¦`Ú'Å<›ß´0³ê"PƒDE|8ª;¾Ï£x!€;|ü YÄõ…ãÔ…W´ÜGâœ(‘)€¯÷,§àÏX'÷Eag‹t5ŠÓvÕ«¿{«=÷ºìÆ‹ƒ'ğ!mò²èÅ[­L4ö^ÃœúEŒ{P-¼Ø³§U<şZÊìY¸½xá¿|ĞÄœŠSfÇ—a¿œFçÑL,¬Üü¦…Ïâ]Š‹eX¡º“,x-5Ãr3‰…Fƒ*f´MÕè·çG]±rå™ëúÓ/M4KÍ8vRNM¢¶ºÑÊ_~ª›G&OEyd¿Yqft…É0\]oÂbcÈ[ÅZëf‘ 
+~É‹óˆpÁ`Tk‘Å.´ğ&¼¾<R<a•W8eî-ì?Ö~ŞLÁá–ÊÏjhPÅ@¯‰Åy‘,p?‚&šbš,â<05´È˜Åc7-~ÇßpÏh'ĞâëG2ü+N©bMÿt¯Êıó¹åÇs‚…eM\k8ja±0k<Ù­/Š§!ª/ÂYtm³Öšë„×Å×&*XƒW°ºØöX_ˆ¨¾@¨ï³èÕi6‰¥;N0x±ÅnŠåÄÂR›.Zğ–Ü§ã%Ò§/ÿcQ¯ãã×¨îÄ{y¿$^…zlaùÁ%µ„kÅ{³ ÛF‹Ôõúø8ûl‘ÆÎmŞà«#S¦sìù#CşÜVrÖ7Tœ`&Ÿy1?;WY›kpÚ¬ 4‡Àß¬;)XRİ‰µ^ÔpSEëÂ§Ö?cüŒöXêƒ¬
+é¢ ºSDuç Í&à‚öÉB£^]Ñ«;wÁ<]Fªü Y¤c‹2YÈY,H¿ğŒÕÂTRòf¨f!äÙç
+VĞa^660ˆwRµV>%ÕÒM¹!_Î·4£ÖšM•Â|;³ê-´Àßå
+»,[x]á­ÚRÊØ8c:GŒºá]a¢Ô6fàC©}CÇ³õ0íÍÚ”5™ÈÓî£Wƒc}Q“øú±f¿…á¦£«»3Ğ†¶İ1ÁMõíG¤l+´‘Ú´èíG4(Òe´QŒ,vÙï‰²x'²ÀéPa³á{Ê`kğZ2/â[ÂÛ†©_=y¤ŞX‰<¿Üı‡õßKÛùÉ)Ç¼ï—dàJßW¾C›çÈbÀXad¡ln$îËÂN=•¾ò2w²ğîÑ¶[ìĞv´Hº0d8ææC3Ä¼)«2YÊlš-¶¸l£¹k‹œZŸ…)îf¬g1Úß×G´ÀRÿÊÎ–/g³¶·ø»Y¸6nåDBİ:´ğa›&zzJÜÅ"%‚ÔÀR÷¿áş¾>ĞâĞ½ÒKöşØB!‹¥m;®©ßº1Zğ.BAİıNñ“ßÑ½¨ëw×&6?eîu”^rü ‹ÿ`ë³¸Ÿ&î¿79Úî•ÈB#‹+ÿM‹ÿæ&GÛõ{Áÿ§E·Ùnü Yˆ§…Š¡ï!Ü(ƒSp¾ß„sğ$0pÌb-û,ü~/Âoà÷Ğ€7á-ø\‡¿Âßcƒìc,Ë8{ŒM±o°‹ì»Xÿ-³_±ß²WØ{‡İReDS>­W¾¤|U9¯<»×%å'Ê¿h¯¨¨3üÏã>@`waQCïò0H–F¡š¢mYp1‚¯Áìš±.DI<MO´H|dé…µZšFÅÔcÛ'Òµië#Úú8*jÕŸIã±6>â±"Áí?—E§Ï1İÿ¹3ÿ?ó}óÏÜ{ç¿oÑõt3İN÷Ó“ôsz•v0Î¬/Kd)lËbc™‹¹ÙÏØ<¶Õ³Õl=ÛÄ¶³6ö1»À®²ÿ°và¡ßôáñ<‘?ÉÓø>?Ç_à³¸‡¿Î›ù&¾‹àGù9ş¿ÊoKáRoI“¬ÒSÒiœT,M•*¤ER£ô–´IúP:"—®Ë\6Ë	ršœ%;ä)ò‹r¹¼H~]^/·Ê{äò?åòM…)Ê åGJ®2EyI™­ÌU+«”w•”˜ÖîU+G”“ÊYåså_Ê%¥SeªªU“ÚWÕğ/Y¤V3ÔLu„š‹Rr Ç¯Û‚§óCüğV%&#áÌL¢h/¢•Š–
+¨D!ø±‚^TQv	îªáBH/&b¨‘D’Tˆh¤½±I¢t«AØ°w1êªòhìg¨èHa:V(1 „¥îb€Pˆ@ö3Ñ0œ¡Äp–áƒÄ@TF	Ÿƒ0É"uí'Å ?*A^ªÏCp‡uÏ‹ÆHè#7£İÌc0ª(bÖ#6uEÑÛÂ×›š!\
+'‘Èg€~$#†+kQØ?Dè"aŒ
+úpğ0âª…(!}Šè>ı êÄs€ÀíÀûö&®–x;¤?úëA}€oPqÄ'æjÿ7êÁâ•smğøşog1ÜÜv=ÙÖt–Mî6úÓuû2¿•GUŞ =ĞıAÑÿ.‹íUÛ½Ó:+J­ÔY­[»nßà]E+*ëÀºbñÉXötëøÆÎ›«ê=|ëÜ­_ÿöÌn`TLÎ£¯ÊåôoèYY
+ŒË±1¥|É:P<â¸¤†Ssÿ‘%ÜÑúŠË¯¥¹%Å»÷şûùü•¾~r|iVÈôìû–äú<ã‰eùÕ¥-?÷6ÛF¯ŒõÄdÙ€ÚúgæOŠV'›vàyyÉ_ö©QabáÀ¦Ÿ~¯âòÜSæ©Õ³²5G|ÃÂèóiîcGË–ñ¯ÈVµÁ¿²ìºííšõ…†åc’›ò7;ªêéZû(˜YòNéŞÖÜÑ™'.–->¢k?ĞQ‹ïµñW¢‡\™3éLyå®iÆ…ªÄø›gM†ú¯=s­¥õè¡´’)Ëãİ{ßkÎŞø×gæ×Ìs¿³“şùÜ¨u…jÃÅäÚäW×UÕ[vb,ËZ/LñçZ/–æ–½;)ñ¸š:1h«S%‡->/ğ»İ*-ùÕ‹·¥nÑíìïó¼Î¼J#âRk[Hšûô~KÔ¹—ş–ùy%‰Ù×Id¡y‹Úk¯5çW'Vykj¶!KCInÊûÍæ%šŠ;òey °çö[ÎPŒÅøxÏØòçKUr¥¥ŠÛåDŒå«†…F²è+V_Ô8,Ë¸¿³vEßfuëÖ?W·¯¾|ºñƒ¹9ğlûÁC`¦iUmÒ‘¸Æ[ª–MÌXNšæ«,Æ:•g]¹YIŸŞùÍ:¤é‹µ—q_N·ÇÍáv}_,‘gp_pÅô;™ÚŒÿûÆ×0û¶O&ªæQ»2®ºB,°{îËÀ|NPÄıNÍÌw[Râô}b$ñhzwcO–büo¿cî²0ÓR¸›àİeÑçáçÊ½şSæù’~8½Ãü{À{Œ°×IÚË>:‰†_½ğ]±‡¡ÆC>µVƒñ}üƒŸ@6Œ„<ù˜oM†gáy\*7¼ e˜yÍ†Wá5¨‚ZXŠ¹×JXoC3üZ1Û»á †c˜‡ópş×¡:*Îj<#¢I_GâII!ß'éd(N2‰ä’±d™D&“"2”’2ò2™M*ÈÌÚªÉBRK–|Ò@~CV&²š¬Å<pña.ø'²ƒì%Éqò	9M>Ã¼ğ¹Jnvò5%TÂ3/œši4}3ÅdšJÓé0šIí4ÇœÑE‹è4:ÎÄÜ±œÎÇü±†.¥Ëè*ºFÏ"7PõÓmtæ’‡éQú=E?£éez~EoĞvz‹vÒ #ŒaÊÂ1ÏŒdQ¬ëÇbY³°x–ÄgÙ(ƒ(ë™!t[èCåSi˜‚QI"K¢œ2´ˆ£cz)ÑÂ‚}P¹>Nî&j
+‘u›J1yÔQÅ(Ñƒ{È8^Õû	9ˆËƒ-vÇr¯ğ †EuËCÅøÀø&ÅH¨ÀeJ—è™¬+r#/ë®‰ØC¸ˆ°+……è£ºÆÊß®ˆì«R‰KA«À—tå(]«$ëõ 0]9×÷„J²$Fá!öG”ÂÇ8>¿R `Sd‰‹Øª}4)×í³Mpj»]–Tk¦fT48|áš?p8y¬äòIı},Iõñ¤„³÷sMµv85?QrìAØœb;':±*ZhF{=ÕŠu´d‡ó=B–ºü$Píûc[ğ5Ã¦¡[µjZÎ»c#ÄŠ†ÖB­ÚH¤™ïLpi^Í›ëöj#µéSİ81ıŠ¯ëIœâDç,œŸÍ{§ZârCœ^‡ë8^"”ÊtèÄNaÖÑšp8'8}{¬ÏfwÅZ,Zo›ÃéÛfµ¸\Ø+üÎLñ:FLpÎ8çğ¬ºPpl±>py½]­‹ÏãõÆz1`ÛÛzô4Ø‚?èˆ,)ÇO<İåI°Ä
+C‚%Á‚ót‰E6ŠµÏÁ™Z\©âè‘š:›ğÔ˜t»¥ãµ²+S¼ç·›ï‡R½vY¼Ğø”Cà–Ü•rc»µ˜»a2ú¨µ4#po±á¨kP¬§£>Z€šš:†fÀÔ
+/0œâÊ–À|Ä,Š\_²ãğ&Y	kÄ•¥CûıÙ®š·±;.ÏŒĞ–ÂZ¶i%¤‹)–dË3>„E²õaÙ–GOÒ{Òc)•%Ë²%ùcl?è–ĞB¡‡Ò´‡œÊÒCé¤¡PXJ{hÃB—B)=/¡=”@—B)LÿÌÂ²Ôğóÿé½ÿ÷ÿÿô˜_ß;ùÇL¶³{)ç<dì¿`îÂ¼^x vCæk{Ü¹V¸ÅD0÷×ƒğü#Ğ÷/˜¿qğŒ)ÂYù÷Èrbf—º²ú4wıÊ3f¾Ãn|3?=‡ ïÇ;äÏöPşŒù~şÉùË<f¸ƒ§ŒpğóÖù'L1ÿòñ3¦ã·ïú•ë@Ÿ0·óo13 t”æ€÷™k s3ÿæÍÂ›Œk_.¼ÃìÁ—~|o_göÀGpl\;(BÎÂ<„µ/îb„gfÿcæ&Œ%Àğhû÷{ÿŞù_¿‚õ2Ì¿‘?;~(»åşÃÜ½?(˜9à&àCÀ»ßÌÁCü»µÃ.»¸?°órÓØa7†üœåŒ~¹öSÀ{ ¿ğ\êq¼ËWáAîöş5æw—xwà×À†ı iFØb¿–|ştÜ_2àá€÷ş%nípåYîíı¹ß@^èkz1>¡/¡ÖO÷¾q•9¿{)6sÿ|µîípåFN ª]@gş ùù&ä~×;7 –³ü‹óGpZ||ÑûŸAaËl.wÌç.ş+ğÂ‚/ÖİıèõÚ>Ì}…ù#áíNËÛÓÿûí]¨Í}Âq~şûOÓÜ§ä¾¾ãö§Óôõ¸ğíŞ0¾÷Ú³×|_ºd¾´º—öíîv¾î:É!Äƒ1ÅH£s‚l›ÏÆÙ¤X«q«WN‡~y5inÃv¢7¨‚5µ6Pt£³ˆ´~¹WZ1×·Â©bÙn-¶	^%ôlÇ¾£l"Ì#–°Æ‘¾Tä0L›§İã†g¥Äa¥“Ğá–/,m-<&cÚ&.ÇŠ²Äd)™cT
+'ó=`[¬Xª¯vˆ,(ÅpèGõCT——‘­-bOE}K^s.æN3YpQ‚±º1#GL^Ï".­yls­š‹Ş¶3–¤AªsÜ(M‘hˆ“¤a7ly„G®ê!±Ş©òËSSoÏæbİªÙ…É©ŠÔ Ä7ÃYÒcÑvŒ]—äã>/¸D6Ávà±gN]KNŒîğ"Ú\6DQ†<Í¤†eÊ#¹1o8>öùáh¤áR”LO|-t]·Rn½¦<>óºçÈb¯}tjÊíuÄ{ZÍ¶Ä-<:İiI“Xİ,°S“úUî•#w6M°3U}-F½1M2yQ¤Ã„ë†ñz5¨µ·š+÷„‘Ù3*Î$³<vigs#G«õĞ%Á"è‰ıùºŸÄA*,Zõ†¹Q×s×çbªPW“}fù¼"úwB„bàkÕ)-Çm›_s=‘XmÕ½4¦™%§ÜGt(úªD&+K\+®×nÔ+§rš²¨©o¥2¥öÍÜÖ¢êÈá‘ÇÑñÈ›®°S…$Ô +X]Í×lŒãÌÛx“î(hråôØq6‘OôzHjë@&^šMª*›0j©nl¼ÁD¯=Òá»óß¶+¸¹uqÑtÛ,®£,é)–é„²5Ás$Îd±äù3bºi“°zËo˜I=œœÈëÒÙV¦¼UÉu,—º–ºd¤úªÊùØ8ruTEi·ã–O½esÔÌ¤Ö"4nmye²lÇ‡»X:üb"NgaÅLP0®!I×¾ÇŠC?a•:–ò¦³0â {‹ó:.¢²ºÀ¼–9×ÃÜÌ+·–JG=W2Ö‘âˆ¨UÌÅ%Wu74İÕÊáÓ	Œí¤ù¼ÑtX©–ÉRµC4¥8ÅœŒÔ.Íh9NÜµgq»GT+®f²†Ç/¼~TF…7Ê$ÒöojŞ3cRu]"¨S=®9dªZĞ,Y™+E²0Ä£òñ-GíWQRªW‹~KéöÆÃåĞåöÔe4$tQ¡i}ji?Rk|ÈN7X­±^8ò5iàùãéÒ!ñR±Oj’İ‘Ì²âÚ2¿ĞÛºeÎÔµÈi»»R/éR¤‡áâå˜*²£p-ÄA’…E…¸s¯%±¼”J-\îº8¶y„zP×ºƒq†Õ~)ÒQİÌª!åM¿9oVê=AJZÆå-ÒcvÈ"iì–«Y˜M{i*é¦&pÈI«Ve1ZM2ÁóVÔ	ö;–Z™°}â²œš:EùM{®oFÒ±Kİ )­FšB“C±3<U›fÇVP…Ó6§ª8‚hlqè¬K¡K„Ñ”%’‹.•¡²ªdÊF%†©R£8[ëğnEÓ~İqŠØ£kN[*³ª0šlÑÀ4ÕúÀ°±B‰e`İ…gÜ´Ôw¨@yıh~GK½ã¶™%Ùt;ê0¶*Ğ`ãÕ;¿úàÕ?úõ·®şíOwßÿáóÁ¿ÿühÿ¿ı•õy÷wGÿüîüä—kTUÇÇ÷¹çÜ\„{AEAE^¡Š\ŠŠEŠ_¨UIÑˆR¥j ñ€b|kDAÓÓ¥TÚˆ‘hRch| FÅh„ìùs—kÅU¿tu¥rgßùÏç™™=3w{LÑ„cıX”ëmyiü å×7*ã|[ĞZ~°9şú‰ÉQ#İ×n›®´T'_Jî9ò‚A*~è^ÓZ×’V¦«ÚaıÛMá3VüÁ¿s¢Ë¯ühm}lÊæ™%9e;†ØúŸİqº}á´”Øi‹?Iúkb¿Ú-·®\[åè—tñ†¡¡òXfXÁ†{¾uoõ¨°+N_\ö ¸nÅŞvçöÏ[<:´êêÒ²»-IC¬]jòŞoÍí™1`ªÇÈªê¨_æJY~œ¼»6ı|PŞ‰æ	=s®|°`Î£’w
+æ»İuÈwgéWö×&·î²ÜÚpâÂìeijï†ıaûÎOœY¿íÖ‹¶ŒğaŞÿêQºÛşòñü4ç¬§²–Í‰?·¤¤f™o£!eô™)'7Zç}êÈÑKMË.»İ)hõ¾ïí¦Ü~²8pÓİÆ=ëWÖ'›ÆE9VîKo[­ú¦È{hPQÙ½QYcê?Tõ¸ZÑ=¤p¸Ïc¿£6goŒ8:¹©ó7ÑÚEšÏ³n_?¥978®õ¦ËŞ^'SK.¿9Iñ[²ÓsuBKØº‰îÛŸ”oÚ™ºÚà¢ªH;{êHè¬Â¶V†ÇÆıiâ9 0xïúøÄ’æÙ®IE…ßï¼úìÅ¬ékšãôå¥9§«–ÇÆi³Oóß8/©œ´’YxI•’‘b)’i õæ+ˆW¥dK·¨
+i
+…›-v4í…<İ)˜‘9ÁléA~?±P¥¤ç‚¢¢eÏ+²¢C´‘pÕfK7Ú@ó(B[¬éí,64õ…æó•K=ùúfíU&Yvı£3uªÒ%5u,) Ìİ%´’ u‚à3°üü7ø|~>ÛÀGàCğøxl[Àfğ®œw¡ïĞmú=©ù-bBËô-ô-ğ&ØŞ ¯ƒ×ÀoÀ‚WÀ¯ÁËàßÁ¯À/ÁKôõåÖ.‘+Ç¾€íÖ
+]€®7SX>‡>Öç¨–ù)ôY°<~‚¾ÿú4x
+¬+Á“à	ğ8X–Ó1Šæ~•wÅ:ë¹}a‘©Œ’5§”QOÄÒ9å(•òÕ]™Ê¶R\êĞ`æaZA²©“—Ú^“j~Obë!äû-” ¯Åt[Tó[ØÒZÄ1a1ÑÒs"EfŠ>¢(ÖûQ¦üü uş…†3ß‡Şû^´^K¹¾˜¨OXdÚrùdbîâ9‘é=”Ş‰Öv@o·‰uL[is,›ÁM¨a#Rß7 Í<¤®ç•,Ó:äÉEj˜9]‹<Yàş»Âìüû¶–UàJóÚYÉ)CË”É#-¾'921o+ğ=<~W8%)TÅ)é´œ[U#EfŠ^ÎÎÌ6‘"3Åˆ‹ğVQòÏàRZ‚\K»bhg	r-†åO`¸_½ĞÔå×©¼Ù„sÉÔ®J
+‹Ló)³?))¼åˆÙOÁì§ oóè-À¶y˜ıyè›°È”Œ2Iàlp&8œ
+N'ƒ“À‰ô|}"bo Ÿ	Ğñà0üÇLÅ@£Á±àp4Ft^åBı¯Ãò<z$thCñ5# CÀ_ƒÁ`8äÒ2¯9¡À! 8|•m2ùBû€ƒ@oğWÁô‚ö‚¯·¡æ·ˆy`…€vİÈ†éJL^ñ29ÃŞŸÇH&'äïK_è> £©k8€½Ñv/ä²{‚=Ì4ğèt'#·¨æ·°Ù‘-¦šß¢E[sš-¼Qh™Ët€¢¬¼Ë–n ¨-APjÉŸ©áİU&œQ„3ŠdPßR¡f	ıOä¯Odk:×ÇÏ~Šù©âGK’4ze®”êõ³üèçiæùë+[â¡$T/Ç*ô±ˆÚ’ZáÉ‡ŠšTËvéŒz4'=§[²]ÏAËnÅyíqôôâ åÅÕ›SÈÁVÏÓäÈºõé§çéêËºõãzœÈ‰ëéÏAÏË×™sºpĞó²våœnÔ¼ôİÙò
+5;Î@Ö>ˆ]Ì—õÄ.éÏ:›a;«æò=ˆx[z‹õy“"ZÈAÏ›¡ØÎöğÖ¨çƒ¦€í•|éùÛÅ×Ws >¬kØr†nêäÆgVÇe–z©}¨…BI§V)äSw¥îU24Ö5ÖùÚîÎFçY
+µ§Êí7;¶h­Ÿ>\ Hçx)_±RnªSåP6¯cÅĞxšË·7ûJÎşÎŠUûhù°”Ÿü¹:É^ã#\1ÔRÕF¾MSmÍ\¢©ÉWr5úIök×vèt"¿“¡¼®Ê`çj'éZKE[m]c¬Vº[£€î†¶&ÑÕ¦ö&C•Ñ60Ğ×Î?Dò¬øĞÃZruqsuÑ8Mİ9f²ä2<039áİQ#;ş1)$OŠØ4:?È?Ñ„åyú„á¿ ó’°æ?‚oÎzî½İÌMì•İ8ti+áõŠ[Ø·º´ŠıÖdÖâpˆ6k…õ›f­a9vÌ¸H¯ñ‹çNŸ7çå¾IDòV2†ÏåH>ÛÆó}d.Mg7œÃİŸÉwƒ…¬¦áÆñ²|ÿM
+¾²–¯…|­8*BùX"ímİ#N“ÎÏ7·„©6Á%£>[“.Ş+Ÿuìö®J“Ñê5úQ€ àñ·
+endstream
+endobj
+52 0 obj
+<<
+/Type /FontDescriptor
+/Ascent 750
+/CapHeight 676
+/Descent -250
+/Flags 262178
+/FontBBox [-168 -218 1000 935]
+/FontName /Times-Bold
+/ItalicAngle 0
+/StemV 133
+/XHeight 461
+/StemH 139
+>>
+endobj
+53 0 obj
+<<
+/Type /FontDescriptor
+/Ascent 750
+/CapHeight 653
+/Descent -250
+/Flags 98
+/FontBBox [-169 -217 1010 883]
+/FontName /Times-Italic
+/ItalicAngle -15
+/StemV 76
+/XHeight 441
+/StemH 76
+>>
+endobj
+54 0 obj
+<<
+/Type /FontDescriptor
+/Ascent 750
+/CapHeight 662
+/Descent -250
+/Flags 34
+/FontBBox [-168 -218 1000 898]
+/FontName /Times-Roman
+/ItalicAngle 0
+/StemV 84
+/XHeight 450
+/StemH 84
+>>
+endobj
+55 0 obj
+<<
+/Type /FontDescriptor
+/Ascent 750
+/CapHeight 662
+/Descent -250
+/Flags 34
+/FontBBox [-168 -218 1000 898]
+/FontName /Times-Roman
+/ItalicAngle 0
+/StemV 84
+/XHeight 450
+/StemH 84
+>>
+endobj
+56 0 obj
+<<
+/Type /FontDescriptor
+/Ascent 753
+/CapHeight 562
+/Descent -246
+/Flags 35
+/FontBBox [-28 -250 628 805]
+/FontName /Courier
+/ItalicAngle 0
+/StemV 51
+/XHeight 426
+/StemH 51
+>>
+endobj
+57 0 obj
+<<
+/Type /FontDescriptor
+/Ascent 701
+/CapHeight 0
+/Descent -298
+/Flags 32
+/FontBBox [-167 -299 1094 827]
+/FontName /EINNCI+Symbol
+/ItalicAngle 0
+/StemV 0
+/FontFile2 58 0 R
+>>
+endobj
+58 0 obj
+<<
+/Filter /FlateDecode
+/Length 20673
+/Length1 40404
+>>
+stream
+H‰äW}tÕ¿3»3;³;»I©§BÎ¡U*P±PNà„Ôƒ4åP³»o³#³»ÃÌ,ÙĞ*Ñ@	_0"Ò€ÖÒ­Õ”Ò”Rj)¡IäClA)-‘¡”¯bé}³³›z<µş™÷ÎÌïıî»ï½{ï»3ó ø2Şœ0ä‰'zøôÜ¢9 Ì(”Îôjh?0õx+DdÈoXÓ‰²é9fş÷%a¶O°£BA#0¦ÏƒÃq²|ÔŠEƒ¿·xòI •óCZy¤ùÁƒ›>ˆúP®V†¾}şÀª" Ç€0‘ƒÇ¶®hXK×F´›}	`êÃ€pÄL¬r—V!oGıü§â†É¸ª& T÷Æ~Uäê’g¯ ¼F›VFä„&ßÃù~ˆıùbÊÄ¿" ş| a}T©VÎ¨O ¾C‹&8¨¿õS©¾¦ír~¯€¥÷£şUMi•{gxñ^Ô¿Î:f9pàd·²‹qÄÒ2Gáaè€¬‚&Ÿ/df~|×˜×*u°İŞÅÕß@_ùul†9kHşmü”‹°……°ˆS 	fÀ¦^`–À`fö>
+ Zğƒa&$MĞ	`^ÓÙ=8"C¡Û¡µêeû²q”¯bšÀÇf˜uPÏÎc^…i÷9›àL…MÀëìxÊ¹€—¯á¨\Æ@Æ²YV\×#`<7¶ÂFHBÄq†á*‚v&a8
+'`Œ`ı°üì"Ø˜ÍÌ!æC¦”İ;™NfSÌÑâ îFOš¸Íp;0ÅàNGª¿ûóà´Ÿ^!ô}·ıŸÄ\ÄQCa¬@ù(æ6"[íŒ–À9(Áú òÕÈª¹Ø	ÏC)à¦A=Zø4?ÓêÛìhd
+°UÍµ0”¯Æê1}ù‘Ğßy;ƒ_ˆsmäc±P×Ùjns–qIŒG/¦«fıL*&¡”[‚=wadú#NÇÉƒk\)¼ÅfsqoŞÈÄæî+±ãù \à.2íÌCü×øF¦¶š˜aücĞÉğÛ˜‘¼ãº~Œà‚tÍ{† DÇF£ÓÓ –`r…8nÂQ\ß›#ñé:,Wıìä*ÊÃ&mWÍ0E|5˜´#¦sAˆÊjÈÊX/èvÜ©„¥“ßU‡ÏÉ?YñÇTèê¡Ås,@.¾‡¼Û ÇF#UòÖfbÒS¯glOÉ¤½™˜à“5ŒæÉã==&!57ÀØ2 ±¤§ÇÄè—‰	¾³H«zzLğ£”‰ˆç¬G0O&õô˜¤N’îï~±Ïo.ı¦c(=¥ÌäÜ<µ~İ>`êé“&Ìä›o2“é7‹Ã:	àÊt/pgğÉÅçßiø†Ã/ ~ñ_ Ì^ÌåL¹Qöiá—Xï(ğ"oÍû90é³–ª*>3ƒ$ô¬ÏÙXmã|Øø#ÚXcã"Û¸ÄÆ¥6.³±ÖÆçm\nã
+WÚø‚u6¾hã*_²qµ/Û¸ÆÆÛXoãZ×ÙøŠ¯:ÇÅõØO„Éš¡¨±èĞ×øˆ›ä§¢JƒÌËêz!¤ËS‰E&(ÑUÌÊ$Rcºı¹3 Æı¯»‚ŠÁ?º_pø[¦›op†&É›¢¬ë±
+Ì7¤š*	™¿tYÍ¸¶Ám5t¿JõcÑ|”ë„üZÔÔ¸A­1yƒpúßHØ!›D·ìÚ$Dâª©hjåo%úûÓ©²ºÙ£¡Š¬•Pèw¼?®ªÄÜÂ•9Jü^@¿­áoy”9²J¢ò¬á	«g«@TUÁ€ôXfÍ!ºIÛ$‹„Ñï¹$±İ@ªÈåh×£;8œI7	0Z³Pò¶Pj·vz*ˆBtÃÔeÃØå(z@%iÛÿäNqêl³@"šYi³ER¢è'ºM}jåâQ„w|ÔM”Æé˜»}:	©$‘æ{DôÍˆû±¹WJ«R¶OJ+Rö®‹àò$jîwÓX¤Úïqr´\%Êu9¨ à/^”+†e„®„øøƒkí•ÅúĞ› ‰Èú,‹¿ïÂƒñ€ù‹NÕC®`ÌŒÈfø¯n5VN%¸Úát[ÿ&Úí˜ş÷Thƒ~•&Ë‘£ùrÔfqí˜7İ¶,9Q¤‰ÓæRcsI´œœ-_èà“RÆ9j|èívé)o·H?xÆHŸ¦)D¢tS;ÓMHâl7ñ›ç¼~|2f3¥øq6%‰óÙÔo^ğPJRªÿ2$¢/vwùÍº,B—8ÌI•\v[ŞXV_hZà©Wİé–©]Ë´Iâ_™¶ß¼.Y¶Z#Mí“,FíYÌoşÛg›jëvÜÂIâÓ[¸ßìL™okßğv3ôæfV§ßìr}#õ¦I¿ÁÅ5ÙÀiK˜k·öÜ^S#À•yÂ­Ş2Iwñ\WF™Óºœ:¶ï¨Nå­´º¾*´zjİZq·Ø,“Z®Ìİe¾ozj=µR‰çˆpZLˆÍ·‹—JÜ¥Ò±™+ó¾‹z58[‘»·5ÓY/LáëÄ$W$&©D,¦X«à]Lºx±Ğvw¸NáuÖµÁñˆkÊ?ÓÃÿ¥zÎŠ×„V¶FA²KnCÎn1I/>$´òuÔO×ò[hÍ1™îï w‡´%g·T"•xÑ»'œ])—ÖKë}ßò¢õ„Å$ÌÌï:ËÑ~©ÎætW\ËªÒz®ÈéwwĞzgj—[‡0ÈÁƒÃÈî}üî;PV
+Ÿ¿äµıaşüQÓÍ˜Ïœ2?†Ú-m{Ç´ö9QÓ©ç\ú?LÄ’…·‹Ædd•{mUŸ9M[W²”æí ·6ÛF8g.bŞÉ]²ôí]O/-‘ú]İ1î™«C 5¹“…—Èûdª´19GfçµäµwléßÔ~æ•«û·o¿¼CÊ;¼¿N BŸªÇY:gozk³¦/„šÿP_6°M]W?÷Ãö‹y‰ŸLÊšgç¬(hi—‘Ç	£%£ Ò®IøÔº¶hZŠí`¨¡A$!”PP)›Ô¡2ºVÕPéä|” ÚÒJ0MºRÆİVg{ç=Û$Et€„Tí^½ßsß9¿ÿ¹ï9ÌáÚ‡™^ÆTÀƒ¸jÕ#‘z~„wÆl­U<QV3Œ§Á`–b¥/Õ(½õbyÈåt7U‰²k›à#ØÇ4íÙöÃ%ßÿBóÅBK‚G¨ñ•ä®ö™‡G/ŒíÙ˜$Í|m8Ñ—PuF»f¿î^†U
+ßBz£Vª¼ág!3ÈÈv®ËL,4„‘Êaíw²š21°ÕÇ‘ñçõŠÎhdT|Ä…_§¶JácÕİ­1Òâ	–|cåšÎ6ŸOQæ)-HÇ›í:£5 ëŒ\sŒƒÃ’8¬NVîcH™ø‚ÆØd¤Ç6·¶[jËšAàr‡òå,#Ô€Áêú|{şBıW§%sGáZwÃ²‚02ò‘O«ô¨ÀW¨¾1ü‡¥Rõvµ¦óÕ÷¸93¹5O‡š2æ}ZwàÂÄ_v…{­^ÑñÁV~èW¹!UDÆç~µœ"„\!@	^$5kŒ¾ê®ÓGÜ®Rµì£³‰¤ÚjÁªlW¶Ê3Uè9ÔƒUÙ¢´vêŒİiF›Øb^szŒy„€Œâòªøô%P;¶wzİÜé.<º)~¯µÆ=ş³CÜ\¬n^õjŒ-ŸÎ÷æ;•OÎ°JªWgo,²:• B@-¶ö¯lXâ˜#­ê‡Üü÷÷Iù‰¨Æø¥ø™²h¢ÃÓ£Ê²Í
+µYBF¾U€n+0ëäŞ-rënd´û»4ÆJ± ¢ÅL\fDF›M(¨hòı•{ëC¾N·äÛ †Û¶`Ÿq.«á@À«µUj­²U»g¶
+İÕ:	Ë•F×’¸*Úêå†kWÀ§½ƒTŠ÷TùI"=§gûê:İTeI´Ê²uÌHÃ™]ŞW~ª#ùxêC«÷¼ÜêDF%Íèm²‡7–Ñ±G§¤ÊZm.¥pS1g]èU¼¾’¥È(‡ÛZjÜn»€ŒH‡éÑ_¯láª`dş€;·ƒÊ\%E¿O]»†q8•@Æˆ×[–,ºÖLRIæ ¶_,š8’A]°ƒÇdOss4Ä0¿ş©w‹ z¯¤óèÍvZ2Ú´<Ê–³¡póâBdœkfƒ•ïlÑÖŒ„Œ“ ‚<ÍØTeCÆñV«Á“e|‹ºXL…İıEÉ¯¯góHàƒe$Áµ±nlê¶Mn?2Ú »T1(Ì÷/<ŒŒ³µHÏãñ®¶íÀµù8?»fjCvºáÄFIP”,hŸ}<÷mœª ,u»=‚äûËHn>†{O±—;Zkåµb6ì|~Üz×ÜêİW.şÉÁ¯ì;Æl‰µ5ƒë»b_Ãùy™ù¨-{ãcRE\¨ ’ì;wrJû±Å¹°?"ÛÊq>v!G¹ÌR—>_Öö4ÆYçÒŒ…‰İ¿şÅeÈX÷dìéU¦:\×³ş~ªoÔÔÄòÍGâ};—Ÿ(;‘—÷UêlO¢§,â)ûÃ}F×‚pô¯İ¥Ç.½îøUÿå•Wpï‰–E „š^×.ŸŸ$€ŒìRwÆÄ6\Í…éuíO…LÁ¨Æ(
+}]S.ÇJArì©«º÷8GŠU–Xf»—ßd7nn.$½#j»T”Sl2äå› 57=íÀ)-Ì¥!:$Œæ²0Œ*ïu!£u g»ÃàÍÍ%g£+@E±ø£"W§É #‰ù¦È2Zâ@R·#éÏ¶Õ›UÎ)«¤¬!òm`CJv2AÔ©.Ã7§Êñ4L`Q|:Ó¹ø¶atwBÓšœˆÀKGYÕŞÚf°ÂÌñX˜ a2<Œ||eÏ€Ç`<	óa<ƒß5+`5áeÃFhvè€=°Ş…÷¡ş'áœƒKpşIb"6r)"?$“É#ÄCªÉl2Ô“gÈ
+ò	0y…´‘ä²—¼M?‘r”|LN‘~r\$WÉ(¡&j¡vZ@t4}€>DUZEgÑ¹ô)ú3ZKßƒú]A_ Aºn¦¯Òú[ú}öĞOèiúı;½Bã4ÅŒ,—}İÇd6†M`SX)›Î|ì	6Ÿ-aÏ³U¬‘½ÂÚX{“½Ã²Ù	vŠEÙv™pÊE>œ;ùx>‰Oæ?æ•üQş_ÂŸã/òF¾oâÛøn¾—¿ËÿÈğxïæ‡øQ~œÂOò~åãù%ãÿäÿâü:O¨ÁhÈ1äbµº©d[ğıp…pf 9ÄDœ¹Ãˆ‘¢sj"eúÁÑb"z¥7ÎEQ`¥F<†ÑıÈÉÜ¡?j&fš‹÷fı4+¶šÈ0Œ¥õ2`«˜‰)Gó…cmÄ>èğ*¤kÆ¢]5Ë0ôfÒü`eZû(¼~äB•ø—T£¡ÃVŒb!yH‡¦P-èvS–ŒY9ÄBÌLD%¢–;Ìˆ}4åCT¬Û‘]D-Z-ºªÅ0¡^İıŒƒ•c,mÂf#z£FƒnÓÎmø,ÌA³¶S§Ë`‡yØ¶øíßI1â¦Ø‹W—ä ÿıÎ‹pû.Cû
+Ì½Ñs –Iİ¼0ú¹%ñ§Å>T‹P,£–¹İ\ªmùw¤…ã×İhqÑ’'«¨ÅWZšî–Â8L½µEÈ¾ìo.w©…¤¢Ù>†h®i1Ïº+-£ş·Ù–LÔˆvÎü€ark•-£ÎÉzú¾İ$’ÕÒ‰_¾ªIŒÖ´äÉ>7­%*lèbı{ŒÇ*ú"E±%_÷ğ×JÊ>%ù{zRç®5q©Á[]Z–¼¿ğ¿Ì×l× ğï{ïbpqÎIêÁs.?HÑÆªsŒBP3|	!d[¶‚´ş˜´Uç…±QjÖnä(¹„ÄI&‡˜ÑIÎ@ƒLüQ­İ
+EÓÖş1Î±‰S-lZ'&MÅV$˜®`#¨nnïíÊj[¥íY²ìóİ½ûø½ï÷}ßÓüÀ(K™€©{­NfÁ©[]a½»ó_híYV£qtxB÷Xòõmç]ËÎÉ[{­«zõ•'–™e5†X8ÀæØö¢Ì-¶,ÂJKtMÀ¦Òú $–º®ugFsû˜lxé
+/*ñÁ¡x¬VREÉ!‰	A
+†í~Mo:¸ynà‚EÒe«/Ë"êË™a51İ”Áéåç£G¹:ˆÂòğ°[„û|:lµÇGWH¸’~ù˜…†¥v?´3ËµhGk]ŞrQŒ:ê™…v_²j®W»BxO¯fY<R·Ø¤ìÈèñ˜_Ò›<s0"³~›ÏÊ&Ù¹{Ù"À
+‹Âş»ÉâÕAˆÔ¢k‚'dıêa–jvºí®¥7ÛH-´£â¬W-K-ÖzlÎ¯†¼Â2ÂóB»Og–ó·/.[.ß\tl´š©Œê°Æa(Á«aÈ[fQš÷”Ÿ:æ†&«Ò	I§wQ|ö´óFŞ‚f“İ¶æÙ¢/ÁHÂ8²ß¼ò…œ%G¨E>c”RKÖ»u1+Š<|xN’mÇ,|ÁÒªmä›õ#å%öa0'«r'NèÛğóuß+ZØÅ5tÓ:ÂïHnßi0KÊ[¶ÌUË{sCùIj%ñbÊ¨¿Ôo£4Y/Onôù&ôø±k¡ÓårUÀ¼{ºG1”µUi7?o$mÌBê/-ëy­ôÂÈíæL$~vàô;'nßXgÓRc?¤õËšH:ÜY”y‘î(CFC<lEúgryËócİ[Å5Aí¦chÓ"H—k`px\:â¬3•N-vqı÷ÆÆË}5Ûwja^iÙaò­•¢vØ²<şa¬Lr¹ËR}EÛ¯ÕÆúİ¦²¶©¾Ê0:ÔbÆj©¯`–s{ÒšâU4÷âƒÃ–ÅV9ërgŞŸß¢e"ÁÌ/½[á"j§ğf´x(­gÎ}˜S9ÆtÌ6Agª'3¹ˆ’–å)›¶Ùg¯
+âéM Ë¸…Æ˜ÚŠĞğ¸-¹€Y3`òÑ]å¸-ªPKû“³,ã$[dŞLô2K…`¨}ÚFeÇ|ZA„m’f|Í—Xâ§0\Qï<Ê,= *‚¬øhØšc6OÂ¥d^?21åÖ©%ø#%›İK\µÉ^ËbFG÷ÓÚvIÇ*‹",ô³©,¨¸É²<«‡üvşÅëòÉJĞE4(bPÛ0Ìv£'—ÂPÙÆ.¦ñ2İåay„KÊ²ÈÖ¸0Kıé¥µoÜ1©Ed7*Wã:$ŸVò–u®¨Zstj«ypyŸ”·^ßE-ñéˆß²[íU€™°8iš—o[Å:?`&U´V1efGs,ñ.©/MşM{è¸¨†À,CÔ2`Ãct}™5_ÙHg–o¿:MçÍ#V¼Y/x4Ëï;`x=Q6.qPè¸D4#h
+µ¹C’_	[±K¸±sVüƒû¨…oÃ‚­`‘¨%cY‚Ó‘†à›+,¨î°)@Ã8µL^-K.#KYaÒ’¿)U\=¨®F·¨<„¾yª‹ş|®’
+ã;/é µË`‰eIv´
+ËÊÏ‡’.I×¡šŸñ(û¨%¨K´œ†ÁXƒäsrBŠj9`ådÌ)‚Ò9O-BŞR™¨¥zbÊé¯˜ğÏî<m©¥–>á‹—Np„Ò“fÀØÇâ…üÈ6äL%3C`Í1d.^—j¥aıHQ×q‹—B4'-ÅxiN¦éYÎ¯°Ä±ÊG¦ú%C&–ZÒö·…n/Íc
+B±İnB×Jjé‘ºˆk­´ç¡ªÏ\ÖÅòØú+•î®W«'~á[W5éñ¿ô—·bñ…Úg¾saöLœæäĞ¢ct¿—èKEt'è Bÿ…N4lÏ–2†§ß·p|Œ®/auU4Ûnæ1E™vIˆ‹…<V‚yºV&Ü]+YNT-Bkş8ŞqgÔñäŒH-é›æUcÏ¡¸}ŞKûò›‡ÌßL3‘ˆ/äšûÍÉÜ‰œØè÷VMær{Î\
+Tå´nÓ 4ó×MæPu$¯*ı'ïNn¶C<ñ.¤? k¥@#­•4¶DĞ}{Ë×c–EmŞ–ˆ?ÚjOöª|ï@q}1eZÃä--ba}Á˜÷¢4Ø?²,ù—™åî^‹€W+??¤é`!ù3 ™=,O¶ğN’õUuÅóé#±Çz@+Öí?&¾ Lú¬Ú§ì³œgG/³ˆËZıW–.õ-¿Õı–2“—©Ë<½XÇ!®CQƒsLt-¢­´p÷ü¨f¿×ÔdAi}KÁRúˆ{-mŸØk¡å;¥–€12O-X¶X5ÿ¿Óìùwİtájõ~‹¡‡ó¸WÑòİı­hÙ «–¥4a…åÙ>q_ùà†h…J-À«ÿËØÇ,Â§hÁ4ƒÏÒj¾¾-°îŸ†géf¦z`?¼}0xÃ)xÎÂ¯à×pæà"üŞ‡¿Ã-XB«P9ò¢ÇQjD-è«èh/úB“è:…~‰~ƒfĞ;è=t]Cÿ@w0Áv\×áõXÁM¸	?…ŸÁßÂ=ø»øû¸â(ÂÓøçøMü6Nâßá?á4¾†oâ%RBV“5D$Ò§ğª!Ÿ'OFÒDÚH'yt‘ÈA2Fbdšœ!o“ß’y—¼GŞ'#7È-’ãJ8çâê¸õÜf®•û
+÷4üíUÕu…Ï½ï¾·w—Å}»²Zföí²(Ø¨ˆ¶…HeÃBÔŒvìŒ±’édjÓjkdî2Du”DF@m+i´Ó:1i(j4Ft&“Ú3Ö˜´c#ÆN”ñçõÜË‚¨1jÇÜ³ç½}÷çœïûû±JöKö*kb­l/û#ëfï±ÙÇì_ì2»©r5^5Ôiê,5_««‹Õ¥j•T#êëê.µS}S}G=¦~ ö«Ÿ¨Ô‹êêuH½©MÕ4Í¥%h‰šWói“´)ÚTm¦ö”6K{ZË×
+µ(ÏŠ—•;¨Ñ7˜‘@¥‰+±œ cbÕ¤ªXb…1"¾ˆJU°ÛpbƒXbG1øGbP5ˆÁ9Nü?„Ú0'ëpÌ±£;ÑY£-ÚÀN„-«´Å±¦h/rb¢Š‚9\Z-ìÄJ­„Qlû0=|@ÿ…'ÑDÆÑqRã¨óP	Ç7—~ùO`¢.&ÊíŠƒÄb—è«ˆ 
+öH¡(â[ÆA'°1´Bch‰Ãõ¨O-§XbRŒ³‚‚%8
+^m©,ª,“O«¨›BŒi6ŠulŠcÍ¼‚rª;ğ¿86óËñÿ'·ÙõêáĞ7æâÁ·ƒÛHr¦?n$ú˜séHÜ8[äûÆ6¦z6n|OÙ÷º¾#!k){ "Ÿş(’Œ†\£»9ÙY¯ß¯Áí›àh
+TÉ“ÇÑ›….Í#J7ªcÜ¼Ç†Ów©®‘¯åàòŠ÷â†\o¸C IèYtq”1H˜”‘ıısH/¼ƒ½Õ™æºyoÍõ$~:Ô×esÀ«Üˆ$Ì„!qm‘÷5;©è¶bPx ØÌx“-zN2 }›^£±`(¹µzÍåv:oVÖå[Û	ïH1é)J$61pÖ[•÷<†h~+
+yõz¡‘;Şêrù‹›Ãz×îö —HÈm$¼°¦ÍÙÒ½ #­Š?®¡7É±	ËÅåiEÑ¸QZzu‰wIINÎ’D2õ¼D÷×kéõt[/¸ÛBû‚»t·›ÓP¡Í¿¶695³·Ş_ ”í®ÍE$Ëşà›Ñş³ï•'¿±3¿ï/»Z“­†Îµ)M‡[O.,$²Óã‹öeSŒ2YÖ²lã3åi›ßõô¾råj?Ë_•¾ĞËÀ_ ıÄUr°e¡×İ›ı_‰$¡ãÙÿ°Ã1];··Ÿ=Ø:¡â‚N7¬·e5×ovì}ÆöÄyz‰ğ‡’-¯å/(¯ï\ïß±r]zIKzY§ubuØ¾æXµi:Í°cÀ¾;Éì½³&#quS^åşøİğç1îçùórŠ½ËLÿÒ!sÙÜ°§½ØénX}H Y°¥Èwb§£R:4oÄw9H~s>oÓß\ë:
+'Ûø[H÷K=\ŒN8R°§´şwš¿´dÎt]"ImäÚ‚mx ´‰˜HË+½Æ‰ÅöÛN”§»İºî.àSO]•s½=…”´i8:%¥ÛÁ*b"‘¬ßr-yºbe²ÛòqÄ§W\0,½…NïZDâuNÀÑáºO2]"	‡”ÖwFn#qêÙœt'\íëjód2î]û³oáèxçÛ_œ¦|¦Dæ<ÅH—Ş$«J÷´€S ùbxÆò¢äô:H~Û;½Şg¸İÀıEmíz­¿Éé²ŠëÔ}V#dœ}![Ãá÷ê;ış’£Ñ˜¼ 	W6|7ê,‘ ÑYPk§ºâbE!®”xÃğ‡˜¥? ‡BàÕIÄ#GÇ—“bL±ãÃ‹>;ù
+£¢:cêÊÄ “nT¿cš™ÇÖ=ßÕå	šy*;cÅAscöÙÊA(ß?wF8²2íí¤Í³NñåïïXqÜ°ìğtë5Tì¸Ç:nq±ŠyÖıµÇ±íİ¸>1cuS_½‘@„‹k÷eeA."™Ø+D÷ØÆ‘İé>;c@¨Ø4jÄÍ¹&E>5ReCıŞ&,j8º•Œæ¯
+Â˜<3÷XŞ‘ëDÏFéë¾I²<‰¤¶èÑ”8Åïn«Bã7°&Õy‡¶ÃØ_›ÊÜn¨5€#’@	3u‹·q?$JÄÎ1À§<]|¨úß\"Îa$5	Áë@,ÄÁ·!	&!£šé	³Uåà±PˆÌªƒ%ûŸÀO¡¹ÕËğxê ¯ÁfdXĞ	ûá-äWGà$ôI†õ	|_ÂM¢â½ÙEÜÄC&’ÉÈ´2In\óÈ³d!ù1)'/*ò2YKjÈ«¤™×V²´’]d/y“ü‰¼MzÈQò9C>$çÈ?É¿É%ò%¹NL
+”QÛcu#£óÒ$:™N¡3é,ÉëÒ2ZAWĞÕt-­£aº‘n¥­Èìö ·ÛGĞ?Ó#ô(=CÏÒ~zÒ!…"»‹W¿ò¤2SÉ’Ì¬¹Y™R¡T";«Q"J£Ò„­UéP~¯Tº”Êidig•äiƒÊUå:25`Ùš•Ù™ƒ¹XKdæcÙ$ö6¥±™,ƒe²° ËesPæƒr;P‰K)”‰û<X%X‘;!ùÅ¤*xÓ×à.!
+æË[=–á­ù†gG;Tò¹Â0ó¹\”fÃÜ„!Cõ„=.ùƒàmB-ÀFøz>†ù…*m‹\b¢Â÷càRm‹ŞPdsÈ"‡E²6±û•*ú)xf±+¬3ÌÿlÈs$Ç‚»xg´ÿBb°¦EÁ>ÈşHûR5Œ×KUoòXj‚ÑŠaœ!U‘eò)Ê4\¿–Q.…¬Ê¼%x«òÚ_ÖÃm³¿¦, .Ï2é_YnÈJTVÊ¼ÜÂãv>å	~eÕ{“"Ï´èÛ–Ñ£f ‚êğ†~ğÍÇ4´\“~¤ßì¥w'×oèö,ú»Ay²%téb7î¤Nõ]ıÇÏ“6}téÒ¯ÌÏ-›^2ë`µl˜2€°ï[Uüh­!ÿ“"×å©ƒıôqÈ¨;txg‡.ğ‘}4·av;úu¥H¿E•)HlÿG~ù GQİqü÷ŞÛì^på6!À3Şô¢H×€’ş‘l00IÄš©úo	ÿZÊ8AE­ğÈÑP†šÈ´à(öíİË9L˜f:ÚêHë!`ÇjĞvz‘xÛßÛ½$—`§Vítß»·ÿŞŸßï÷yûö¾oÆ¾ùÛp§Dî^n©lzbnhrËïgŞµï†
+õXhA»AÁ¶eÜT»?Tƒ¾4ç¶6mÎÆ2á*_ET`ÁI¤YcBër].tK^åš’ü{ÂQa÷HrEñ±:¨kZxjÁLÃZY;uÂÍg„ko?W³W
+_0Cs‚ğÊÒ×¾[RY}]ÿò¶>`tùJ³àÍ•M“ÁÔK˜ZŸĞ`ÜÍÓs÷”ÍÌ~øİlÿk{ë&ğì\wn»öğÂÊ’â~´;Uçm^ù¥ñÔEŸ,¹5x¼×vç®i›]uHØıæ¯›¾â›È&Arûe¿øë3/W—<ÛQdÅ6Öì?¢©·6Ÿ¸'C3¯ßyŸâXŒm™úè}Õá`$dnÈÕvÜ½·.—ŸØŸzö½ç<¿°¢£¤JØµó¶duoßGêš×•l?ò‘ş©S0ŞªptÍãy5»¥Õ–rĞnèÀ½{«æUÕíï(\rlcmQO+İ^%–{ê¶Î#¡]ı óìhñÁ¢=h¾aNpÇã_¾;w×Ë]2t=yËL7Ş.7^_Mu¯±¶·V”l7·C4¼»²©°*íœy×¡œ¼CMSĞîôíËöUØ[…[kĞnM—¢ÁÖè?¿vAÄËîü©’:¡±÷¾¿|E´-ÏŒ„ÍyæÒ:iÔ?%âİrÍa…mşÃŞü6ßqrÖ1Z¾ÕÙØ»µÍ°~÷ÆŸş—î?wÿÏ{çİÕï”B9:7	¯wtßroıš­ûÎ]¿óÆÅ-]PZ¾9š˜ßÜ=‰Ó*$?0ˆ|Sí3¥«ÎÛåÎoª>d
+»sp~'K¡J>yGI~q8º§È[¿ÙéµøQ
+	WA…&…¡É“Y¢Gí‚¡uj;İVË¬Òbš¨&q®”4n3”¡]>¹§HsŸÈi»™ë}0á˜¤Q±ñoOØµ=»«Æ6ˆ:#½ø°İÁ‡eœŒIÔ>:{"­<?g}„¥O<%•ù@-UÅ0®G55JQO•¡šÕp,€;PO}ÃX+aê©a=l‚Ãvh‡ŸÁ“°Áax5ÕQWQ‚3ğjª÷!	aä
+’C&¡ªšŒº*L®Ce5‹ÜDÊÉ<RM¾êêNòb‘¥dê«ûÈCd=i"Í¤…lC…õ8ÙMºÈÓä0ù*¬ß’#$şäcä8ùùy¼IÎ“·ÉE¡ÔhõÓ<z5ê«"z-5èô«Ô¤´’ŞJëèôÛt1]Bï¡kèC4B£´•>F:ëiz˜ş†Æh=NÿH_§	zşş^bYìJ6µÖ$@µ5ÍBµ5—U³Zv;û«g+X[ÍÖ æz=ÄÖ¡òjb›Y3û	ª¯6Ô_¨À:Ùnö${Šu±ƒ¨ÅcÏc~\¦¤Ÿ¥¤Š@üoÏBàsÏjT¼£Ô-Œdáİ¨Œ=DÔÔëçõ¼u"qŸz5²[“åê¡HU(w<Ïz–{YòÎB/eÔx–|^{´K…íO¯¤„6Bep) WnFßÇ`*y¤dø(Ól&ê½ø|4ÛõÍËÊ`vGò âqÓ47\	bì1ië¢ÉPi83´…oM<™¤HbD‰Iè‹wÌ-­b;0	oœr˜è~ˆ6}6ŸˆÏ_20«š¸ÂÿM?TË_…ß7”õ±• ÂíˆÃ/‚“üÂ°¨‘,I¼ò¼3BxlßçŠÿ}›abŸ`!i¼Ylüÿ²°şëü“#Bb¡©±Ó,ÿ—,Ö'A±Á?d½à²vzƒúo’yù#o0’ôı88<C3±ƒÌ`A=ŒKAŞ<’…ú1JCJú?$Õ‚{0¦Ùé¾‰¡êSéx‰­î)‚0(]G&î§lWúAê²ÃI—3w
+YYÁÂï¼é±P “EÌù’S°Vá »Í¦ØvaÉ‚õ0;í=j¯Ígú´@Ês¿C_LJ
+$JÌIùSe¨<â	XçwN'×;Iø‘ç„n€6Ä¢Ğ;1cÈ½µ /)ÍòVÑhh7‚IÌ{¹æ±È Ÿf¡œ9W0ÀHçe˜3àÆKíræî%[â‚b·À«7Â…,!‹¦A}0'HV·ª6î»D*ZôÈé$Súœ#í=c·5Yf`õ2•¶%^`Hºaá/ŞîWgpNâ8'¬C²ê}è]'ŞIÖ‡ÜÃÿ’İŠaK4Z’Ğx,s|ZÈ½¦'XĞˆÊÊã(0É`Ãè”Å%Ë²ê«õ,Òß>»Q}„<ÿ8+™Ã,.À† ©7t4û´Í«	bäP–öqÃ°y©L	k¾ËÂKìi¥’¡[ºeÄZd5‡sé;uª™,
+F³<ÿüq¬ÍoÇåo$D£•…x‹azÂAÖØ#›qt‹lº¾ƒU4=<ølŸmØFù\d¡f1ç‘MdC^-÷XŒ»ôŞe,º-İN1Ñiş­%ª_%œ¯„qùªnÁb”Ê°X·T¦=Æ=–ŠõØQªj1”m‚×Y$õc•Ó}‘çº¥s¨¥uÃH¬[-Uú?ì8-ºmÄƒÈ‚©†»¬«Á\e[®ç¦ËAâHúÚ,â$ë(pz\çƒ@*0ÀœÍ?Uv&…«2›çs=ƒ…à"Xpd1?ÙÛĞWcû\Å†Aç$/š:—ƒåÂØùÜP¯ÂoªËBK)ø:µ‹ù2ÄUEÆkÚ´AqüöÆÈyœ%}7Ò,XÓÚåqE]}WìÒ¹ü÷ı²Ş0CwŞVSKÎé"UW—·5‘…D÷å±Ê q)Ñ—^ñ½ÀP‚ø]™Áâôµ¡—)ÑM•FÍ‰ü‹üú‹ã( şÍîvw®}{N0crÍmş)cRWJuë4„ ‘'R×I”€„Ú/QÙs¾ÓùÜÆ®h}m‘xAìõÒ\+™´}³Ô>\0(å¡ÊFä"¾owÏwnœ´M !1Şóİîììof¿ï›¸8oÁñ]
+¼ [©M}-<*¤[øŞ‚W«œ¨]z×-şÌòm¶ƒ|ÇK-øÁ<Z<¾‚ÀuZ|-ì²Abå
+lgÁô~#4ƒqéÔë8K§­¿ÓÙÆ.×W}µşîÜø/²h!Æ†'–†'/ŸY2…™·/“…ƒaâûß.°›êfÛÆ!“…ô[øä1Üíe²Ğ¢UgrÍÌ¿}UalÇµèBÈVlw—¸”ü`t¼:^°ğ¨G²ğ¼Š»\™0öŒ.‹Ä"¯ê†_ÒzÒŸİ–#óºÿYo¶‚âŒ~%2óœ3Ê.hˆà3P5ÇË&YÌZE1½7¶X®Ë-œs0£9g Elaj³ÅıÃkÆ—ÎğC;=Ëä|Ì™XÊèEŒm+º0…³*ÑÂÆğ‹¸+(è·Õ<Ÿİ÷ñ!ç†2aH]7R‹ÙE'÷®#¢ZØcğm<Í‡e<Ñg€tRì¯ŠÊT-pµm³íyÕšW7yy•¬[™€=Y—Ç;ò*¬ÈØbA¢ÅQÍø²º ¹œb.ˆ-‚Ù\wÌŒÍMK•d vPsPµn£EF9+“k°-vWÈâÅÕ†xÌ6a¦;rÂ‹5q`rÍ9¾—,|²8`N\T¬åÁÚ“A9H,
+œÒåšî²ş©nu=Šá4‰¾¥BnøÑ•‚LìZjñ„ş¼sÕñ‹³‡ÕËîx-<\$Zx˜òÈÂ°Ô#­Û«¥KgFZL¸.ôÜ9>`1\†s†¹si’Bxàƒ-Dà0½·.x®»K|©gÑß#.Yè´€? ¾›ZÈa“;h±”a-ÑµkÄ":‚ÉK'½úê…>åv¼Ş¥uaj%»œQT ºÅÔâ)0ífNÆÇ,³ÉB~4o
+cë¯5²@=’…áÕ¶¹m´p]ÓM×EëXj!{æ÷n!üâS¡Eˆ3rÈt&kÕy³ëârC‹4^p~5¶ğ.'ïHHQ“…“=}…Oçã{È"¼Ó"D‹ìÔë L¸äy÷UW!µJAµÉ‚•´‡ÌŒRÑ”¢ì‰¿HíM° ùéñ7,<²Pªk ÅN´ º3(+•5°`3İûé(­‹8Œ¤ñ¢ZÄñÂ¯"fœ)]ÒÃÇ1v2>.eb´D¼.$äÛbr¿Æªiá¼	~İYòÎ&±3d@ZœtØdëb”,Z¼ÊÍé;,f­?´“uÑP±Å‡ÖÅ‚fR‘`¥ñBoJ]6(vÊÍx‘ÎÂx•WÈWóv÷×Å¥_í@¦`»¦ûä[Ø°°%s2ÔÃ	ˆ-JøpÈäA âx!Ap1¹—,’ú‚ó†ôëÃ÷X’SC-¶ Ì¾çÅ`Ö9¾ƒ,Š[[dkqìœqk~ãı[ù7U/^ì;†É£‘E?^¸z#d²¹«øæÔ¯`´Øhá'˜=Ò‘72vßÂëÇ‹àÕ}6æTœ27±ø´Š-à$Zğ×d+µp&6,–ìR<´˜ªÀª;ÉBÔCY·/—ZdÁÔ0£mXèÖ Å¤¨rıŠ3Qy˜y^0óòT«ÜJb'åÔñŒ%ë«ëíÂÅgzyäè‰8ì¶«|ÖÔ˜Š’x!ôk-Xjø«Xk]Å,2TÁ/ûI‘XŒj-²Ø†ş”?GJÇœÊj§Ì»»…ûÇú+XPáÍ4®åèâ´!Uôš8B”È÷#ha‹°%gÈ"©ÁCÛ@‹œ]ÊAˆ1vÃâwâ-ï”q-¾q0'¾ÆËUgæg;uœXyr¢Yt°¬Ij-G-å­§{õEé$ÄõE4ÇÁ46j­ùnt]¾¸xuªŠ5x«‹íhõ…Œë‹!d±€jğ‹~}‘eG±tÇ	?±ØN±³’Z8zËCÑV»L¼¢#æÌÅ,é“|üÆ"Õx/ßäëpÎL,œ ¼ ±–ğœdoæ;h‘¹Ş¸¡Â gŸ-ÑØÙsâ[bulÚæ‡_88Ìß`e~mı`•‡³…ÜK…¹ùêÚ\RƒÓf- 5ÁFİIÁ’êN¬õâ†›*Z=síóÖÏi¥?Ìj-Iª;e\wÓl.è€,êÕ“ıºs,Ğe¤*ö‘E6±¨…j“Å¢
+ŠÏ:mì@‡½©nFz"‘Ş¢`MTsƒx7So2J/ßTëêÕBÛ°êí¹L9*t
+0§ßBü]]aU¯+¾S_ÎXë§l~ĞjXÁ¡+L¶Âúú¬b$³käH¾â½Y‡²&“Ú}ôkp¬/ê
+_?Ö´p1ÜtM}{:Ğq»6¸s™ıˆRò’6Rııˆ%ºŒ6Š±Å6÷Y‘ïÅ8:l4|Oln>AKçâEò³e¼m„Á‘ú5ÓGê_€•È+½Øà½Œ­ïr`ï‡~I®|ÅÍ-zØ8¯HC.À’ŒbmÓĞp#ñ@nzì[èô•Ÿ»›…Ÿp§ÅmK‹´KE{¼BdG˜7¥d5¦Ê¹MCså&W€;hîÙâ§6`aË{Y„!ë[Œöõ	-°”Æ¿ª»éË¹¼„;[ò]†,<·rb©oÚĞÖø¸MÒ}3#ïa‘‘afh¹÷ßè`_i±ÿ~Gé§Gwwb¡‘Åò[®©ßz1Úğ,.BIİınñ“ßˆÕ»¨çwÏ&7>åîw”~zü‹ÿ`°x&¼/=ºŞ¥ØÂ ‹KÿM‹ÿæ¥G×úáÿ§E¯¹^ò YÈ§…¡ïÜ(†p¾ß‚3ğ41pÌa-ûü~	/Áoà÷Ğ„·áø\‡¿ÂßcÃìS,Ï{‚M³o²óìûXÿ˜­°_³ß²×Ø{İÒ,mLûíÕåq…gîÌÿ İ…EQŒıwƒdI«)š–#øZÌ®IëB”ÄÓ´Ñ"ñµô€ÂZ-M£bkŒ±Œ§O¤kÓÖG´õqTÔjbL|&ÇÚúˆÇŠ·w~5œj<Çô¿{ggî½s¿¹3ÿüsÇ
+OÂ30òÁ?ÃÛk-¬€·`lp NÂpÚgÖ›%²6„e²±ÌÍ<ì'l[ÄêØ¶mf;X+û„]`WÙXòğï€zq+OäOñ4>‚ã/ğ—ø,îåoğ&¾™ïæù1~É¯òÛR¤ÔSÒ$›ô´4B'IS¥ri±Ô ½%m–>”Jç¥ë2—Ír‚œ&gÊNyŠü²\&/–ß7È-ò^ù„üù‚|SaJ”Ò_yFÉQ¦(¯(³•¹Êeµò®ò²ÓÚ}Êå¨rR9«|¡üS¹¤t¨LUU£jR{«Şğ’Õê 5]ÍPG¨9HDv{º$x:?ÄƒX•šHdf=¨JU-• S…âeµÈ¢ì$\U…D
+¢=h$1Q#1i4BV‰=¡'Ö£iŒ.5ZÇP£Î*E;£ğŠá)B÷Nˆ¥ûÆR×2p…Lhg‚¡Äp”áƒj Èˆ á>ˆ€h­s)ñ‘)âB¸>Ñ5.ˆ“POŒÜŒr3Ã¨b¨YØÔE€¤·…®'˜I¤I£Ï@úĞ8ŒTpÎ8Î‰Aû0AD'	c”P‡«€o€g-L	£¨S„êôƒ:*¬û8HÂ‚·ƒ7ˆX·ßàl‰¯ÃàGÿ<¨Ğ,j%ÖÄíÿ†^,^;×J?ğí(†û:·ßEO¶5e³§~¼~Æ·¢`¯Š»„ƒ]Š¾wQì¯ÛïÖYQ:¡BG9¼~İúıƒv®¬¨%¶•KNğ’åÏ¶Œoè¸¹ºîWÃ·ÍİÖõõoÏì!Äà¼ú}…V¬€Ÿ¿©ge)d\¶é(eK×Å+K0œšû÷L¡şêÊ//LóN²zöúÛù¼Uådğ†ÉÖ’Ì°éYù­Éu¹ÆËóªJšêk²"¼"Ş—i'`ï›‘7)VY’lÚuB8ÏÍMöş¢WµJ&h¼ğÙ÷Ê/Ï=eZ5+‹DÍi­_{>Ísü˜@Ù:ş5¹œ¤Un¬*½n»zCaÅ˜ä¦ü¼-ÎÊ:XçEf¿S²¯%gtÆ‰‹¥KÇ¦¨ãÚ¶×àwmü•Ø!WæD8Sn™{šq‘³2ÑºiË¬É¤nÁÂç®5·;œV<e…Õ³ï½¦¬MyîP^õ<Ï;»àOçF­/Pë/&×|?¯ª¶²Î²cYŞübAJ Çv±$§ôİI‰©©ƒÁÖZUrÚ­¹ÁßíQ!?ì—/ßB”ÚÅ·³6½Ïs;r+¼Î¨K-­aiÓD,1ç^ùk&É«Ï-NÌºN£Ì[ÕúG9¯*±ÒW]½Qê‹sRŞo27ë(±0ªßÑ—ƒ{oŸ±gÅXÁOö-{A T&WX*¹CNÄX¾ª_d4!Š>cu…Ã2:jVönR·mûC°aMÛšË§>˜ûçƒÏ·:¼€Ì4­®I:Ú¯aÀÖÊåÓWĞÆ9ÆJ‹±Vå™WnVÀ³»Ş„ô¡C¿\w×åt[¿9Ü¡¯‹%ºüL®Î˜ş&ƒİø¿_|³o;áÉTÕ¼jgÆU[€š‡áºÜÙ8„˜CûD8Š:£¿É¢™‘âiMJœ¾_ô¤^M77vG)Âß+dÌ]fZFî&xwQtÄyx]¹w›á/e?éÓÛíä‘Ÿ|ÇhG­¤½úá£ƒèŞğFÑ¿E±$ôÃP­$	w­$ƒğ{ü4F~D²ÈH’KÆ‘<Ì·&“çÉ‹8Uò)ÅÌk6y,$•¤†,ÃÜkYCŞ&Mä÷¤3°d9Hã˜‡!çÉò/r´‘vJ(ˆ³ÏˆXÚ›ö£VšDSè“t0J‡Óê 9t,@'ÑÉ´N£%´”¾JgÓrº ³¶*ºˆÖĞ¥ßÕÓ_Ó•´‘®¡ë0ÜHı˜ş‘î¤ûè!úı”¦Ÿc^x‰^¥7hı(HxæE‚bá1Ì“!Ã0È äÂxÌİPÓ`:ÌÄÜ±æcşXË`9¬†µz¹ü€í°sÉ#p>†Sğ9\„Ëp¾‚Ğ· ‚Œ2†9f8‹Ä<3šÅ°^¬‹gı˜…YY{œ`O Ö=Cè’ÀCåS€0LÁ¨$‘%†Ñb 1¦—t#²Aæz?¹“˜¨)ØGÖe*`ò¨{½„YÈØ_Õí„9ä—‡Zìä^â!R¨è’‡ŠññŸ€‘€ğË”NÒ3YgÂF\ÖU±‡qag4
+Ó{uö•¿A+h«‚Ä¥Tø—tæH³$ëõ19××$Y½ğ…ë#J¡c÷¯ÚYââ ¶iF?$åxüö	.mÛ’jëÖÔŒŠæ'Nd¹./¹ıR_?KRı<)áìı”gSm£.-@•lGÈmv‘…]X-£<Û‘ Šmt€ÈN×{”.sh°*@mÅÏ›RˆjÕ¦iÙ3~Z„0
+R,X·i#jd+Á­ù4_Ç§Ô¦OõàÀôTûÜOá'ºf`™ï²øíîø;Õb·{úé!üpİÏJCJuè "l£5?ëïtMpù½x¿İá·X´lÿv§Ë¿İoq»Ñ*òÎHñşŒ¸Ğ˜£pÌ‘)X1tzÁ9°Çû‰Ûçël%Xü^Ÿ/Ş‡q„Ú²½›€’î{H ºG–” ^§®ò&Xâ… Á’`ÁqºÅ$ÅÜgãH-îTqôHxjLºİÜş©ZÑ™)ŞóìáH‰^»…Ç,şA3ùŒ“à-¹™TÈé¤Û…ÈEÜC&£Ş…\éÁkøŠG^‹üÃP}0òÈùÈéÈyÈc ¬E.ÇşÂ‡Kü³¥d>úÌÿ/ÛÕâ6vÆå™ñ$ôĞCØCË6¡„t1Å’lyÆ‡°H¶şX¶åÑ“ôôXJeÉ²lIş3¶Çè°,¡‡B¥i)¡”²ôPÊ¶¡§Rº‡6ìaé!”¥ç%ôRrXB¥0ı4™…e©áçïé½ïÿ÷=½§`ëùş§Ì¯
+¿d~Óı
+³İÿ€ù øŞ)>f²Üî•œ{ğˆy¸ÿ‚yæõÃ‡`7d¾³Ç]h‡w˜æşq^|úşó·1%8+ÿ™ËÌa2pˆ˜ù•®ì’>-Ü¼öŒYäÈÇ×1ó{Ğsú~‘£x¾‡ŠçÌOŠO.^1Ã<e„ƒÏ˜·rŸ0¥âsÈÇï˜:Œß¾›×n}ÂÜ-¾ÅÌbĞQ>X şÄÜ ™ÛÅ1o¾É(°öÍÃw˜=øòQÀïëÌø¨î‚%Èùo˜G°öõ<Fxfö?gnÃXœ¶Ÿ±÷ï_üıàÑÅ+X¯ÀüÅó‹Wà‡’×¨ğæ>èıéá!³ Ü|xâûø€9xòo€wrä¹Èãş*ÀÎ‡›f|ù9/6ıjí·€÷AşÁá¿
+¨ÇI¯Ã‡…»û7˜?_á½À¯ú.ÒŒb¿Q||ñtÜ_2àá€÷Áîä¸ö¬ğöş‹Â!/ô5½G_Ğƒ—Pë§{ß»Î\¼{%6ÿ|µîç¸v«  Õ.¡3A~¾¹Ï{çÄr^|qñ!œŸ_öşWp¸c¶W;æk—ÿÕËxaÁk~?z½¶sßbşÊ@xùÉqu{ú¿½Kµ…/8..şòeZø’Üwsn6K_Ø¥!Ğ÷_{öšïWÌWV÷ÒİÛ-6='Ù`"Äã€Xb0¡itáO‘móÙ$›–q-n÷+éÈ¯¬§­İpÔIô&U°¦Ö‡Šnt—‘6¨ô+3+æV8S,Û­Ç6Á¢„íáØw”]B$‚yÄÖ8Ö×ÃªÆ£ÓYë¬wÒôŒ‘tŠXC#¬t:Ü*ã…•­…'dB;Äåø@QV˜¬$s‚Êátqªl›ËMÀ.‘å¢ı¸q„ò*²µeì©h`ÉÎÅÜY&.JğV·fä¨‘ÉëYÄ¥ummÔakÙßu'’4Lu§)qš4í¦-ñØU=$6º5~ufê-¢áùBlXÕ»49U‘š„øf8OZb,Ú1´’|2à—ÈÆ	Ø<–ã¬£™ëbIÃ‰ÑÑ3D[«¦(Ê0ƒg™Ô´Ly,7MÇ'>?5\’Ù©¯…®«àvÊm6”Çg^÷YìwÏLY£ı‰xO«›¢Á–¹¥'P§W'mi«Û%vêÒ Æ ‰rìÎg	vfª¯Å¨?¡I&/Kt”p½°;Ù¬‡õÎNså¾06ûFÕ™f–Çn0Mâlá`ähõ>š¡$X}q°Ø’8H…e»Ñ4·êfáú\ÌSêÊqR Ï-ŸWDŸãN‰P
+|­6£•¸có®/#«í†—Æ4Ó±äTˆD_•Ètm‰Åõ:ÍFõLNSÃS–Õ õ­T¦Ô ¹Û^Ö9<ö8:{³5vj„:t`«ëÅFÂ‚qœy[oÚ-®’8Î6ò‰ŞI}ÈÄK£EUe¦B=UÂ­·˜èõ‘Gº|oÑå;v·v..YÃ^‡Å”Å 3=Ã2R¶.xÄ™,–<NL7mVoûM3i„ÓSy3Tº»êŒ·ªÙ’ ®åR×R7ÃŒĞ@U9Ç®j¨*-âNÜö©·j[™Ô^†fÂ¢]"¯M–íàø(b—+‡_RÂé<¬š	
+&U#$éÆ÷xCñqè'¬Ò ãáJŞv—FôNbqÑÀ¥aTQ—˜€×2çz˜›{•ö*Pé¸ïJÁz3Bµ†¹¸ìÊ±î†¦»^;¼b:±›¶#£€7Z+Õ3Y*¡NÈ“–§˜“‘Úã¡-Ç‰{ö<îô‰j%bÓÕLÖğø¥7HƒšÑ¬²âV™Fš¡Àş­@Í;a¦`Lj®Ku¦Çu‡ÌTš%«påH‘x\9±â¨ƒJÊÑz9h+½şdÔµºÃ€ú£ ‚F„.«4m¬B-DjÙÙ«uÖÇ¾&=2[9$^)öi]²»’YQ\[æ·Cb[·Ì¹ºq9ípOê'=ŠôĞ!\¼šPEv®8H²°¬wáµ%–—R©+]A'6PêÚp0Î°:(G:j˜Y-¤¼±¥Ià·­j£/H©C+¸²CzÌX$MÜJ-³Y?M%İÔ9iÍª.'aBkI&xŞšº!¡³~¢bÇR«Sv@\–SS§«(Ãc¿e/ôí¸[>qé²$åõXShr$vGgjËìÚ
+ªrÚöL5G­¡-œ5b)t‰Ğ%š²BrÉ¥2ôAV“LÙ¨Æ"UêgŞMãh6h8N	{tÃÉqbKVÆÓš¦Úº6Ö(±¬#¢ĞÒœ›•(¯/âÈs©aÜ1£,›nWÅRŒƒR¼¾wïñ·¾úøçøÁõOÿvïùƒŸı÷2Šê<Ãø{¹wfÀ;™•Eg„dDEYÔQTÀRMİR%‚ŠZÆ$¢¸TÑ€5Æ;V—(1Š¸"ˆ¸Ğ¨HFbRõÅ%.ˆQI´•yïÉ9ñôÏÌ7ó»ï÷|ëû­wêRV÷+&'h3ß¹¿(}ãĞüøcm^ÍX¤}óÊ°àÌšÕ’sØáïóêŠjjJôµ¼a¼ôøÔ¤+“<û^2ûŸÙO×U>y$Æµ¬gîÏkb'Ì'¢q”_|à–!šª¸´µ—å„›"Îç”7L—7®dÖ©Ÿ'ùœ[wïú­EvGXê×·—Ë-ˆÉÛwùQHå]JÌû³f=İ_9{ƒoÃ?»=?¸èfFÑÃySÃu~§Wî¬[šÒq^»±}Opé›åÂ&åËºØseim¼ç²ë»¦¾û¼ğÃ¼)ş-ËGş ã[¯[ñûë6·X¹ôRÊÜ™%ª ËŸÅì¸p1ibÕ†{‡İêçÅvêøo#¹^Wo™é»äåª%sßM¸0»ğôÜjCÚÀ³cN¬í·"èÌá£¥«DÏ½êÿ ¯[]Ğ“ éş‹Y5«·f/¬šıÖ k™cGVıb—ïòƒºöÌ/zÔoÉ ªİ.7K.¾­GçÃêÏßîs4ñNãŸ†hf¨¿\r¿æŒº`xèğº»··<‘^xõ¯£¥°Ù›:.ñ8fÅ(ûÆÅ?EoJ_l‰í­éY2óü™ÃQÉÛn?]_—p­"i‚ØÍ¹=;!©°6¥mjş¶K‡´Œ\|şë%ã?ª.YVnX”74_³´œÿÆ
+Å¤ôä(”	FŠ£7ÉA¨¿‚èËİ£*ÚFc(¶Y1Ó¸×ò¸S$“?YÈĞ¬xPØo*d.¨T4÷×Š´tVÓT®ºc³ò­¢É4œzÿªèèƒ×=}­yıBÅ‚'¿¾é‹„Mÿè¢]²9I$Pänˆ‚l$…Ô:Áÿ‚à+ğ?àKğøø#X>ŸOÁÀ'`ø¬á•ó!ìtŸşB*~*1Åé{Ø÷À»àğ6XŞ¿o€×ÁkàUğ_à·à7àú¼¹µ+Ô–c_AûŠm‰.Á®j¦¢|	û"X	^ sÌ
+ØçÁsàYğôı°ËÁ3à)°<–‚ÇÁ°˜ÑîWqS¬±ŠÛW‘Šè(é8¥ˆ<Ëâ”£t„_İUH™Q¬ÁKıa
+e¢ù$F7òRÛÊkRÅÏÑ¬D¾h¡}İOÜ¢ŠŸŠV@ûhÇM‰)-ík®AI™J{h ÛŸ¡L>¸Ü…:?¥Ì°w@ßÖ·AÉk®/ú ¦Ô§("å¢ÜŠfnæ9éï(½	­åÀŞnPÖ1­§îÌuPÖ‚kPÃj¤~®B›+‘šÍ+Y¤È³©ËÀ¥˜Ó‘g	øÿ]a6şÀ}[e¸°yí,ä)Âi´âÏäX€y›æñø]ç”yH™G'9%‹2¹URD¦2Â™¼Ù#YSRD¦2"Š¢ìV¥ä0ƒf#WFSíÌF®YPşÎgÀëéÑMû:›X.™ŞCIEi
+¥aö§ %eöÓ0ûièÛdzŸÚ±6³?}S‘&¡L*˜N'€cÁ1`"8E#±×G!6ı;Œ‡ƒoƒqà0ÌÔPØoCÀÁà p 8 ìßx“{ÚõÿÊ°£ûÂ£Á(xÓvo°	ö{€.-òšSìn`8†‚]X)vg0;Qf ì`°=p*~*± ¬Ğv°í ?é™mÉÊôã/’/ô6<F"ÙßŠ7ìÖ 5ºiXÀVh»%ry G3<:îdäUüT43™x4UüTZ45§™°[ä2NP)«ÇîÒAyÔ‚2Øt]AE0Õ|ºŠ„;ŠpG‘º`o¹ fıObï“XÍâÚWòo+ÿöóï$ÿ4$.Ò—ı>Íü??ŞÊuK<”Äƒªæåx’}0â„nÁ-ñd)—ŠŠTÃº+¹e47›Ìé-X—9hxÀµœ×WOK^\­8ÅB“ÌÓde»5µö‘yº¼Ùö!®ÇF6®§™—¯/çôã ó²nË9ı9¨xéÛYiÏAÅ§Û9o±¶Ã9oÉ¶#qöçÍ*Ó{üD|,½Ïö4>¤ˆ¦sù0T³­|4Ê|Ñä±^Æ—Ì¾+ŞŸâ@|YŸfå,_İÔÈŒO²s”¬ÚEêå&‘ZpU¹HÔ¹òze2TWVW†˜¾F»¯Ñ7Y¢†tÑÚp×¹N£{ùlªºƒ2¢BcÓ[29?W6N”†–qiA2T—+ÅkCß_ÉôêºäïôÎF~Úâ´Šµ•Ç*+*ÁË&[-z›§ÎbòÑ¸’d•L¥fk©å„Tj3÷15gšsÍfµxÜ\b’{ÉƒäDyd«÷ä¹rF«åòfy§\"_¯É:Ù¢Óè<)Ü$†YBm†úúÈúÈ;¡&G"wäN}bm}­¡ÎhòrM‡I¡É"„wíæ¡<Œîjòğôò"Œáí"zBqŞìä9ùùsRVÜÈ›¾k÷4éTÅ
+—îªÔMÎ{5¹vÿ­5Î»9Éj‡]!Ş3ÇÔË”±÷5?ˆJ ›¶uKƒ—^²š]m‚[kU©d-m}Â\j“úHc¥L)W*ÔîÇ¥›Ÿ6T£ª}Û{¼vª6İ{¾öíí§êCÚrmµV¯µê]u^n3KŠ‘wş‡‡ÑGíŠkŠ/Fvõ×~qU'¸xçİX9Qñ09ûFŞ´İ»¦Ÿq¨ÈêäÁz{‹İ[#X6¥ªº»¬¨pØ›Á.ÎaÿÖ9ã¤™â^­ñQÁÔEm‘4z·6¢A+î2x{¥‡j6´öëboãg1ºë-®j½»º“+u²w	ç¥Q[][]nÄ$4}Üÿò;¡õ‘åµ¡F/w>Dp÷5EÃŒŠÑµ—Æ½vÿYlÊJjê|Œ ’MTD"`jbfjÂTÊbéU6k¯š†¶®6#cbDz£şÜŠ¨2q¦f=}M¶=Œ–’=ÿ1rÿMˆ	–á*ª]¿qÛªìaõÆe5ôœ}„Ny1òØ0~à¼K	´bXÃ°†QN…äApœ0AËs`©d1J1AÀLX	> €GNXº“´ÉÔ‡° yÀ:‹B,@÷ÆÑµ[Á¥=ïÿãÿÿ/Â2h8" á â`Hƒ×¦¼P6Íe³YR ˜aáŠHë:›	X:BÙ Æš?”ÍdgBÙl@v³«§ŸŸ³§vpenR~n°eï	¬Úı€­UO`0û¹IÀj1Ø~N¶ÕK¬Dp —:rdÀ¾<ì¦AR¨éæ l&2°¿àø”cËqõÜ^ûx~›¯Œ‚`…Ïv4€è«	ûÿş[õwÇ¶yàĞ‚Æ@€ ÷í™g
+endstream
+endobj
+59 0 obj
+<<
+/Type /FontDescriptor
+/Ascent 750
+/CapHeight 676
+/Descent -250
+/Flags 262178
+/FontBBox [-168 -218 1000 935]
+/FontName /Times-Bold
+/ItalicAngle 0
+/StemV 133
+/XHeight 461
+/StemH 139
+>>
+endobj
+60 0 obj
+<<
+/Type /FontDescriptor
+/Ascent 750
+/CapHeight 653
+/Descent -250
+/Flags 98
+/FontBBox [-169 -217 1010 883]
+/FontName /Times-Italic
+/ItalicAngle -15
+/StemV 76
+/XHeight 441
+/StemH 76
+>>
+endobj
+4 0 obj
+<<
+/Type /Font
+/Subtype /TrueType
+/FirstChar 32
+/LastChar 151
+/Widths [250 0 0 0 0 0 0 0 333 333 0 0 250 333 250 0 
+500 500 500 500 500 500 500 500 500 500 333 0 0 0 0 0 
+0 722 667 722 722 667 611 778 778 389 500 778 667 944 0 778 
+611 0 722 556 667 722 722 1000 0 0 667 333 0 333 0 0 
+0 500 556 444 556 444 333 500 556 278 333 556 278 833 556 500 
+556 0 444 389 333 556 500 722 500 500 444 0 0 0 0 0 
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+0 0 0 0 0 0 0 1000 ]
+/Encoding /WinAnsiEncoding
+/BaseFont /Times-Bold
+/FontDescriptor 52 0 R
+>>
+endobj
+5 0 obj
+<<
+/Type /Font
+/Subtype /TrueType
+/FirstChar 32
+/LastChar 122
+/Widths [250 0 0 0 0 0 0 0 0 0 0 0 250 333 250 0 
+0 0 0 500 500 0 0 0 0 0 333 0 0 0 0 0 
+0 611 611 667 722 611 611 722 722 333 444 667 556 833 667 722 
+611 722 611 500 556 722 611 833 611 0 556 0 0 0 0 0 
+0 500 500 444 500 444 278 500 500 278 278 444 278 722 500 500 
+500 500 389 389 278 500 444 667 444 444 389 ]
+/Encoding /WinAnsiEncoding
+/BaseFont /Times-Italic
+/FontDescriptor 53 0 R
+>>
+endobj
+6 0 obj
+<<
+/Type /Font
+/Subtype /TrueType
+/FirstChar 32
+/LastChar 151
+/Widths [250 333 0 0 0 833 0 0 333 333 500 564 250 333 250 278 
+500 500 500 500 500 500 500 500 500 500 278 278 0 564 0 0 
+921 722 667 667 722 611 556 722 722 333 389 722 611 889 722 722 
+556 722 667 556 611 722 722 944 0 0 611 333 0 333 0 500 
+0 444 500 444 500 444 333 500 500 278 278 500 278 778 500 500 
+500 500 333 389 278 500 500 722 500 500 444 0 0 0 0 0 
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+0 333 333 0 0 0 0 1000 ]
+/Encoding /WinAnsiEncoding
+/BaseFont /Times-Roman
+/FontDescriptor 54 0 R
+>>
+endobj
+7 0 obj
+<<
+/Type /Font
+/Subtype /TrueType
+/FirstChar 222
+/LastChar 223
+/Widths [556 556 ]
+/Encoding /MacRomanEncoding
+/BaseFont /Times-Roman
+/FontDescriptor 55 0 R
+>>
+endobj
+8 0 obj
+<<
+/Type /Font
+/Subtype /TrueType
+/FirstChar 32
+/LastChar 125
+/Widths [600 0 600 0 0 0 600 0 600 600 600 0 600 600 600 600 
+600 600 600 600 600 0 600 0 0 600 0 600 0 600 600 0 
+0 600 0 600 0 600 600 0 0 600 0 600 600 600 600 600 
+600 0 600 600 600 600 0 0 600 0 0 0 600 0 0 600 
+0 600 600 600 600 600 600 600 600 600 0 600 600 600 600 600 
+600 0 600 600 600 600 600 600 600 600 600 600 0 600 ]
+/Encoding /WinAnsiEncoding
+/BaseFont /Courier
+/FontDescriptor 56 0 R
+>>
+endobj
+9 0 obj
+<<
+/Type /Font
+/Subtype /Type0
+/BaseFont /EINMPI+Symbol
+/Encoding /Identity-H
+/DescendantFonts [ 61 0 R ]
+/ToUnicode 62 0 R
+>>
+endobj
+61 0 obj
+<<
+/Type /Font
+/Subtype /CIDFontType2
+/BaseFont /EINMPI+Symbol
+/FontDescriptor 50 0 R
+/CIDSystemInfo<<
+/Registry (Adobe)
+/Ordering (Identity)
+/Supplement 0
+>>
+/DW 1000
+/W [
+60 [548]
+178 [383]
+190 [548]
+]
+>>
+endobj
+10 0 obj
+<<
+/Type /Font
+/Subtype /TrueType
+/FirstChar 32
+/LastChar 181
+/Widths [250 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 500 
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+0 0 0 0 0 0 0 0 0 0 0 480 0 480 0 0 
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+0 0 0 0 0 576 ]
+/Encoding /WinAnsiEncoding
+/BaseFont /EINNCI+Symbol
+/FontDescriptor 57 0 R
+>>
+endobj
+40 0 obj
+<<
+/Type /Font
+/Subtype /TrueType
+/FirstChar 222
+/LastChar 222
+/Widths [556 ]
+/Encoding /MacRomanEncoding
+/BaseFont /Times-Bold
+/FontDescriptor 59 0 R
+>>
+endobj
+49 0 obj
+<<
+/Type /Font
+/Subtype /TrueType
+/FirstChar 222
+/LastChar 222
+/Widths [500 ]
+/Encoding /MacRomanEncoding
+/BaseFont /Times-Italic
+/FontDescriptor 60 0 R
+>>
+endobj
+62 0 obj
+<<
+/Filter /FlateDecode
+/Length 235
+>>
+stream
+H‰T=OÆ …w~Å5PêàĞ°ôÕ¤ƒ±ÕÂm%±@(úïZ_ã ä9—s9\Úv—Îšô-8Õc„ÉXpu[P#ÎÆBÅAO*»Z¤šÌı¾F\:;9hBßSqa‡›a¨Ø»ú4cç$İóÏ¤ô›÷ß¸ À@Ğ8Ú>Kÿ"z8ÿÔa÷¼pu¾î4®^*ÒÎcµùQ Zı¿NêÃ5NêKò{›óŠ‹L#OôôğØ„¥V'JNOî™|©¶Rş2–2Ç3¯“óÎç$y‘ ÏÒqÈ
+endstream
+endobj
+1 0 obj
+<<
+/Type /Page
+/Parent 12 0 R
+/Resources 3 0 R
+/Contents 2 0 R
+>>
+endobj
+13 0 obj
+<<
+/Type /Page
+/Parent 12 0 R
+/Resources 15 0 R
+/Contents 14 0 R
+>>
+endobj
+16 0 obj
+<<
+/Type /Page
+/Parent 12 0 R
+/Resources 18 0 R
+/Contents 17 0 R
+>>
+endobj
+19 0 obj
+<<
+/Type /Page
+/Parent 12 0 R
+/Resources 21 0 R
+/Contents 20 0 R
+>>
+endobj
+22 0 obj
+<<
+/Type /Page
+/Parent 12 0 R
+/Resources 24 0 R
+/Contents 23 0 R
+>>
+endobj
+25 0 obj
+<<
+/Type /Page
+/Parent 12 0 R
+/Resources 27 0 R
+/Contents 26 0 R
+>>
+endobj
+28 0 obj
+<<
+/Type /Page
+/Parent 12 0 R
+/Resources 30 0 R
+/Contents 29 0 R
+>>
+endobj
+31 0 obj
+<<
+/Type /Page
+/Parent 12 0 R
+/Resources 33 0 R
+/Contents 32 0 R
+>>
+endobj
+34 0 obj
+<<
+/Type /Page
+/Parent 12 0 R
+/Resources 36 0 R
+/Contents 35 0 R
+>>
+endobj
+37 0 obj
+<<
+/Type /Page
+/Parent 12 0 R
+/Resources 39 0 R
+/Contents 38 0 R
+>>
+endobj
+41 0 obj
+<<
+/Type /Page
+/Parent 45 0 R
+/Resources 43 0 R
+/Contents 42 0 R
+>>
+endobj
+46 0 obj
+<<
+/Type /Page
+/Parent 45 0 R
+/Resources 48 0 R
+/Contents 47 0 R
+>>
+endobj
+63 0 obj
+<<
+/S /D
+>>
+endobj
+64 0 obj
+<<
+/Nums [0 63 0 R ]
+>>
+endobj
+12 0 obj
+<<
+/Type /Pages
+/Kids [1 0 R 13 0 R 16 0 R 19 0 R 22 0 R 25 0 R 28 0 R 31 0 R 34 0 R 37 0 R]
+/Count 10
+/Parent 44 0 R
+>>
+endobj
+45 0 obj
+<<
+/Type /Pages
+/Kids [41 0 R 46 0 R]
+/Count 2
+/Parent 44 0 R
+>>
+endobj
+44 0 obj
+<<
+/Type /Pages
+/Kids [12 0 R 45 0 R ]
+/Count 12
+/MediaBox [0 0 612 792]
+>>
+endobj
+65 0 obj
+<<
+/CreationDate (D:20190925103834+08'00')
+/ModDate (D:20190925103834+08'00')
+/Producer (PSNormalizer.framework)
+>>
+endobj
+66 0 obj
+<<
+/Type /Catalog
+/Pages 44 0 R
+/PageLabels 64 0 R
+>>
+endobj
+xref
+0 67
+0000000000 65535 f 
+0000156920 00000 n 
+0000000016 00000 n 
+0000007759 00000 n 
+0000153176 00000 n 
+0000153722 00000 n 
+0000154190 00000 n 
+0000154764 00000 n 
+0000154938 00000 n 
+0000155419 00000 n 
+0000155784 00000 n 
+0000110293 00000 n 
+0000157993 00000 n 
+0000157001 00000 n 
+0000007924 00000 n 
+0000014166 00000 n 
+0000157085 00000 n 
+0000014320 00000 n 
+0000021920 00000 n 
+0000157169 00000 n 
+0000022050 00000 n 
+0000031916 00000 n 
+0000157253 00000 n 
+0000032070 00000 n 
+0000041991 00000 n 
+0000157337 00000 n 
+0000042132 00000 n 
+0000052150 00000 n 
+0000157421 00000 n 
+0000052303 00000 n 
+0000061083 00000 n 
+0000157505 00000 n 
+0000061213 00000 n 
+0000072291 00000 n 
+0000157589 00000 n 
+0000072457 00000 n 
+0000083271 00000 n 
+0000157673 00000 n 
+0000083437 00000 n 
+0000091994 00000 n 
+0000156270 00000 n 
+0000157757 00000 n 
+0000092148 00000 n 
+0000100548 00000 n 
+0000158211 00000 n 
+0000158130 00000 n 
+0000157841 00000 n 
+0000100691 00000 n 
+0000110150 00000 n 
+0000156440 00000 n 
+0000110434 00000 n 
+0000110624 00000 n 
+0000130833 00000 n 
+0000131035 00000 n 
+0000131235 00000 n 
+0000131432 00000 n 
+0000131629 00000 n 
+0000131820 00000 n 
+0000132011 00000 n 
+0000152774 00000 n 
+0000152976 00000 n 
+0000155561 00000 n 
+0000156612 00000 n 
+0000157925 00000 n 
+0000157953 00000 n 
+0000158303 00000 n 
+0000158435 00000 n 
+trailer
+<<
+/Size 67
+/Root 66 0 R
+/Info 65 0 R
+/ID [<fb3b56e5ddab648366a7a1504e03318e><fb3b56e5ddab648366a7a1504e03318e>]
+>>
+startxref
+158505
+%%EOF
