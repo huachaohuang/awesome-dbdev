@@ -148,6 +148,8 @@ There are a lot of concepts here, I have put up a post to explain them:
   notion of guards to organize logs, and avoids rewriting data in the same
   level.
 
+- [The Case for Learned Index Structures](papers/storage-engine/learned-index-sigmod18.pdf) (SIGMOD, 2018)
+
 - [Faster: A Concurrent Key-Value Store with In-Place Updates](papers/storage-engine/faster-sigmod18.pdf) (SIGMOD, 2018)
 
 - [The Data Calculator: Data Structure Design and Cost Synthesis from First Principles and Learned Cost Models](papers/storage-engine/datacalculator-sigmod18.pdf) (SIGMOD, 2018)
@@ -155,6 +157,8 @@ There are a lot of concepts here, I have put up a post to explain them:
 - [X-Engine: An Optimized Storage Engine for Large-scale E-commerce Transaction Processing](papers/storage-engine/xengine-sigmod19.pdf) (SIGMOD, 2019)
 
 - [MyRocks: LSM-Tree Database Storage Engine Serving Facebook's Social Graph](papers/storage-engine/myrocks-vldb20.pdf) (VLDB, 2020)
+
+- [The PGM-index: a fully-dynamic compressed learned index with provable worst-case bounds](papers/storage-engine/pgm-index-vldb2020.pdf) (VLDB, 2020)
 
 ## Database Optimizer
 
@@ -423,6 +427,10 @@ There are a lot of concepts here, I have put up a post to explain them:
 - [Anna: A KVS for Any Scale](papers/distributed-system/anna-ieee18.pdf) (ICDE, 2018)
 
 - [Autoscaling Tiered Cloud Storage in Anna](papers/distributed-system/anna-vldb19.pdf) (VLDB, 2019)
+
+- [DistCache: Provable Load Balancing for Large-Scale Storage Systems with Distributed Caching](papers/distributed-system/distcache-fast19.pdf) (FAST, 2019)
+
+- [Virtual Consensus in Delos](papers/distributed-system/delos-osdi20.pdf) (OSDI, 2020)
 
 ## OLTP Database
 
