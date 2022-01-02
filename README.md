@@ -2,7 +2,7 @@
 
 ## About
 
-You want to become a awesome database developer?
+You want to become an awesome database developer?
 
 That's great, me too.
 Being a database developer is fun and challenging.
