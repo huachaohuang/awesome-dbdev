@@ -33,19 +33,30 @@ Database development is interesting and challenging. You can always find interes
 - [Understanding the Linux Kernel](https://www.oreilly.com/library/view/understanding-the-linux/0596005652/)
 - [Understanding the Linux Virtual Memory Manager](https://www.kernel.org/doc/gorman/)
 - [Linux Device Drivers](https://www.oreilly.com/library/view/linux-device-drivers/0596005903/)
-- [ext4 Data Structures and Algorithms](https://www.kernel.org/doc/html/latest/filesystems/ext4/index.html)
 
-- [The Slab Allocator: An Object-Caching Kernel Memory Allocator](papers/slab-allocator.pdf) (1994)
+- [The Slab Allocator: An Object-Caching Kernel Memory Allocator](papers/operating-system/slab-allocator.pdf) (1994)
 
   This paper presents a comprehensive design overview of the SunOS 5.4 kernel memory allocator. This allocator is based on a set of object-caching primitives that reduce the cost of allocating complex objects by retaining their state between uses.
 
+## File system
+
+- [ext4 Data Structures and Algorithms](https://www.kernel.org/doc/html/latest/filesystems/ext4/index.html)
+
+- [The Design and Implementation of a Log-Structured File System](papers/operating-system/lfs.pdf) (1991)
+
+  This paper presents a new technique for disk storage management called a log-structured file system. A log- structured file system writes all modifications to disk sequentially in a log-like structure, thereby speeding up both file writing and crash recovery.
+
+- [SFS: Random Write Considered Harmful in Solid State Drives](papers/operating-system/sfs.pdf) (FAST, 2012)
+
+  In this paper, we propose a new file system for SSDs, SFS. First, SFS exploits the maximum write bandwidth of SSD by taking a log-structured approach. SFS transforms all random writes at file system level to sequential ones at SSD level. Second, SFS takes a new data grouping strategy on writing, instead of the existing data separation strategy on segment cleaning. It puts the data blocks with similar update likelihood into the same segment. This minimizes the inevitable segment cleaning overhead in any log-structured file system by allowing the segments to form a sharp bimodal distribution of segment utilization.
+
 ### Modern hardware
 
-- [What Every Programmer Should Know About Memory](papers/cpumemory.pdf) (2007)
+- [What Every Programmer Should Know About Memory](papers/operating-system/cpumemory.pdf) (2007)
 
   This paper explains the structure of memory subsystems in use on modern commodity hardware, illustrating why CPU caches were developed, how they work, and what programs should do to achieve optimal performance by utilizing them.
 
-- [What Every Systems Programmer Should Know About Concurrency](papers/concurrency.pdf) (2018)
+- [What Every Systems Programmer Should Know About Concurrency](papers/operating-system/concurrency.pdf) (2018)
 
   Seasoned programmers are familiar with tools like mutexes, semaphores, and condition variables. But what makes them work? How do we write concurrent code when we can’t use them, like when we’re working below the operating system in an embedded environment, or when we can’t block due to hard time constraints? And since your system transforms your code into things you didn’t write, running in orders you never asked for, how do multithreaded programs work at all? Concurrency — especially on modern hardware — is a complicated and unintuitive topic, but let’s try to cover some fundamentals.
 
@@ -58,8 +69,6 @@ Database development is interesting and challenging. You can always find interes
 
 ## Storage Engine
 
-### Papers
-
 - [The Five-Minute Rule for Trading Memory for Disc Accesses](papers/storage-engine/five-minute-rule-1987.pdf) (SIGMOD, 1987)
 - [The Five-Minute Rule 10 Years Later, and Other Computer Storage Rules of Thumb](papers/storage-engine/five-minute-rule-1997.pdf) (SIGMOD, 1997)
 - [The Five-Minute Rule 20 Years Later, and How Flash Memory Changes the Rules](papers/storage-engine/five-minute-rule-2007.pdf) (2007)
@@ -67,57 +76,57 @@ Database development is interesting and challenging. You can always find interes
 
 - [The Log-Structured Merge-Tree (LSM-Tree)](papers/storage-engine/lsmtree.pdf) (1996)
 
-  This paper presents the Log-Structured Merge-tree (LSM-tree), a disk-based
-  data structure designed to provide low-cost indexing for a file experiencing a
-  high rate of record inserts (and deletes) over an extended period. The
-  LSM-tree uses an algorithm that defers and batches index changes, cascading
-  the changes from a memory-based component through one or more disk components
-  in an efficient manner reminiscent of merge sort.
+  This paper presents the Log-Structured Merge-tree (LSM-tree), a disk-based data structure designed to provide low-cost indexing for a file experiencing a high rate of record inserts (and deletes) over an extended period. The LSM-tree uses an algorithm that defers and batches index changes, cascading the changes from a memory-based component through one or more disk components in an efficient manner reminiscent of merge sort.
 
 - [Weaving Relations for Cache Performance](papers/storage-engine/pax-vldb01.pdf) (VLDB, 2001)
 
-  This paper presents a new data organization model, Partition Attributes Across
-  (PAX), that significantly improves cache performance by grouping together all
-  values of each attribute within each page.
+  This paper presents a new data organization model, Partition Attributes Across (PAX), that significantly improves cache performance by grouping together all values of each attribute within each page.
 
 - [Cache-Oblivious Streaming B-trees](papers/storage-engine/streaming-btree.pdf) (SPAA, 2007)
 
-  This paper presents two cache-oblivious streaming B-trees, the shuttle tree,
-  and the cache-oblivious lookahead array (COLA).
+  This paper presents two cache-oblivious streaming B-trees, the shuttle tree, and the cache-oblivious lookahead array (COLA).
 
 - [Bitcask: A Log-Structured Hash Table for Fast Key/Value Data](papers/storage-engine/bitcask.pdf) (Basho, 2010)
 
 - [bLSM: A General Purpose Log Structured Merge Tree](papers/storage-engine/blsm.pdf) (SIGMOD, 2012)
 
-  This paper presents bLSM, a Log Structured Merge (LSM) tree with the
-  advantages of B-Trees and log structured approaches. bLSM uses Bloom filters
-  to improve index performance and uses *spring and gear scheduler* to avoid
-  long write pauses.
+  This paper presents bLSM, a Log Structured Merge (LSM) tree with the advantages of B-Trees and log structured approaches. bLSM uses Bloom filters to improve index performance and uses spring and gear scheduler to avoid long write pauses.
+
+- [The Adaptive Radix Tree: ARTful Indexing for Main-Memory Databases](papers/storage-engine/art.pdf) (2013)
+
+  This paper presents ART, an adaptive radix tree (trie) for efficient indexing in main memory. Its lookup performance surpasses highly tuned, read-only search trees, while supporting very efficient insertions and deletions as well. At the same time, ART is very space efficient and solves the problem of excessive worst-case space consumption, which plagues most radix trees, by adaptively choosing compact and efficient data structures for internal nodes.
 
 - [The Bw-Tree: A B-tree for New Hardware Platforms](papers/storage-engine/bw-tree.pdf) (ICDE, 2013)
 
-  This paper presents Bw-Tree, a new form of B-Tree that achieves its very
-  high performance via a latch-free approach that effectively exploits the
-  processor caches of modern multi-core chips.
+  This paper presents Bw-Tree, a new form of B-Tree that achieves its very high performance via a latch-free approach that effectively exploits the processor caches of modern multi-core chips.
+
+- [LLAMA: A Cache/Storage Subsystem for Modern Hardware](papers/storage-engine/llama.pdf) (VLDB, 2013)
+
+  LLAMA is a subsystem designed for new hardware environments that supports an API for page-oriented access methods, providing both cache and storage management.
 
 - [Hekaton: SQL Server’s Memory-Optimized OLTP Engine](papers/storage-engine/hekaton.pdf) (SIGMOD, 2013)
 
-  This paper presents Hekaton, a new database engine optimized for memory
-  resident data and OLTP workloads. Hekaton uses only latch-free data structures
-  and a new optimistic, multiversion concurrency control technique.
+  This paper presents Hekaton, a new database engine optimized for memory resident data and OLTP workloads. Hekaton uses only latch-free data structures and a new optimistic, multiversion concurrency control technique.
 
 - [WiscKey: Separating Keys from Values in SSD-Conscious Storage](papers/storage-engine/wisckey.pdf) (USENIX, 2016)
 
-  This paper presents WiscKey, a persistent LSM-Tree-based key-value store
-  with a performance-oriented data layout that separates keys from values to
-  minimize I/O amplification.
+  This paper presents WiscKey, a persistent LSM-Tree-based key-value store with a performance-oriented data layout that separates keys from values to minimize I/O amplification.
 
 - [PebblesDB: Building Key-Value Stores using Fragmented Log-Structured Merge Trees](papers/storage-engine/pebblesdb.pdf) (SOSP, 2017)
 
-  This paper presents a novel data structure that is inspired by Skip Lists,
-  termed Fragmented Log-Structured Merge Trees (FLSM). FLSM introduces the
-  notion of guards to organize logs, and avoids rewriting data in the same
-  level.
+  This paper presents a novel data structure that is inspired by Skip Lists, termed Fragmented Log-Structured Merge Trees (FLSM). FLSM introduces the notion of guards to organize logs, and avoids rewriting data in the same level.
+
+- [TinyLFU: A Highly Efficient Cache Admission Policy](papers/storage-engine/tinylfu.pdf) (2017)
+
+  This article proposes to use a frequency-based cache admission policy in order to boost the effectiveness of caches subject to skewed access distributions. Given a newly accessed item and an eviction candidate from the cache, our scheme decides, based on the recent access history, whether it is worth admitting the new item into the cache at the expense of the eviction candidate.
+
+- [Monkey: Optimal Navigable Key-Value Store](papers/storage-engine/monkey.pdf) (SIGMOD, 2017)
+
+  This paper presents Monkey, an LSM-based key-value store that strikes the optimal balance between the costs of updates and lookups with any given main memory budget. The insight is that worst-case lookup cost is proportional to the sum of the false positive rates of the Bloom filters across all levels of the LSM-tree. Contrary to state-of-the-art key-value stores that assign a fixed number of bits-per-element to all Bloom filters, Monkey allocates memory to filters across different levels so as to minimize this sum.
+
+- [Dostoevsky: Better Space-Time Trade-Offs for LSM-Tree Based Key-Value Stores via Adaptive Removal of Superfluous Merging](papers/storage-engine/dostoevsky.pdf) (SIGMOD, 2018)
+
+  We introduce Lazy Leveling, a new design that removes merge operations from all levels of LSM-tree but the largest. Lazy Leveling improves the worst-case complexity of update cost while maintaining the same bounds on point lookup cost, long range lookup cost, and storage space. We further introduce Fluid LSM-tree, a generalization of the entire LSM-tree design space that can be parameterized to assume any existing design.
 
 - [The Case for Learned Index Structures](papers/storage-engine/learned-index-sigmod18.pdf) (SIGMOD, 2018)
 
