@@ -1,66 +1,24 @@
 # Awesome Database Development
 
-## About
-
-You want to become an awesome database developer?
-
-That's great, me too.
-Being a database developer is fun and challenging.
-But don't panic, I have collected a lot of awesome materials for us.
-
-## Operating System
-
-### Papers
-
-- [The Slab Allocator: An Object-Caching Kernel Memory Allocator](papers/operating-system/slab-allocator.pdf) (1994)
-
-  This paper presents a comprehensive design overview of the SunOS 5.4 kernel memory allocator. This allocator is based on a set of object-caching primitives that reduce the cost of allocating complex objects by retaining their state between uses.
-
-- [What Every Programmer Should Know About Memory](papers/operating-system/cpumemory.pdf) (2007)
-
-  This paper explains the structure of memory subsystems in use on modern commodity hardware, illustrating why CPU caches were developed, how they work, and what programs should do to achieve optimal performance by utilizing them.
-
-- [What Every Systems Programmer Should Know About Concurrency](papers/operating-system/concurrency-primer.pdf) (2018)
-
-  This paper explains some fundamentals about concurrency on modern hardware.
-
-### Books
-
-- [Understanding the Linux Kernel](https://www.oreilly.com/library/view/understanding-the-linux/0596005652/)
-
-- [Understanding the Linux Virtual Memory Manager](https://www.kernel.org/doc/gorman/)
-
-- [Linux Device Drivers](https://www.oreilly.com/library/view/linux-device-drivers/0596005903/)
-
-### Links
-
-- [ext4 Data Structures and Algorithms](https://www.kernel.org/doc/html/latest/filesystems/ext4/index.html)
+Database development is interesting and challenging. You can always find interesting things to learn and challenging problems to solve. You need to make a lot of things right to build a reliable and high-performance database. And it takes time, a lot of time, to think and practice. I have spent ten years working with databases. However, as the proverb goes, *the more I know, the more I realize I don't know.* So, I collect these awesome database development materials here to review them from time to time. I think it will be helpful to those who share the same interests as me.
 
 ## Storage Device
 
-There are a lot of concepts here, I have put up a post to explain them:
-[What You Should Know About Storage Devices](http://huachaohuang.com/2019/08/28/what-you-should-know-about-storage-devices.html)
-
 ### Media
 
-#### Links
-
 - [Hard Disk Drive (HDD)](https://en.wikipedia.org/wiki/Hard_disk_drive)
+- [How HDD Works](https://www.youtube.com/watch?v=Ep-yM894mQQ) (Video)
+- [The Development of HDD Technique](https://www.youtube.com/watch?v=wteUW2sL7bc) (Video)
 - [Solid-State Drive (SSD)](https://en.wikipedia.org/wiki/Solid-state_drive)
 - [Coding for SSDs](http://codecapsule.com/2014/02/12/coding-for-ssds-part-1-introduction-and-table-of-contents/)
-
-#### Videos
-
-- [How HDD Works](https://www.youtube.com/watch?v=Ep-yM894mQQ)
-- [The Development of HDD Technique](https://www.youtube.com/watch?v=wteUW2sL7bc)
-- [How Flash Memory Works](https://www.youtube.com/watch?v=s7JLXs5es7I)
+- [How Flash Memory Works](https://www.youtube.com/watch?v=s7JLXs5es7I) (Video)
 
 ### Interface
 
-#### Links
-
+- [A History of PC Buses - From ISA to PCI Express](https://www.youtube.com/watch?v=qla-5isbK60) (Video)
 - [Small Computer System Interface (SCSI)](https://en.wikipedia.org/wiki/SCSI)
 - [Serial Attached SCSI (SAS)](https://en.wikipedia.org/wiki/Serial_Attached_SCSI)
+- [Understanding SCSI](https://www.youtube.com/watch?v=pR7SdrXdT4M) (Video)
 - [AT Atachment (ATA)](https://en.wikipedia.org/wiki/Parallel_ATA)
 - [Serial AT Attachment (SATA)](https://en.wikipedia.org/wiki/Serial_ATA)
 - [Advanced Host Controller Interface (AHCI)](https://en.wikipedia.org/wiki/Advanced_Host_Controller_Interface)
@@ -68,22 +26,35 @@ There are a lot of concepts here, I have put up a post to explain them:
 - [PCI Express (PCIe)](https://en.wikipedia.org/wiki/PCI_Express)
 - [NVM Express (NVMe)](https://en.wikipedia.org/wiki/NVM_Express)
 
-#### Videos
+## Operating System
 
-- [Understanding SCSI](https://www.youtube.com/watch?v=pR7SdrXdT4M)
-- [A History of PC Buses - From ISA to PCI Express](https://www.youtube.com/watch?v=qla-5isbK60)
+### Kernel
 
-### Virtualization
+- [Understanding the Linux Kernel](https://www.oreilly.com/library/view/understanding-the-linux/0596005652/)
+- [Understanding the Linux Virtual Memory Manager](https://www.kernel.org/doc/gorman/)
+- [Linux Device Drivers](https://www.oreilly.com/library/view/linux-device-drivers/0596005903/)
+- [ext4 Data Structures and Algorithms](https://www.kernel.org/doc/html/latest/filesystems/ext4/index.html)
 
-#### Links
+- [The Slab Allocator: An Object-Caching Kernel Memory Allocator](papers/slab-allocator.pdf) (1994)
 
-- [Logical Volume Manager (LVM)](https://en.wikipedia.org/wiki/Logical_Volume_Manager_(Linux))
+  This paper presents a comprehensive design overview of the SunOS 5.4 kernel memory allocator. This allocator is based on a set of object-caching primitives that reduce the cost of allocating complex objects by retaining their state between uses.
+
+### Modern hardware
+
+- [What Every Programmer Should Know About Memory](papers/cpumemory.pdf) (2007)
+
+  This paper explains the structure of memory subsystems in use on modern commodity hardware, illustrating why CPU caches were developed, how they work, and what programs should do to achieve optimal performance by utilizing them.
+
+- [What Every Systems Programmer Should Know About Concurrency](papers/concurrency.pdf) (2018)
+
+  Seasoned programmers are familiar with tools like mutexes, semaphores, and condition variables. But what makes them work? How do we write concurrent code when we can’t use them, like when we’re working below the operating system in an embedded environment, or when we can’t block due to hard time constraints? And since your system transforms your code into things you didn’t write, running in orders you never asked for, how do multithreaded programs work at all? Concurrency — especially on modern hardware — is a complicated and unintuitive topic, but let’s try to cover some fundamentals.
+
+### Storage virtualization
+
+- [Logical volume management](https://en.wikipedia.org/wiki/Logical_volume_management)
+- [Logical Volume Management (LVM) - Linux](https://www.youtube.com/watch?v=fadQX2e_PGk) (Video)
 - [Redundant Array of Independent Disks (RAID)](https://en.wikipedia.org/wiki/RAID)
-
-#### Videos
-
-- [Logical Volume Management (LVM) - Linux](https://www.youtube.com/watch?v=fadQX2e_PGk)
-- [What is RAID 0, 1, 2, 3, 4, 5, 6 and 10 (1+0)?](https://www.youtube.com/watch?v=wTcxRObq738)
+- [What is RAID 0, 1, 2, 3, 4, 5, 6 and 10 (1+0)?](https://www.youtube.com/watch?v=wTcxRObq738) (Video)
 
 ## Storage Engine
 
