@@ -1,6 +1,6 @@
 # Awesome Database Development
 
-Database development is interesting and challenging. You can always find interesting things to learn and challenging problems to solve. You need to make a lot of things right to build a reliable and high-performance database. And it takes time, a lot of time, to think and practice. I have spent ten years working with databases. However, as the proverb goes, *the more I know, the more I realize I don't know.* So, I collect these awesome database development materials here to review them from time to time. I think it will be helpful to those who share the same interests as me.
+Database development is interesting and challenging. You can always find interesting things to learn and challenging problems to solve. You need to get a lot of things right to build a reliable and high-performance database. And it takes time, a lot of time, to think and practice. I have been working on databases for ten years. However, as the proverb goes, *the more I know, the more I realize I don't know.* So, I collect the database development materials I have read here to review them from time to time. I think it will be helpful to those who share the same interests as me.
 
 ## Storage Device
 
@@ -38,7 +38,7 @@ Database development is interesting and challenging. You can always find interes
 
   This paper presents a comprehensive design overview of the SunOS 5.4 kernel memory allocator. This allocator is based on a set of object-caching primitives that reduce the cost of allocating complex objects by retaining their state between uses.
 
-## File system
+### File system
 
 - [ext4 Data Structures and Algorithms](https://www.kernel.org/doc/html/latest/filesystems/ext4/index.html)
 
@@ -59,6 +59,10 @@ Database development is interesting and challenging. You can always find interes
 - [What Every Systems Programmer Should Know About Concurrency](papers/operating-system/concurrency.pdf) (2018)
 
   Seasoned programmers are familiar with tools like mutexes, semaphores, and condition variables. But what makes them work? How do we write concurrent code when we can’t use them, like when we’re working below the operating system in an embedded environment, or when we can’t block due to hard time constraints? And since your system transforms your code into things you didn’t write, running in orders you never asked for, how do multithreaded programs work at all? Concurrency — especially on modern hardware — is a complicated and unintuitive topic, but let’s try to cover some fundamentals.
+
+- [Everything You Always Wanted to Know About Synchronization but Were Afraid to Ask](papers/operating-system/synchronization.pdf) (2013)
+
+  This paper presents the most exhaustive study of synchronization to date. We span multiple layers, from hardware cache-coherence protocols up to high-level concurrent software. We do so on different types of architectures, from single-socket – uniform and non- uniform – to multi-socket – directory and broadcast-based – many-cores.
 
 ### Storage virtualization
 
