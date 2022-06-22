@@ -78,27 +78,33 @@ Database development is interesting and challenging. You can always find interes
 - [The Five-Minute Rule 20 Years Later, and How Flash Memory Changes the Rules](papers/five-minute-rule-2007.pdf) (2007)
 - [The Five-Minute Rule 30 Years Later, and its Impact on the Storage Hierarchy](papers/five-minute-rule-2017.pdf) (2017)
 
-- [The Log-Structured Merge-Tree (LSM-Tree)](papers/lsmtree.pdf) (1996)
-
-  This paper presents the Log-Structured Merge-tree (LSM-tree), a disk-based data structure designed to provide low-cost indexing for a file experiencing a high rate of record inserts (and deletes) over an extended period. The LSM-tree uses an algorithm that defers and batches index changes, cascading the changes from a memory-based component through one or more disk components in an efficient manner reminiscent of merge sort.
-
 - [Weaving Relations for Cache Performance](papers/pax.pdf) (2001)
 
   This paper presents a new data organization model, Partition Attributes Across (PAX), that significantly improves cache performance by grouping together all values of each attribute within each page.
 
-- [Cache-Oblivious Streaming B-trees](papers/streaming-btree.pdf) (2007)
-
-  This paper presents two cache-oblivious streaming B-trees, the shuttle tree, and the cache-oblivious lookahead array (COLA).
-
 - [Bitcask: A Log-Structured Hash Table for Fast Key/Value Data](papers/bitcask.pdf) (2010)
-
-- [bLSM: A General Purpose Log Structured Merge Tree](papers/blsm.pdf) (2012)
-
-  This paper presents bLSM, a Log Structured Merge (LSM) tree with the advantages of B-Trees and log structured approaches. bLSM uses Bloom filters to improve index performance and uses spring and gear scheduler to avoid long write pauses.
 
 - [The Adaptive Radix Tree: ARTful Indexing for Main-Memory Databases](papers/adaptive-radix-tree.pdf) (2013)
 
   This paper presents ART, an adaptive radix tree (trie) for efficient indexing in main memory. Its lookup performance surpasses highly tuned, read-only search trees, while supporting very efficient insertions and deletions as well. At the same time, ART is very space efficient and solves the problem of excessive worst-case space consumption, which plagues most radix trees, by adaptively choosing compact and efficient data structures for internal nodes.
+
+- [TinyLFU: A Highly Efficient Cache Admission Policy](papers/tinylfu.pdf) (2017)
+
+  This article proposes to use a frequency-based cache admission policy in order to boost the effectiveness of caches subject to skewed access distributions. Given a newly accessed item and an eviction candidate from the cache, our scheme decides, based on the recent access history, whether it is worth admitting the new item into the cache at the expense of the eviction candidate.
+
+- [Faster: A Concurrent Key-Value Store with In-Place Updates](papers/faster.pdf) (2018)
+
+- [The Data Calculator: Data Structure Design and Cost Synthesis from First Principles and Learned Cost Models](papers/datacalculator.pdf) (2018)
+
+- [The Case for Learned Index Structures](papers/learned-index.pdf) (2018)
+
+- [The PGM-index: a fully-dynamic compressed learned index with provable worst-case bounds](papers/pgm-index.pdf) (2020)
+
+### B-tree
+
+- [Cache-Oblivious Streaming B-trees](papers/streaming-btree.pdf) (2007)
+
+  This paper presents two cache-oblivious streaming B-trees, the shuttle tree, and the cache-oblivious lookahead array (COLA).
 
 - [The Bw-Tree: A B-tree for New Hardware Platforms](papers/bw-tree.pdf) (2013)
 
@@ -112,6 +118,16 @@ Database development is interesting and challenging. You can always find interes
 
   This paper presents Hekaton, a new database engine optimized for memory resident data and OLTP workloads. Hekaton uses only latch-free data structures and a new optimistic, multiversion concurrency control technique.
 
+### LSM-tree
+
+- [The Log-Structured Merge-Tree (LSM-Tree)](papers/lsmtree.pdf) (1996)
+
+  This paper presents the Log-Structured Merge-tree (LSM-tree), a disk-based data structure designed to provide low-cost indexing for a file experiencing a high rate of record inserts (and deletes) over an extended period. The LSM-tree uses an algorithm that defers and batches index changes, cascading the changes from a memory-based component through one or more disk components in an efficient manner reminiscent of merge sort.
+
+- [bLSM: A General Purpose Log Structured Merge Tree](papers/blsm.pdf) (2012)
+
+  This paper presents bLSM, a Log Structured Merge (LSM) tree with the advantages of B-Trees and log structured approaches. bLSM uses Bloom filters to improve index performance and uses spring and gear scheduler to avoid long write pauses.
+
 - [WiscKey: Separating Keys from Values in SSD-Conscious Storage](papers/wisckey.pdf) (2016)
 
   This paper presents WiscKey, a persistent LSM-Tree-based key-value store with a performance-oriented data layout that separates keys from values to minimize I/O amplification.
@@ -119,10 +135,6 @@ Database development is interesting and challenging. You can always find interes
 - [PebblesDB: Building Key-Value Stores using Fragmented Log-Structured Merge Trees](papers/pebblesdb.pdf) (2017)
 
   This paper presents a novel data structure that is inspired by Skip Lists, termed Fragmented Log-Structured Merge Trees (FLSM). FLSM introduces the notion of guards to organize logs, and avoids rewriting data in the same level.
-
-- [TinyLFU: A Highly Efficient Cache Admission Policy](papers/tinylfu.pdf) (2017)
-
-  This article proposes to use a frequency-based cache admission policy in order to boost the effectiveness of caches subject to skewed access distributions. Given a newly accessed item and an eviction candidate from the cache, our scheme decides, based on the recent access history, whether it is worth admitting the new item into the cache at the expense of the eviction candidate.
 
 - [Monkey: Optimal Navigable Key-Value Store](papers/monkey.pdf) (2017)
 
@@ -136,10 +148,6 @@ Database development is interesting and challenging. You can always find interes
 
   We introduce the Log-Structured Merge-Bush (LSM-Bush), a new data structure that sets increasing capacity ratios between adjacent pairs of smaller levels. We further introduce Wacky, a design continuum that includes LSM-Bush as well as all state-of-the-art merge policies, from laziest to greediest, and can assume any of them within a single implementation.
 
-- [The Data Calculator: Data Structure Design and Cost Synthesis from First Principles and Learned Cost Models](papers/datacalculator.pdf) (2018)
-
-- [Faster: A Concurrent Key-Value Store with In-Place Updates](papers/faster.pdf) (2018)
-
 - [LSM-based storage techniques: a survey](papers/lsmsurvey.pdf) (2019)
 
   In this paper, we provide a survey of recent research efforts on LSM-trees so that readers can learn the state of the art in LSM-based storage techniques. We provide a general taxonomy to classify the literature of LSM-trees, survey the efforts in detail, and discuss their strengths and trade-offs. We further survey several representative LSM-based open-source NoSQL systems and discuss some potential future research directions resulting from the survey.
@@ -147,10 +155,6 @@ Database development is interesting and challenging. You can always find interes
 - [X-Engine: An Optimized Storage Engine for Large-scale E-commerce Transaction Processing](papers/xengine.pdf) (2019)
 
 - [MyRocks: LSM-Tree Database Storage Engine Serving Facebook's Social Graph](papers/myrocks.pdf) (2020)
-
-- [The Case for Learned Index Structures](papers/learned-index.pdf) (2018)
-
-- [The PGM-index: a fully-dynamic compressed learned index with provable worst-case bounds](papers/pgm-index.pdf) (2020)
 
 ## SQL
 
@@ -176,10 +180,6 @@ Database development is interesting and challenging. You can always find interes
 - [The Notion of Consistency and Predicate Locks in a Database System](papers/predicate-locks.pdf) (1976)
 
   This paper proofs that two-phase locking (2PL) guarantees serializability and introduces predicate locks to address the problem of phantom reads.
-
-- [Time, Clocks, and the Ordering of Events in a Distributed System](papers/logical-clocks.pdf) (1978)
-
-  This paper discusses the partial ordering defined by the "happened before" relation, and gives a distributed algorithm for extending it to a consistent total ordering of all the events.
 
 - [How to Make a Multiprocessor Computer That Correctly Executes Multiprocess Progranm](papers/sequential-consistency.pdf) (1979)
 
@@ -209,13 +209,19 @@ Database development is interesting and challenging. You can always find interes
 
   This paper presents an algorithm to achieve serializable snapshot isolation based on anti-dependencies detection.
 
-- [Large-scale Incremental Processing Using Distributed Transactions and Notifications](papers/percolator.pdf) (2010)
-
-  This paper presents Percolator, an incremental update processing system built on top of Bigtable. Percolator provides snapshot isolation transactions using a two-phase commit protocol.
-
 - [A Critique of Snapshot Isolation](papers/snapshot-isolation.pdf) (2012)
 
   This paper presents a new MVCC isolation level called write-snapshot isolation. A transaction in write-snapshot isolation checks for read-write conflicts instead of write-write conflicts in snapshot isolation.
+
+## Distributed transaction
+
+- [Time, Clocks, and the Ordering of Events in a Distributed System](papers/logical-clocks.pdf) (1978)
+
+  This paper discusses the partial ordering defined by the "happened before" relation, and gives a distributed algorithm for extending it to a consistent total ordering of all the events.
+
+- [Large-scale Incremental Processing Using Distributed Transactions and Notifications](papers/percolator.pdf) (2010)
+
+  This paper presents Percolator, an incremental update processing system built on top of Bigtable. Percolator provides snapshot isolation transactions using a two-phase commit protocol.
 
 - [Calvin: Fast Distributed Transactions for Partitioned Database Systems](papers/calvin.pdf) (2012)
 
@@ -229,8 +235,6 @@ Database development is interesting and challenging. You can always find interes
 
   This paper proposes a hybrid logical clock, HLC, that combines the best of logical clocks and physical clocks.
 
-- [Linearizability versus Serializability](http://www.bailis.org/blog/linearizability-versus-serializability/) (2014)
-
 - [Consistency in Non-Transactional Distributed Storage Systems](papers/consistency-overview.pdf) (2016)
 
   This paper provides a structured and comprehensive overview of different consistency notions and provide a partial order among different consistency predicates.
@@ -241,6 +245,7 @@ Database development is interesting and challenging. You can always find interes
 
 - [Transactional Causal Consistency for Serverless Computing](papers/transactional-causal-consistency.pdf) (2020)
 
+- [Linearizability versus Serializability](http://www.bailis.org/blog/linearizability-versus-serializability/) (2014)
 - [Distributed consistency at scale: Spanner vs. Calvin](http://dbmsmusings.blogspot.com/2017/04/distributed-consistency-at-scale.html) (2017)
 - [NewSQL database systems are failing to guarantee consistency, and I blame Spanner](http://dbmsmusings.blogspot.com/2018/09/newsql-database-systems-are-failing-to.html) (2018)
 - [Consistency without Clocks: The FaunaDB Distributed Transaction Protocol](https://fauna.com/blog/consistency-without-clocks-faunadb-transaction-protocol) (2018)
@@ -291,48 +296,49 @@ Database development is interesting and challenging. You can always find interes
 
 - [CAP Twelve Years Later: How the "Rules" Have Changed](https://www.infoq.com/articles/cap-twelve-years-later-how-the-rules-have-changed) (2012)
 
-## Distributed System
+## Distributed system
 
-### Papers
+- [An Opportunity Cost Approach for Job Assignment in a Scalable Computing Cluster](papers/epvm.pdf) (2000)
 
-- [An Opportunity Cost Approach for Job Assignment in a Scalable Computing Cluster](papers/distributed-system/epvm.pdf) (2000)
+- [The Google File System](papers/gfs.pdf) (2003)
 
-- [The Google File System](papers/distributed-system/gfs-sosp03.pdf) (SOSP, 2003)
+  This paper presents the Google File System, a scalable distributed file system for large distributed data-intensive applications.
 
-  This paper presents the Google File System, a scalable distributed file system
-  for large distributed data-intensive applications.
+- [Bigtable: A Distributed Storage System for Structured Data](papers/bigtable.pdf) (2006)
 
-- [Bigtable: A Distributed Storage System for Structured Data](papers/distributed-system/bigtable-osdi06.pdf) (OSDI, 2006)
+  This paper presents Bigtable, a distributed storage system for managing structured data that is designed to scale to a very large size.
 
-  This paper presents Bigtable, a distributed storage system for managing
-  structured data that is designed to scale to a very large size.
+- [Dynamo: Amazon’s Highly Available Key-value Store](papers/dynamo.pdf) (2007)
 
-- [Dynamo: Amazon’s Highly Available Key-value Store](papers/distributed-system/dynamo-sosp07.pdf) (SOSP, 2007)
+  This paper presents the design and implementation of Dynamo, a highly available key-value storage system that some of Amazon's core services use to provide an “always-on” experience.
 
-  This paper presents the design and implementation of Dynamo, a highly
-  available key-value storage system that some of Amazon's core services use to
-  provide an “always-on” experience.
+- [Finding a needle in Haystack: Facebook’s photo storage](papers/haystack.pdf) (2010)
 
-- [Finding a needle in Haystack: Facebook’s photo storage](papers/distributed-system/haystack-osdi10.pdf) (OSDI, 2010)
+- [TAO: Facebook’s Distributed Data Store for the Social Graph](papers/tao.pdf) (2013)
 
-- [f4: Facebook’s Warm BLOB Storage System](papers/distributed-system/f4-osdi14.pdf) (OSDI, 2014)
+  We introduce a simple data model and API tailored for serving the social graph, and TAO, an implementation of this model. TAO is a geographically distributed data store that provides efficient and timely access to the social graph for Facebook’s demanding workload using a fixed set of queries.
 
-- [Large-scale cluster management at Google with Borg](papers/distributed-system/borg.pdf) (EuroSys, 2015)
+- [f4: Facebook’s Warm BLOB Storage System](papers/f4.pdf) (2014)
 
-- [Sharding the Shards: Managing Datastore Locality at Scale with Akkio](papers/distributed-system/akkio.pdf) (OSDI, 2018)
+- [Large-scale cluster management at Google with Borg](papers/borg.pdf) (2015)
 
-  In this paper we present Akkio, a locality management service for distributed
-  datastore systems whose aim is to improve data access response times and to
-  reduce cross-datacenter bandwidth usage as well as the total amount of storage
-  capacity needed.
+- [Sharding the Shards: Managing Datastore Locality at Scale with Akkio](papers/akkio.pdf) (2018)
 
-- [Anna: A KVS for Any Scale](papers/distributed-system/anna-ieee18.pdf) (ICDE, 2018)
+  In this paper we present Akkio, a locality management service for distributed datastore systems whose aim is to improve data access response times and to reduce cross-datacenter bandwidth usage as well as the total amount of storage capacity needed.
 
-- [Autoscaling Tiered Cloud Storage in Anna](papers/distributed-system/anna-vldb19.pdf) (VLDB, 2019)
+- [Anna: A KVS for Any Scale](papers/anna-ieee18.pdf) (2018)
 
-- [DistCache: Provable Load Balancing for Large-Scale Storage Systems with Distributed Caching](papers/distributed-system/distcache-fast19.pdf) (FAST, 2019)
+- [Autoscaling Tiered Cloud Storage in Anna](papers/anna-vldb19.pdf) (2019)
 
-- [Virtual Consensus in Delos](papers/distributed-system/delos-osdi20.pdf) (OSDI, 2020)
+- [DistCache: Provable Load Balancing for Large-Scale Storage Systems with Distributed Caching](papers/distcache.pdf) (2019)
+
+- [Virtual Consensus in Delos](papers/delos-osdi20.pdf) (2020)
+
+  We propose virtualizing consensus by virtualizing the shared log API, allowing services to change consensus protocols without downtime. Virtualization splits the logic of consensus into the VirtualLog, a generic and reusable reconfiguration layer; and pluggable ordering protocols called Loglets.
+
+- [Log-structured Protocols in Delos](papers/delos-sosp21.pdf) (2021)
+
+  The primary innovation in Delos is a log-structured protocol: a fine-grained replicated state machine executing above a shared log that can be layered into reusable protocol stacks under different databases.
 
 ## OLTP Database
 
