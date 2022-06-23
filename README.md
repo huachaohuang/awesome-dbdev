@@ -2,29 +2,21 @@
 
 Database development is interesting and challenging. You can always find interesting things to learn and challenging problems to solve. You need to get a lot of things right to build a reliable and high-performance database. And it takes time, a lot of time, to think and practice. I have been working on databases for ten years. However, as the proverb goes, *the more I know, the more I realize I don't know.* So, I collect the database development materials I have read here to review them from time to time. I think it will be helpful to those who share the same interests as me.
 
-## Storage Device
+## Introduction
 
-### Media
+- [Readings in Database Systems](http://www.redbook.io/)
 
-- [Hard Disk Drive (HDD)](https://en.wikipedia.org/wiki/Hard_disk_drive)
-- [How HDD Works](https://www.youtube.com/watch?v=Ep-yM894mQQ) (Video)
-- [The Development of HDD Technique](https://www.youtube.com/watch?v=wteUW2sL7bc) (Video)
-- [Solid-State Drive (SSD)](https://en.wikipedia.org/wiki/Solid-state_drive)
-- [Coding for SSDs](http://codecapsule.com/2014/02/12/coding-for-ssds-part-1-introduction-and-table-of-contents/)
-- [How Flash Memory Works](https://www.youtube.com/watch?v=s7JLXs5es7I) (Video)
+- [Designing Data-Intensive Applications](https://www.oreilly.com/library/view/designing-data-intensive-applications/9781491903063/)
 
-### Interface
+- [Notes on Distributed Systems for Young Bloods](https://www.somethingsimilar.com/2013/01/14/notes-on-distributed-systems-for-young-bloods/) (2013)
 
-- [A History of PC Buses - From ISA to PCI Express](https://www.youtube.com/watch?v=qla-5isbK60) (Video)
-- [Small Computer System Interface (SCSI)](https://en.wikipedia.org/wiki/SCSI)
-- [Serial Attached SCSI (SAS)](https://en.wikipedia.org/wiki/Serial_Attached_SCSI)
-- [Understanding SCSI](https://www.youtube.com/watch?v=pR7SdrXdT4M) (Video)
-- [AT Atachment (ATA)](https://en.wikipedia.org/wiki/Parallel_ATA)
-- [Serial AT Attachment (SATA)](https://en.wikipedia.org/wiki/Serial_ATA)
-- [Advanced Host Controller Interface (AHCI)](https://en.wikipedia.org/wiki/Advanced_Host_Controller_Interface)
-- [Peripheral Component Interconnect (PCI)](https://en.wikipedia.org/wiki/Conventional_PCI)
-- [PCI Express (PCIe)](https://en.wikipedia.org/wiki/PCI_Express)
-- [NVM Express (NVMe)](https://en.wikipedia.org/wiki/NVM_Express)
+- [How does a relational database work](http://coding-geek.com/how-databases-work/) (2015)
+
+- [Elements Of Scale: Composing And Scaling Data Platforms](http://www.benstopford.com/2015/04/28/elements-of-scale-composing-and-scaling-data-platforms/) (2015)
+
+- [Apache Kafka, Samza, and the Unix Philosophy of Distributed Data](http://www.confluent.io/blog/apache-kafka-samza-and-the-unix-philosophy-of-distributed-data) (2015)
+
+- [What I Learned From Programming Databases](http://www.philipotoole.com/what-i-learned-from-programming-a-database/) (2016)
 
 ## Operating System
 
@@ -44,7 +36,7 @@ Database development is interesting and challenging. You can always find interes
 
 - [The Design and Implementation of a Log-Structured File System](papers/lfs.pdf) (1991)
 
-  This paper presents a new technique for disk storage management called a log-structured file system. A log- structured file system writes all modifications to disk sequentially in a log-like structure, thereby speeding up both file writing and crash recovery.
+  This paper presents a new technique for disk storage management called a log-structured file system. A log-structured file system writes all modifications to disk sequentially in a log-like structure, thereby speeding up both file writing and crash recovery.
 
 - [SFS: Random Write Considered Harmful in Solid State Drives](papers/sfs.pdf) (2012)
 
@@ -70,6 +62,30 @@ Database development is interesting and challenging. You can always find interes
 - [Logical Volume Management (LVM) - Linux](https://www.youtube.com/watch?v=fadQX2e_PGk) (Video)
 - [Redundant Array of Independent Disks (RAID)](https://en.wikipedia.org/wiki/RAID)
 - [What is RAID 0, 1, 2, 3, 4, 5, 6 and 10 (1+0)?](https://www.youtube.com/watch?v=wTcxRObq738) (Video)
+
+## Storage Device
+
+### Media
+
+- [Hard Disk Drive (HDD)](https://en.wikipedia.org/wiki/Hard_disk_drive)
+- [How HDD Works](https://www.youtube.com/watch?v=Ep-yM894mQQ) (Video)
+- [The Development of HDD Technique](https://www.youtube.com/watch?v=wteUW2sL7bc) (Video)
+- [Solid-State Drive (SSD)](https://en.wikipedia.org/wiki/Solid-state_drive)
+- [Coding for SSDs](http://codecapsule.com/2014/02/12/coding-for-ssds-part-1-introduction-and-table-of-contents/)
+- [How Flash Memory Works](https://www.youtube.com/watch?v=s7JLXs5es7I) (Video)
+
+### Interface
+
+- [A History of PC Buses - From ISA to PCI Express](https://www.youtube.com/watch?v=qla-5isbK60) (Video)
+- [Small Computer System Interface (SCSI)](https://en.wikipedia.org/wiki/SCSI)
+- [Serial Attached SCSI (SAS)](https://en.wikipedia.org/wiki/Serial_Attached_SCSI)
+- [Understanding SCSI](https://www.youtube.com/watch?v=pR7SdrXdT4M) (Video)
+- [AT Atachment (ATA)](https://en.wikipedia.org/wiki/Parallel_ATA)
+- [Serial AT Attachment (SATA)](https://en.wikipedia.org/wiki/Serial_ATA)
+- [Advanced Host Controller Interface (AHCI)](https://en.wikipedia.org/wiki/Advanced_Host_Controller_Interface)
+- [Peripheral Component Interconnect (PCI)](https://en.wikipedia.org/wiki/Conventional_PCI)
+- [PCI Express (PCIe)](https://en.wikipedia.org/wiki/PCI_Express)
+- [NVM Express (NVMe)](https://en.wikipedia.org/wiki/NVM_Express)
 
 ## Storage Engine
 
@@ -156,21 +172,6 @@ Database development is interesting and challenging. You can always find interes
 
 - [MyRocks: LSM-Tree Database Storage Engine Serving Facebook's Social Graph](papers/myrocks.pdf) (2020)
 
-## SQL
-
-- [Access Path Selection in a Relational Database Management System](papers/systemr.pdf) (1979)
-
-  This paper presents a cost-based SQL optimizer in System R. The optimizer estimates the cost of access paths in terms of I/O and CPU costs, using statistics about the contents of each relation.
-
-- [The Volcano Optimizer Generator: Extensibility and Efficient Search](papers/volcano.pdf) (1993)
-
-  This paper presents an optimizer generator that translates a model specification into an optimizer source code. It also provides a search engine to be used in all generated optimizers. The search engine is goal-oriented using directed dynamic programming search algorithms.
-
-- [The Cascades Framework for Query Optimization](papers/cascades.pdf) (1995)
-
-- [How We Built a Cost-Based SQL Optimizer](https://www.cockroachlabs.com/blog/building-cost-based-sql-optimizer/) (2018)
-- [How We Built a Vectorized SQL Engine](https://www.cockroachlabs.com/blog/how-we-built-a-vectorized-sql-engine/) (2019)
-
 ## Transaction
 
 - [Granularity of Locks and Degrees of Consistency in a Shared Data Base](papers/locks.pdf) (1975)
@@ -197,7 +198,7 @@ Database development is interesting and challenging. You can always find interes
 
   This paper defines the condition of causal consistency based on Lamport's "happened before" relation.
 
-- [A Critique of ANSI SQL Isolation Levels](papers/ansi-isolation.pdf) (SIGMOD, 1995)
+- [A Critique of ANSI SQL Isolation Levels](papers/ansi-isolation.pdf) (1995)
 
   This paper analyzes the ambiguities of ANSI isolation levels and provides clearer phenomena definitions. It also presents a new MVCC isolation level called snapshot isolation. A transaction in snapshot isolation reads data from a snapshot of the committed data as of the time the transaction started, and checks for write-write conflicts.
 
@@ -254,7 +255,7 @@ Database development is interesting and challenging. You can always find interes
 - [Demystifying Database Systems, Part 3: Introduction to Consistency Levels](https://fauna.com/blog/demystifying-database-systems-introduction-to-consistency-levels) (2019)
 - [Demystifying Database Systems, Part 4: Isolation levels vs. Consistency levels](https://fauna.com/blog/demystifying-database-systems-part-4-isolation-levels-vs-consistency-levels) (2019)
 
-## Distributed algorithm
+## Concensus and replication
 
 - [Paxos Made Simple](papers/paxos-made-simple.pdf) (2001)
 
@@ -296,6 +297,89 @@ Database development is interesting and challenging. You can always find interes
 
 - [CAP Twelve Years Later: How the "Rules" Have Changed](https://www.infoq.com/articles/cap-twelve-years-later-how-the-rules-have-changed) (2012)
 
+## SQL
+
+- [Access Path Selection in a Relational Database Management System](papers/systemr.pdf) (1979)
+
+  This paper presents a cost-based SQL optimizer in System R. The optimizer estimates the cost of access paths in terms of I/O and CPU costs, using statistics about the contents of each relation.
+
+- [The Volcano Optimizer Generator: Extensibility and Efficient Search](papers/volcano.pdf) (1993)
+
+  This paper presents an optimizer generator that translates a model specification into an optimizer source code. It also provides a search engine to be used in all generated optimizers. The search engine is goal-oriented using directed dynamic programming search algorithms.
+
+- [The Cascades Framework for Query Optimization](papers/cascades.pdf) (1995)
+
+- [How We Built a Cost-Based SQL Optimizer](https://www.cockroachlabs.com/blog/building-cost-based-sql-optimizer/) (2018)
+- [How We Built a Vectorized SQL Engine](https://www.cockroachlabs.com/blog/how-we-built-a-vectorized-sql-engine/) (2019)
+
+## OLTP Database
+
+- [Megastore: Providing Scalable, Highly Available Storage for Interactive Services](papers/megastore.pdf) (2011)
+
+  This paper presents Megastore, a storage system that blends the scalability of a NoSQL datastore with the convenience of a traditional RDBMS in a novel way, and provides both strong consistency guarantees and high availability.
+
+- [Spanner: Google’s Globally-Distributed Database](papers/spanner-2012.pdf) (2012)
+
+  This paper presents Spanner, a scalable, multi-version, globally-distributed, and synchronously-replicated database.
+
+- [F1: A Distributed SQL Database That Scales](papers/f1.pdf) (2013)
+
+  This paper presents F1, a hybrid database that combines high availability, the scalability of NoSQL systems like Bigtable, and the consistency and usability of traditional SQL databases. F1 is built on Spanner, which provides synchronous cross-datacenter replication and strong consistency.
+
+- [Online, Asynchronous Schema Change in F1](papers/f1-schema.pdf) (2013)
+
+  This paper describes a protocol for schema evolution in a globally distributed database management system with shared data, stateless servers, and no global membership.
+
+- [Spanner: Becoming a SQL System](papers/spanner-2017.pdf) (2017)
+
+  This paper highlights the database DNA of Spanner. It describes distributed query execution in the presence of resharding, query restarts upon transient failures, range extraction that drives query routing and index seeks, and the improved blockwise-columnar storage format.
+
+- [Amazon Aurora: Design Considerations for High Throughput Cloud-Native Relational Databases](papers/aurora-2017.pdf) (2017)
+
+- [Amazon Aurora: On Avoiding Distributed Consensus for I/Os, Commits, and Membership Changes](papers/aurora-2018.pdf) (2018)
+
+- [Socrates: The New SQL Server in the Cloud](papers/socrates.pdf) (SIGMOD, 2019)
+
+- [CockroachDB: The Resilient Geo-Distributed SQL Database](papers/cockroachdb.pdf) (SIGMOD, 2020)
+
+  This paper presents the design of CockroachDB and its novel transaction model that supports consistent geo-distrib- uted transactions on commodity hardware.
+
+- [How CockroachDB Does Distributed, Atomic Transactions](https://www.cockroachlabs.com/blog/how-cockroachdb-distributes-atomic-transactions/) (2015)
+- [How online schema changes are possible in CockroachDB](https://www.cockroachlabs.com/blog/how-online-schema-changes-are-possible-in-cockroachdb/) (2016)
+- [Living Without Atomic Clocks](https://www.cockroachlabs.com/blog/living-without-atomic-clocks/) (2016)
+- [Serializable, Lockless, Distributed: Isolation in CockroachDB](https://www.cockroachlabs.com/blog/serializable-lockless-distributed-isolation-cockroachdb/) (2016)
+- [CockroachDB’s Consistency Model](https://www.cockroachlabs.com/blog/consistency-model/) (2019)
+
+- [TiDB: A Raft-based HTAP Database](papers/tidb.pdf) (2020)
+
+## OLAP Database
+
+- [C-Store: A Column-oriented DBMS](papers/c-store.pdf) (2005)
+
+  This paper presents the design of a read-optimized relational DBMS that stores data by column.
+
+- [MonetDB/X100: Hyper-Pipelining Query Execution](papers/monetdb.pdf) (2005)
+
+  This paper presents a CPU efficient query processor that employs a vectorized query processing model. The processor uses loop-pipelined and cache-conscious operations to take advantage of modern CPUs.
+
+- [Dremel: Interactive Analysis of Web-Scale Datasets](papers/dremel.pdf) (2010)
+
+- [The Design and Implementation of Modern Column-Oriented Database Systems](papers/modern-column-stores.pdf) (2013)
+
+  This book discusses modern column-stores, their architecture and evolution as well the benefits they can bring in data analytics. There is a specific focus on three influential research prototypes, MonetDB, MonetDB/X100, and C-Store.
+
+- [The Snowflake Elastic Data Warehouse](papers/snowflake.pdf) (2016)
+
+- [AnalyticDB: Real-time OLAP Database System at Alibaba Cloud](papers/analyticdb.pdf) (2019)
+
+- [Procella: Unifying serving and analytical data at YouTube](papers/procella.pdf) (2019)
+
+- [Alibaba Hologres: A Cloud-Native Service for Hybrid Serving/Analytical Processing](papers/hologres.pdf) (2020)
+
+- [Amazon Redshift Re-invented](papers/redshift-reinvented.pdf) (2022)
+
+  Redshift improved storage and compute scalability with innovations such as tiered storage, multi-cluster auto-scaling, cross-cluster data sharing and the AQUA query acceleration layer. Autonomics have made Amazon Redshift easier to use. Amazon Redshift Serverless is the culmination of autonomics effort, which allows customers to run and scale analytics without the need to set up and manage data warehouse infrastructure.
+
 ## Distributed system
 
 - [An Opportunity Cost Approach for Job Assignment in a Scalable Computing Cluster](papers/epvm.pdf) (2000)
@@ -326,133 +410,24 @@ Database development is interesting and challenging. You can always find interes
 
   In this paper we present Akkio, a locality management service for distributed datastore systems whose aim is to improve data access response times and to reduce cross-datacenter bandwidth usage as well as the total amount of storage capacity needed.
 
-- [Anna: A KVS for Any Scale](papers/anna-ieee18.pdf) (2018)
+- [Anna: A KVS for Any Scale](papers/anna-2018.pdf) (2018)
 
-- [Autoscaling Tiered Cloud Storage in Anna](papers/anna-vldb19.pdf) (2019)
+- [Autoscaling Tiered Cloud Storage in Anna](papers/anna-2019.pdf) (2019)
 
 - [DistCache: Provable Load Balancing for Large-Scale Storage Systems with Distributed Caching](papers/distcache.pdf) (2019)
 
-- [Virtual Consensus in Delos](papers/delos-osdi20.pdf) (2020)
+- [Virtual Consensus in Delos](papers/delos-2020.pdf) (2020)
 
   We propose virtualizing consensus by virtualizing the shared log API, allowing services to change consensus protocols without downtime. Virtualization splits the logic of consensus into the VirtualLog, a generic and reusable reconfiguration layer; and pluggable ordering protocols called Loglets.
 
-- [Log-structured Protocols in Delos](papers/delos-sosp21.pdf) (2021)
+- [Log-structured Protocols in Delos](papers/delos-2021.pdf) (2021)
 
   The primary innovation in Delos is a log-structured protocol: a fine-grained replicated state machine executing above a shared log that can be layered into reusable protocol stacks under different databases.
 
-## OLTP Database
-
-### Papers
-
-- [Megastore: Providing Scalable, Highly Available Storage for Interactive Services](papers/oltp-database/megastore-cidr11.pdf) (CIDR, 2011)
-
-  This paper presents Megastore, a storage system that blends the scalability of
-  a NoSQL datastore with the convenience of a traditional RDBMS in a novel way,
-  and provides both strong consistency guarantees and high availability.
-
-- [Spanner: Google’s Globally-Distributed Database](papers/oltp-database/spanner-osdi12.pdf) (OSDI, 2012)
-
-  This paper presents Spanner, a scalable, multi-version, globally-distributed,
-  and synchronously-replicated database.
-
-- [F1: A Distributed SQL Database That Scales](papers/oltp-database/f1-vldb13.pdf) (VLDB, 2013)
-
-  This paper presents F1, a hybrid database that combines high availability, the
-  scalability of NoSQL systems like Bigtable, and the consistency and usability
-  of traditional SQL databases. F1 is built on Spanner, which provides
-  synchronous cross-datacenter replication and strong consistency.
-
-- [Online, Asynchronous Schema Change in F1](papers/oltp-database/f1-schema-vldb13.pdf) (VLDB, 2013)
-
-  This paper describes a protocol for schema evolution in a globally
-  distributed database management system with shared data, stateless servers,
-  and no global membership.
-
-- [Spanner: Becoming a SQL System](papers/oltp-database/spanner-sigmod17.pdf) (SIGMOD, 2017)
-
-  This paper highlights the database DNA of Spanner. It describes distributed
-  query execution in the presence of resharding, query restarts upon transient
-  failures, range extraction that drives query routing and index seeks, and the
-  improved blockwise-columnar storage format.
-
-- [Amazon Aurora: Design Considerations for High Throughput Cloud-Native Relational Databases](papers/oltp-database/aurora-sigmod17.pdf) (SIGMOD, 2017)
-
-- [Amazon Aurora: On Avoiding Distributed Consensus for I/Os, Commits, and Membership Changes](papers/oltp-database/aurora-sigmod18.pdf) (SIGMOD, 2018)
-
-- [Socrates: The New SQL Server in the Cloud](papers/oltp-database/socrates-sigmod19.pdf) (SIGMOD, 2019)
-
-- [CockroachDB: The Resilient Geo-Distributed SQL Database](papers/oltp-database/cockroachdb-sigmod20.pdf) (SIGMOD, 2020)
-
-  This paper presents the design of CockroachDB and its novel transaction model
-  that supports consistent geo-distrib- uted transactions on commodity hardware.
-
-- [TiDB: A Raft-based HTAP Database](papers/oltp-database/tidb-vldb20.pdf) (VLDB, 2020)
-
-### Links
-
-- [How CockroachDB Does Distributed, Atomic Transactions](https://www.cockroachlabs.com/blog/how-cockroachdb-distributes-atomic-transactions/) (Cockroach Labs, 2015)
-- [How online schema changes are possible in CockroachDB](https://www.cockroachlabs.com/blog/how-online-schema-changes-are-possible-in-cockroachdb/) (Cockroach Labs, 2016)
-- [Living Without Atomic Clocks](https://www.cockroachlabs.com/blog/living-without-atomic-clocks/) (Cockroach Labs, 2016)
-- [Serializable, Lockless, Distributed: Isolation in CockroachDB](https://www.cockroachlabs.com/blog/serializable-lockless-distributed-isolation-cockroachdb/) (Cockroach Labs, 2016)
-- [CockroachDB’s Consistency Model](https://www.cockroachlabs.com/blog/consistency-model/) (Cockroach Labs, 2019)
-
-## OLAP Database
-
-### Papers
-
-- [C-Store: A Column-oriented DBMS](papers/olap-database/c-store-vldb05.pdf) (VLDB, 2005)
-
-  This paper presents the design of a read-optimized relational DBMS that stores
-  data by column.
-
-- [MonetDB/X100: Hyper-Pipelining Query Execution](papers/olap-database/monetdb-cidr05.pdf) (CIDR, 2005)
-
-  This paper presents a CPU efficient query processor that employs a vectorized
-  query processing model. The processor uses loop-pipelined and cache-conscious
-  operations to take advantage of modern CPUs.
-
-- [Dremel: Interactive Analysis of Web-Scale Datasets](papers/olap-database/dremel-vldb10.pdf) (VLDB, 2010)
-
-- [The Snowflake Elastic Data Warehouse](papers/olap-database/snowflake-sigmod16.pdf) (SIGMOD, 2016)
-
-- [AnalyticDB: Real-time OLAP Database System at Alibaba Cloud](papers/olap-database/analyticdb-vldb19.pdf) (VLDB, 2019)
-
-- [Procella: Unifying serving and analytical data at YouTube](papers/olap-database/procella-vldb19.pdf) (VLDB, 2019)
-
-- [Alibaba Hologres: A Cloud-Native Service for Hybrid Serving/Analytical Processing](papers/olap-database/hologres-vldb20.pdf) (VLDB, 2020)
-
-### Books
-
-- [The Design and Implementation of Modern Column-Oriented Database Systems](papers/olap-database/modern-column-stores.pdf) (2013)
-
-  This book discusses modern column-stores, their architecture and evolution as
-  well the benefits they can bring in data analytics. There is a specific focus
-  on three influential research prototypes, MonetDB, MonetDB/X100, and C-Store.
-
 ## Miscellaneous
 
-### Papers
+- [What Goes Around Comes Around](papers/what-goes-around-comes-around.pdf) (2005)
 
-- [What Goes Around Comes Around](papers/miscellaneous/what-goes-around-comes-around.pdf) (2005)
+- ["One Size Fits All": An Idea Whose Time Has Come and Gone](papers/one-size-fits-all.pdf) (2005)
 
-- ["One Size Fits All": An Idea Whose Time Has Come and Gone](papers/miscellaneous/one-size-fits-all.pdf) (ICDE, 2005)
-
-- [The Seattle Report on Database Research](papers/miscellaneous/the-seattle-report-sigmod19.pdf) (SIGMOD, 2019)
-
-### Books
-
-- [Readings in Database Systems](http://www.redbook.io/)
-
-- [Designing Data-Intensive Applications](https://www.oreilly.com/library/view/designing-data-intensive-applications/9781491903063/)
-
-### Links
-
-- [Notes on Distributed Systems for Young Bloods](https://www.somethingsimilar.com/2013/01/14/notes-on-distributed-systems-for-young-bloods/) (2013)
-
-- [How does a relational database work](http://coding-geek.com/how-databases-work/) (2015)
-
-- [Elements Of Scale: Composing And Scaling Data Platforms](http://www.benstopford.com/2015/04/28/elements-of-scale-composing-and-scaling-data-platforms/) (2015)
-
-- [Apache Kafka, Samza, and the Unix Philosophy of Distributed Data](http://www.confluent.io/blog/apache-kafka-samza-and-the-unix-philosophy-of-distributed-data) (2015)
-
-- [What I Learned From Programming Databases](http://www.philipotoole.com/what-i-learned-from-programming-a-database/) (2016)
+- [The Seattle Report on Database Research](papers/the-seattle-report-2019.pdf) (2019)
