@@ -1,12 +1,8 @@
 # Awesome Database Development
 
-Database development is interesting and challenging. You can always find interesting things to learn and challenging problems to solve. You need to get a lot of things right to build a reliable and high-performance database. And it takes time, a lot of time, to think and practice. I have been working on databases for ten years. However, as the proverb goes, *the more I know, the more I realize I don't know.* So, I collect the database development materials I have read here to review them from time to time. I think it will be helpful to those who share the same interests as me.
+Database development is interesting and challenging. You can always find interesting things to learn and challenging problems to solve. You need to know a lot of things and get them right to build a reliable and high-performance database. And it takes time, a lot of time, to think and practice. I have been working on database development for ten years. However, as the proverb goes, *the more I know, the more I realize I don't know.* So, I collect these awesome materials here to review them from time to time. I think it will be helpful to those who share the same interests as me.
 
 ## Introduction
-
-- [Readings in Database Systems](http://www.redbook.io/)
-
-- [Designing Data-Intensive Applications](https://www.oreilly.com/library/view/designing-data-intensive-applications/9781491903063/)
 
 - [Notes on Distributed Systems for Young Bloods](https://www.somethingsimilar.com/2013/01/14/notes-on-distributed-systems-for-young-bloods/) (2013)
 
@@ -18,51 +14,6 @@ Database development is interesting and challenging. You can always find interes
 
 - [What I Learned From Programming Databases](http://www.philipotoole.com/what-i-learned-from-programming-a-database/) (2016)
 
-## Operating System
-
-### Kernel
-
-- [Understanding the Linux Kernel](https://www.oreilly.com/library/view/understanding-the-linux/0596005652/)
-- [Understanding the Linux Virtual Memory Manager](https://www.kernel.org/doc/gorman/)
-- [Linux Device Drivers](https://www.oreilly.com/library/view/linux-device-drivers/0596005903/)
-
-- [The Slab Allocator: An Object-Caching Kernel Memory Allocator](papers/slab.pdf) (1994)
-
-  This paper presents a comprehensive design overview of the SunOS 5.4 kernel memory allocator. This allocator is based on a set of object-caching primitives that reduce the cost of allocating complex objects by retaining their state between uses.
-
-### File system
-
-- [ext4 Data Structures and Algorithms](https://www.kernel.org/doc/html/latest/filesystems/ext4/index.html)
-
-- [The Design and Implementation of a Log-Structured File System](papers/lfs.pdf) (1991)
-
-  This paper presents a new technique for disk storage management called a log-structured file system. A log-structured file system writes all modifications to disk sequentially in a log-like structure, thereby speeding up both file writing and crash recovery.
-
-- [SFS: Random Write Considered Harmful in Solid State Drives](papers/sfs.pdf) (2012)
-
-  In this paper, we propose a new file system for SSDs, SFS. First, SFS exploits the maximum write bandwidth of SSD by taking a log-structured approach. SFS transforms all random writes at file system level to sequential ones at SSD level. Second, SFS takes a new data grouping strategy on writing, instead of the existing data separation strategy on segment cleaning. It puts the data blocks with similar update likelihood into the same segment. This minimizes the inevitable segment cleaning overhead in any log-structured file system by allowing the segments to form a sharp bimodal distribution of segment utilization.
-
-### Modern hardware
-
-- [What Every Programmer Should Know About Memory](papers/cpumemory.pdf) (2007)
-
-  This paper explains the structure of memory subsystems in use on modern commodity hardware, illustrating why CPU caches were developed, how they work, and what programs should do to achieve optimal performance by utilizing them.
-
-- [What Every Systems Programmer Should Know About Concurrency](papers/concurrency.pdf) (2018)
-
-  Seasoned programmers are familiar with tools like mutexes, semaphores, and condition variables. But what makes them work? How do we write concurrent code when we can’t use them, like when we’re working below the operating system in an embedded environment, or when we can’t block due to hard time constraints? And since your system transforms your code into things you didn’t write, running in orders you never asked for, how do multithreaded programs work at all? Concurrency — especially on modern hardware — is a complicated and unintuitive topic, but let’s try to cover some fundamentals.
-
-- [Everything You Always Wanted to Know About Synchronization but Were Afraid to Ask](papers/synchronization.pdf) (2013)
-
-  This paper presents the most exhaustive study of synchronization to date. We span multiple layers, from hardware cache-coherence protocols up to high-level concurrent software. We do so on different types of architectures, from single-socket – uniform and non- uniform – to multi-socket – directory and broadcast-based – many-cores.
-
-### Storage virtualization
-
-- [Logical volume management](https://en.wikipedia.org/wiki/Logical_volume_management)
-- [Logical Volume Management (LVM) - Linux](https://www.youtube.com/watch?v=fadQX2e_PGk) (Video)
-- [Redundant Array of Independent Disks (RAID)](https://en.wikipedia.org/wiki/RAID)
-- [What is RAID 0, 1, 2, 3, 4, 5, 6 and 10 (1+0)?](https://www.youtube.com/watch?v=wTcxRObq738) (Video)
-
 ## Storage Device
 
 ### Media
@@ -70,20 +21,17 @@ Database development is interesting and challenging. You can always find interes
 - [Hard Disk Drive (HDD)](https://en.wikipedia.org/wiki/Hard_disk_drive)
 - [How HDD Works](https://www.youtube.com/watch?v=Ep-yM894mQQ) (Video)
 - [The Development of HDD Technique](https://www.youtube.com/watch?v=wteUW2sL7bc) (Video)
+
 - [Solid-State Drive (SSD)](https://en.wikipedia.org/wiki/Solid-state_drive)
-- [Coding for SSDs](http://codecapsule.com/2014/02/12/coding-for-ssds-part-1-introduction-and-table-of-contents/)
 - [How Flash Memory Works](https://www.youtube.com/watch?v=s7JLXs5es7I) (Video)
+- [Coding for SSDs](http://codecapsule.com/2014/02/12/coding-for-ssds-part-1-introduction-and-table-of-contents/)
 
 ### Interface
 
 - [A History of PC Buses - From ISA to PCI Express](https://www.youtube.com/watch?v=qla-5isbK60) (Video)
-- [Small Computer System Interface (SCSI)](https://en.wikipedia.org/wiki/SCSI)
 - [Serial Attached SCSI (SAS)](https://en.wikipedia.org/wiki/Serial_Attached_SCSI)
 - [Understanding SCSI](https://www.youtube.com/watch?v=pR7SdrXdT4M) (Video)
-- [AT Atachment (ATA)](https://en.wikipedia.org/wiki/Parallel_ATA)
 - [Serial AT Attachment (SATA)](https://en.wikipedia.org/wiki/Serial_ATA)
-- [Advanced Host Controller Interface (AHCI)](https://en.wikipedia.org/wiki/Advanced_Host_Controller_Interface)
-- [Peripheral Component Interconnect (PCI)](https://en.wikipedia.org/wiki/Conventional_PCI)
 - [PCI Express (PCIe)](https://en.wikipedia.org/wiki/PCI_Express)
 - [NVM Express (NVMe)](https://en.wikipedia.org/wiki/NVM_Express)
 
@@ -93,10 +41,6 @@ Database development is interesting and challenging. You can always find interes
 - [The Five-Minute Rule 10 Years Later, and Other Computer Storage Rules of Thumb](papers/five-minute-rule-1997.pdf) (1997)
 - [The Five-Minute Rule 20 Years Later, and How Flash Memory Changes the Rules](papers/five-minute-rule-2007.pdf) (2007)
 - [The Five-Minute Rule 30 Years Later, and its Impact on the Storage Hierarchy](papers/five-minute-rule-2017.pdf) (2017)
-
-- [Weaving Relations for Cache Performance](papers/pax.pdf) (2001)
-
-  This paper presents a new data organization model, Partition Attributes Across (PAX), that significantly improves cache performance by grouping together all values of each attribute within each page.
 
 - [Bitcask: A Log-Structured Hash Table for Fast Key/Value Data](papers/bitcask.pdf) (2010)
 
@@ -108,13 +52,7 @@ Database development is interesting and challenging. You can always find interes
 
   This article proposes to use a frequency-based cache admission policy in order to boost the effectiveness of caches subject to skewed access distributions. Given a newly accessed item and an eviction candidate from the cache, our scheme decides, based on the recent access history, whether it is worth admitting the new item into the cache at the expense of the eviction candidate.
 
-- [Faster: A Concurrent Key-Value Store with In-Place Updates](papers/faster.pdf) (2018)
-
-- [The Data Calculator: Data Structure Design and Cost Synthesis from First Principles and Learned Cost Models](papers/datacalculator.pdf) (2018)
-
-- [The Case for Learned Index Structures](papers/learned-index.pdf) (2018)
-
-- [The PGM-index: a fully-dynamic compressed learned index with provable worst-case bounds](papers/pgm-index.pdf) (2020)
+  This concept is enabled through a novel approximate LFU structure called TinyLFU, which maintains an approximate representation of the access frequency of a large sample of recently accessed items. TinyLFU is very compact and lightweight as it builds upon Bloom filter theory.
 
 ### B-tree
 
@@ -170,7 +108,72 @@ Database development is interesting and challenging. You can always find interes
 
 - [X-Engine: An Optimized Storage Engine for Large-scale E-commerce Transaction Processing](papers/xengine.pdf) (2019)
 
+  We introduce X-Engine, a write-optimized storage engine of POLARDB built at Alibaba, which utilizes a tiered storage architecture with the LSM-tree (log-structured merge tree) to leverage hardware acceleration such as FPGA-accelerated compactions, and a suite of optimizations including asynchronous writes in transactions, multi-staged pipelines and incremental cache replacement during compactions.
+
 - [MyRocks: LSM-Tree Database Storage Engine Serving Facebook's Social Graph](papers/myrocks.pdf) (2020)
+
+  In this paper, we describe our journey to build and run an OLTP LSM-tree SQL database at scale. We also discuss the features we implemented to keep pace with UDB workloads, what made migrations easier, and what operational and software development challenges we faced during the two years of running MyRocks in production.
+
+----
+
+The content below will be refactored later.
+
+----
+
+## Operating System
+
+### Kernel
+
+- [Understanding the Linux Kernel](https://www.oreilly.com/library/view/understanding-the-linux/0596005652/)
+- [Understanding the Linux Virtual Memory Manager](https://www.kernel.org/doc/gorman/)
+- [Linux Device Drivers](https://www.oreilly.com/library/view/linux-device-drivers/0596005903/)
+
+- [The Slab Allocator: An Object-Caching Kernel Memory Allocator](papers/slab.pdf) (1994)
+
+  This paper presents a comprehensive design overview of the SunOS 5.4 kernel memory allocator. This allocator is based on a set of object-caching primitives that reduce the cost of allocating complex objects by retaining their state between uses.
+
+### File system
+
+- [ext4 Data Structures and Algorithms](https://www.kernel.org/doc/html/latest/filesystems/ext4/index.html)
+
+- [The Design and Implementation of a Log-Structured File System](papers/lfs.pdf) (1991)
+
+  This paper presents a new technique for disk storage management called a log-structured file system. A log-structured file system writes all modifications to disk sequentially in a log-like structure, thereby speeding up both file writing and crash recovery.
+
+- [SFS: Random Write Considered Harmful in Solid State Drives](papers/sfs.pdf) (2012)
+
+  In this paper, we propose a new file system for SSDs, SFS. First, SFS exploits the maximum write bandwidth of SSD by taking a log-structured approach. SFS transforms all random writes at file system level to sequential ones at SSD level. Second, SFS takes a new data grouping strategy on writing, instead of the existing data separation strategy on segment cleaning. It puts the data blocks with similar update likelihood into the same segment. This minimizes the inevitable segment cleaning overhead in any log-structured file system by allowing the segments to form a sharp bimodal distribution of segment utilization.
+
+### Modern hardware
+
+- [What Every Programmer Should Know About Memory](papers/cpumemory.pdf) (2007)
+
+  This paper explains the structure of memory subsystems in use on modern commodity hardware, illustrating why CPU caches were developed, how they work, and what programs should do to achieve optimal performance by utilizing them.
+
+- [What Every Systems Programmer Should Know About Concurrency](papers/concurrency.pdf) (2018)
+
+  Seasoned programmers are familiar with tools like mutexes, semaphores, and condition variables. But what makes them work? How do we write concurrent code when we can’t use them, like when we’re working below the operating system in an embedded environment, or when we can’t block due to hard time constraints? And since your system transforms your code into things you didn’t write, running in orders you never asked for, how do multithreaded programs work at all? Concurrency — especially on modern hardware — is a complicated and unintuitive topic, but let’s try to cover some fundamentals.
+
+- [Everything You Always Wanted to Know About Synchronization but Were Afraid to Ask](papers/synchronization.pdf) (2013)
+
+  This paper presents the most exhaustive study of synchronization to date. We span multiple layers, from hardware cache-coherence protocols up to high-level concurrent software. We do so on different types of architectures, from single-socket – uniform and non- uniform – to multi-socket – directory and broadcast-based – many-cores.
+
+### Storage virtualization
+
+- [Logical volume management](https://en.wikipedia.org/wiki/Logical_volume_management)
+- [Logical Volume Management (LVM) - Linux](https://www.youtube.com/watch?v=fadQX2e_PGk) (Video)
+- [Redundant Array of Independent Disks (RAID)](https://en.wikipedia.org/wiki/RAID)
+- [What is RAID 0, 1, 2, 3, 4, 5, 6 and 10 (1+0)?](https://www.youtube.com/watch?v=wTcxRObq738) (Video)
+
+## Storage Engine
+
+- [Faster: A Concurrent Key-Value Store with In-Place Updates](papers/faster.pdf) (2018)
+
+- [The Data Calculator: Data Structure Design and Cost Synthesis from First Principles and Learned Cost Models](papers/datacalculator.pdf) (2018)
+
+- [The Case for Learned Index Structures](papers/learned-index.pdf) (2018)
+
+- [The PGM-index: a fully-dynamic compressed learned index with provable worst-case bounds](papers/pgm-index.pdf) (2020)
 
 ## Transaction
 
@@ -431,3 +434,11 @@ Database development is interesting and challenging. You can always find interes
 - ["One Size Fits All": An Idea Whose Time Has Come and Gone](papers/one-size-fits-all.pdf) (2005)
 
 - [The Seattle Report on Database Research](papers/the-seattle-report-2019.pdf) (2019)
+
+## Books
+
+- [Readings in Database Systems](http://www.redbook.io/)
+
+  Readings in Database Systems (commonly known as the "Red Book") has offered readers an opinionated take on both classic and cutting-edge research in the field of data management since 1988.
+
+- [Designing Data-Intensive Applications](https://www.oreilly.com/library/view/designing-data-intensive-applications/9781491903063/)
