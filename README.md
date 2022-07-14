@@ -58,33 +58,33 @@ Database development is interesting and challenging. You can always find interes
 
 - [Cache-Oblivious Streaming B-trees](papers/streaming-btree.pdf) (2007)
 
-  This paper presents two cache-oblivious streaming B-trees, the shuttle tree, and the cache-oblivious lookahead array (COLA).
+  A streaming B-tree is a dictionary that efficiently implements insertions and range queries. We present two cache-oblivious streaming B-trees, the shuttle tree, and  the cache-oblivious lookahead array (COLA).
 
 - [The Bw-Tree: A B-tree for New Hardware Platforms](papers/bw-tree.pdf) (2013)
 
-  This paper presents Bw-Tree, a new form of B-Tree that achieves its very high performance via a latch-free approach that effectively exploits the processor caches of modern multi-core chips.
+  Our new form of B-tree, called the Bw-tree achieves its very high performance via a latch-free approach that effectively exploits the processor caches of modern multi-core chips. Our storage manager uses a unique form of log structuring that blurs the distinction between a page and a record store and works well with flash storage. This paper describes the architecture and algorithms for the Bw-tree, focusing on the main memory aspects.
 
 - [LLAMA: A Cache/Storage Subsystem for Modern Hardware](papers/llama.pdf) (2013)
 
-  LLAMA is a subsystem designed for new hardware environments that supports an API for page-oriented access methods, providing both cache and storage management.
+  LLAMA is a subsystem designed for new hardware environments that supports an API for page-oriented access methods, providing both cache and storage management. Caching (CL) and storage (SL) layers use a common mapping table that separates a page’s logical and physical location. CL supports data updates and management updates (e.g., for index re-organization) via latch-free compare-and-swap atomic state changes on its mapping table. SL uses the same mapping table to cope with page location changes produced by log structuring on every page flush. To demonstrate LLAMA’s suitability, we tailored our latch-free Bw-tree implementation to use LLAMA.
 
 - [Hekaton: SQL Server’s Memory-Optimized OLTP Engine](papers/hekaton.pdf) (2013)
 
-  This paper presents Hekaton, a new database engine optimized for memory resident data and OLTP workloads. Hekaton uses only latch-free data structures and a new optimistic, multiversion concurrency control technique.
+  Hekaton is a new database engine optimized for memory resident data and OLTP workloads. Hekaton is fully integrated into SQL Server; it is not a separate system. To take advantage of Hekaton, a user simply declares a table memory optimized. Hekaton tables are fully transactional and durable and accessed using T-SQL in the same way as regular SQL Server tables. A query can reference both Hekaton tables and regular tables and a transaction can update data in both types of tables. T-SQL stored procedures that reference only Hekaton tables can be compiled into machine code for further performance improvements. The engine is designed for high concurrency. To achieve this it uses only latch-free data structures and a new optimistic, multiversion concurrency control technique. This paper gives an overview of the design of the Hekaton engine and reports some experimental results. 
 
 ### LSM-tree
 
 - [The Log-Structured Merge-Tree (LSM-Tree)](papers/lsmtree.pdf) (1996)
 
-  This paper presents the Log-Structured Merge-tree (LSM-tree), a disk-based data structure designed to provide low-cost indexing for a file experiencing a high rate of record inserts (and deletes) over an extended period. The LSM-tree uses an algorithm that defers and batches index changes, cascading the changes from a memory-based component through one or more disk components in an efficient manner reminiscent of merge sort.
+  The Log-Structured Merge-tree (LSM-tree) is a disk-based data structure designed to provide low-cost indexing for a file experiencing a high rate of record inserts (and deletes) over an extended period. The LSM-tree uses an algorithm that defers and batches index changes, cascading the changes from a memory-based component through one or more disk components in an efficient manner reminiscent of merge sort. During this process all index values are continuously accessible to retrievals (aside from very short locking periods), either through the memory component or one of the disk components. The algorithm has greatly reduced disk arm movements compared to a traditional access methods such as B-trees, and will improve cost-performance in domains where disk arm costs for inserts with traditional access methods overwhelm storage media costs.
 
 - [bLSM: A General Purpose Log Structured Merge Tree](papers/blsm.pdf) (2012)
 
-  This paper presents bLSM, a Log Structured Merge (LSM) tree with the advantages of B-Trees and log structured approaches. bLSM uses Bloom filters to improve index performance and uses spring and gear scheduler to avoid long write pauses.
+  We begin by presenting a new performance metric: read fanout, and argue that, with read and write amplification, it better characterizes real-world indexes than approaches such as asymptotic analysis and price/performance. We then present bLSM, a Log Structured Merge (LSM) tree with the advantages of B-Trees and log structured approaches.
 
 - [WiscKey: Separating Keys from Values in SSD-Conscious Storage](papers/wisckey.pdf) (2016)
 
-  This paper presents WiscKey, a persistent LSM-Tree-based key-value store with a performance-oriented data layout that separates keys from values to minimize I/O amplification.
+  We present WiscKey, a persistent LSM-tree-based key-value store with a performance-oriented data layout that separates keys from values to minimize I/O amplification. The design of WiscKey is highly SSD optimized, leveraging both the sequential and random performance characteristics of the device.
 
 - [PebblesDB: Building Key-Value Stores using Fragmented Log-Structured Merge Trees](papers/pebblesdb.pdf) (2017)
 
@@ -113,6 +113,123 @@ Database development is interesting and challenging. You can always find interes
 - [MyRocks: LSM-Tree Database Storage Engine Serving Facebook's Social Graph](papers/myrocks.pdf) (2020)
 
   In this paper, we describe our journey to build and run an OLTP LSM-tree SQL database at scale. We also discuss the features we implemented to keep pace with UDB workloads, what made migrations easier, and what operational and software development challenges we faced during the two years of running MyRocks in production.
+
+## Relational database
+
+### SQL
+
+- [Access Path Selection in a Relational Database Management System](papers/systemr.pdf) (1979)
+
+  In a high level query and data manipulation language such as SQL, requests are stated non-procedurally, without reference to access paths. This paper describes how System R chooses access paths for both simple (single relation) and complex queries (such as joins), given a user specification of desired data as a boolean expression of predicates. System R is an experimental database management system developed to carry out research on the relational model of data.
+
+- [The Volcano Optimizer Generator: Extensibility and Efficient Search](papers/volcano.pdf) (1993)
+
+  Emerging database application domains demand not only new functionality but also high performance. To satisfy these two requirements, the Volcano project provides efficient, extensible toolsfor query and request processing, particularly for object-oriented and scientific database systems. One of these tools is a new optimizer generator. Data model, logical algebra, physical algebra, and optimization rules are translated by the optimizer generator into optimizer source code. Compared with our earlier EXODUS optimizer generator prototype, the search engine is more extensible and powerful; it provides effective support for non-trivial cost models and for physical properties such as sort order. At the same time, it is much more efficient as it combines dynamic programming, which until now had been used only for relational select-project-join optimization, with goal-directed search and branch-and-bound pruning. Compared with other rule-based optimization systems, it provides complete data model independence and more natural extensibility.
+
+- [The Cascades Framework for Query Optimization](papers/cascades.pdf) (1995)
+
+  This paper describes a new extensible query optimization framework that resolves many of the shortcomings of the EXODUS and Volcano optimizer generators. In addition to extensibility, dynamic programming, and memorization based on and extended from the EXODUS and Volcano prototypes, this new optimizer provides (i) manipulation of operator arguments using rules or functions, (ii) operators that are both logical and physical for predicates etc., (iii) schema-specific rules for materialized views, (iv) rules to insert "enforcers" or "glue operators," (v) rule-specific guidance, permitting grouping of rules, (vi) basic facilities that will later permit parallel search, partially ordered cost measures, and dynamic plans, (vii) extensive tracing support, and (viii) a clean interface and implementation making full use of the abstraction mechanisms of C++. We describe and justify our design choices for each of these issues. The optimizer system described here is operational and will serve as the foundation for new query optimizers in Tandem’s NonStop SQL product and in Microsoft’s SQL Server product.
+
+- [How We Built a Cost-Based SQL Optimizer](https://www.cockroachlabs.com/blog/building-cost-based-sql-optimizer/) (2018)
+- [How We Built a Vectorized SQL Engine](https://www.cockroachlabs.com/blog/how-we-built-a-vectorized-sql-engine/) (2019)
+
+### OLTP
+
+- [Megastore: Providing Scalable, Highly Available Storage for Interactive Services](papers/megastore.pdf) (2011)
+
+  Megastore is a storage system developed to meet the requirements of today's interactive online services. Megastore blends the scalability of a NoSQL datastore with the convenience of a traditional RDBMS in a novel way, and provides both strong consistency guarantees and high availability. We provide fully serializable ACID semantics within fine-grained partitions of data. This partitioning allows us to synchronously replicate each write across a wide area network with reasonable latency and support seamless failover between datacenters. This paper describes Megastore's semantics and replication algorithm. It also describes our experience supporting a wide range of Google production services built with Megastore.
+
+- [Spanner: Google’s Globally-Distributed Database](papers/spanner-2012.pdf) (2012)
+
+  Spanner is Google’s scalable, multi-version, globally-distributed, and synchronously-replicated database. It is the first system to distribute data at global scale and support externally-consistent distributed transactions. This paper describes how Spanner is structured, its feature set, the rationale underlying various design decisions, and a novel time API that exposes clock uncertainty. This API and its implementation are critical to supporting external consistency and a variety of powerful features: non-blocking reads in the past, lock-free read-only transactions, and atomic schema changes, across all of Spanner.
+
+- [F1: A Distributed SQL Database That Scales](papers/f1.pdf) (2013)
+
+  F1 is a distributed relational database system built at Google to support the AdWords business. F1 is a hybrid database that combines high availability, the scalability of NoSQL systems like Bigtable, and the consistency and usability of traditional SQL databases. F1 is built on Spanner, which provides synchronous cross-datacenter replication and strong consistency. Synchronous replication implies higher commit latency, but we mitigate that latency by using a hierarchical schema model with structured data types and through smart application design. F1 also includes a fully functional distributed SQL query engine andautomatic change tracking and publishing.
+
+- [Online, Asynchronous Schema Change in F1](papers/f1-schema.pdf) (2013)
+
+  We introduce a protocol for schema evolution in a globally distributed database management system with shared data, stateless servers, and no global membership. Our protocol is asynchronous — it allows different servers in the database system to transition to a new schema at different times — and online—all servers can access and update all data during a schema change. We provide a formal model for determining the correctness of schema changes under these conditions, and we demonstrate that many common schema changes can cause anomalies and database corruption. We avoid these problems by replacing corruption - causing schema changes with a sequence of schema changes that is guaranteed to avoid corrupting the database so long as all servers are no more than one schema version behind at any time. Finally, we discuss a practical implementation of our protocol in F1, the database management system that stores data for Google AdWords.
+
+- [Spanner: Becoming a SQL System](papers/spanner-2017.pdf) (2017)
+
+  Spanner is a globally-distributed data management system that backs hundreds of mission-critical services at Google. Spanner is built on ideas from both the systems and database communities. The first Spanner paper published at OSDI’12 focused on the systems aspects such as scalability, automatic sharding, fault tolerance, consistent replication, external consistency, and wide-area distribution. This paper highlights the database DNA of Spanner. We describe distributed query execution in the presence of resharding, query restarts upon transient failures, range extraction that drives query routing and index seeks, and the improved blockwise-columnar storage format. We touch upon migrating Spanner to the common SQL dialect shared with other systems at Google.
+
+- [Amazon Aurora: Design Considerations for High Throughput Cloud-Native Relational Databases](papers/aurora-2017.pdf) (2017)
+
+  Amazon Aurora is a relational database service for OLTP workloads offered as part of Amazon Web Services (AWS). In this paper, we describe the architecture of Aurora and the design considerations leading to that architecture. We believe the central constraint in high throughput data processing has moved from compute and storage to the network. Aurora brings a novel architecture to the relational database to address this constraint, most notably by pushing redo processing to a multi-tenant scale-out storage service, purpose-built for Aurora. We describe how doing so not only reduces network traffic, but also allows for fast crash recovery, failovers to replicas without loss of data, and fault-tolerant, self-healing storage. We then describe how Aurora achieves consensus on durable state across numerous storage nodes using an efficient asynchronous scheme, avoiding expensive and chatty recovery protocols.
+
+- [Amazon Aurora: On Avoiding Distributed Consensus for I/Os, Commits, and Membership Changes](papers/aurora-2018.pdf) (2018)
+
+  Amazon Aurora is a high-throughput cloud-native relational database offered as part of Amazon Web Services (AWS). One of the more novel differences between Aurora and other relational databases is how it pushes redo processing to a multi-tenant scale-out storage service, purpose-built for Aurora. Doing so reduces networking traffic, avoids checkpoints and crash recovery, enables failovers to replicas without loss of data, and enables fault-tolerant storage that heals without database involvement. Traditional implementations that leverage distributed storage would use distributed consensus algorithms for commits, reads, replication, and membership changes and amplify cost of underlying storage. In this paper, we describe how Aurora avoids distributed consensus under most circumstances by establishing invariants and leveraging local transient state. Doing so improves performance, reduces variability, and lowers costs.
+
+- [Socrates: The New SQL Server in the Cloud](papers/socrates.pdf) (SIGMOD, 2019)
+
+  This paper presents a novel DBaaS architecture, called Socrates. Socrates has been implemented in Microsoft SQL Server and is available in Azure as SQL DB Hyperscale. This paper describes the key ideas and features of Socrates, and it compares the performance of Socrates with the previous SQL DB offering in Azure.
+
+- [CockroachDB: The Resilient Geo-Distributed SQL Database](papers/cockroachdb.pdf) (SIGMOD, 2020)
+
+  CockroachDB is a scalable SQL DBMS that was built from the ground up to support these global OLTP workloads while maintaining high availability and strong consistency. Just like its namesake, CockroachDB is resilient to disasters through replication and automatic recovery mechanisms.
+
+  This paper presents the design of CockroachDB and its novel transaction model that supports consistent geo-distributed transactions on commodity hardware. We describe how CockroachDB replicates and distributes data to achieve fault tolerance and high performance, as well as how its distributed SQL layer automatically scales with the size of the database cluster while providing the standard SQL interface that users expect.
+
+- [How CockroachDB Does Distributed, Atomic Transactions](https://www.cockroachlabs.com/blog/how-cockroachdb-distributes-atomic-transactions/) (2015)
+- [How online schema changes are possible in CockroachDB](https://www.cockroachlabs.com/blog/how-online-schema-changes-are-possible-in-cockroachdb/) (2016)
+- [Living Without Atomic Clocks](https://www.cockroachlabs.com/blog/living-without-atomic-clocks/) (2016)
+- [Serializable, Lockless, Distributed: Isolation in CockroachDB](https://www.cockroachlabs.com/blog/serializable-lockless-distributed-isolation-cockroachdb/) (2016)
+- [CockroachDB’s Consistency Model](https://www.cockroachlabs.com/blog/consistency-model/) (2019)
+
+## OLAP
+
+- [C-Store: A Column-oriented DBMS](papers/c-store.pdf) (2005)
+
+  This paper presents the design of a read-optimized relational DBMS that contrasts sharply with most current systems, which are write-optimized. Among the many differences in its design are: storage of data by column rather than by row, careful coding and packing of objects into storage including main memory during query processing, storing an overlapping collection of column-oriented projections, rather than the current fare of tables and indexes, a non-traditional implementation of transactions which includes high availability and snapshot isolation for read-only transactions, and the extensive use of bitmap indexes to complement B-tree structures.
+
+- [MonetDB/X100: Hyper-Pipelining Query Execution](papers/monetdb.pdf) (2005)
+
+  Database systems tend to achieve only low IPC (instructions-per-cycle) efficiency on modern CPUs in compute-intensive application areas like decision support, OLAP and multimedia retrieval. This paper starts with an in-depth investigation to the reason why this happens, focusing on the TPC-H benchmark. Our analysis of various relational systems and MonetDB leads us to a new set of guidelines for designing a query processor.
+
+  The second part of the paper describes the architecture of our new X100 query engine for the MonetDB system that follows these guidelines. On the surface, it resembles a classical Volcano-style engine, but the crucial difference to base all execution on the concept of vector processing makes it highly CPU efficient.
+
+- [Dremel: Interactive Analysis of Web-Scale Datasets](papers/dremel.pdf) (2010)
+
+  Dremel is a scalable, interactive ad-hoc query system for analysis of read-only nested data. By combining multi-level executiontrees and columnar data layout, it is capable of running aggregation queries over trillion-row tables in seconds. The system scales to thousands of CPUs and petabytes of data, and has thousands of users at Google.  In this paper, we describe the architecture and implementation of Dremel, and explain how it complements MapReduce-based computing. We present a novel columnar storage representation for nested records and discuss experiments on few-thousand node instances of the system.
+
+- [The Design and Implementation of Modern Column-Oriented Database Systems](papers/modern-column-stores.pdf) (2013)
+
+  In this article, we survey recent research on column-oriented database systems, or column-stores, where each attribute of a table is stored in a separate file or region on storage. Such databases have seen a resurgence in recent years with a rise in interest in analytic queries that perform scans and aggregates over large portions of a few columns of a table. The main advantage of a column-store is that it can access just the columns needed to answer such queries. We specifically focus on three influential research prototypes, MonetDB, VectorWise, and C-Store. These systems have formed the basis for several well-known commercial column-store implementations. We describe their similarities and differences and discuss their specific architectural features for compression, late materialization, join processing, vectorization and adaptive indexing (database cracking).
+
+- [The Snowflake Elastic Data Warehouse](papers/snowflake.pdf) (2016)
+
+  Snowflake is a multi-tenant, transactional, secure, highly scalable and elastic system with full SQL support and built-in extensions for semi-structured and schema-less data. The system is offered as a pay-as-you-go service in the Amazon cloud. Users upload their data to the cloud and can immediately manage and query it using familiar tools and interfaces.
+
+  In this paper, we describe the design of Snowflake and its novel multi-cluster, shared-data architecture. The paper highlights some of the key features of Snowflake: extreme elasticity and availability, semi-structured and schema-less data, time travel, and end-to-end security. It concludes with lessons learned and an outlook on ongoing work.
+
+- [AnalyticDB: Real-time OLAP Database System at Alibaba Cloud](papers/analyticdb.pdf) (2019)
+
+  In this paper, we introduce AnalyticDB, a real-time OLAP database system developed at Alibaba. AnalyticDB maintains all-column indexes in an asynchronous manner with acceptable overhead, which provides low latency for complex ad-hoc queries. Its storage engine extends hybrid row-column layout for fast retrieval of both structured data and data of complex types. To handle large-scale data with high query concurrency and write throughput, AnalyticDB decouples read and write access paths. To further reducequery latency, novel storage-aware SQL optimizer and execution engine are developed to fully utilize the advantages of the underlying storage and indexes.
+
+- [Amazon Redshift Re-invented](papers/redshift-reinvented.pdf) (2022)
+
+  In the last few years, the use cases for Amazon Redshift have evolved and in response, the service has delivered and continues to deliver a series of innovations that delight customers. Through architectural enhancements, Amazon Redshift has maintained its industry-leading performance. Redshift improved storage and compute scalability with innovations such as tiered storage, multi-cluster auto-scaling, cross-cluster data sharing and the AQUA query acceleration layer. Autonomics have made Amazon Redshift easier to use. Amazon Redshift Serverless is the culmination of autonomics effort, which allows customers to run and scale analytics without the need to set up and manage data warehouse infrastructure. Finally, Amazon Redshift extends beyond traditional data warehousing workloads, by integrating with the broad AWS ecosystem with features such as querying the data lake with Spectrum, semistructured data ingestion and querying with PartiQL, streaming ingestion from Kinesis and MSK, Redshift ML, federated queries to Aurora and RDS operational databases, and federated materialized views.
+
+### HTAP
+
+- [TiDB: A Raft-based HTAP Database](papers/tidb.pdf) (2020)
+
+  We propose extending replicated state machine-based consensus algorithms to provide consistent replicas for HTAP workloads. Based on this novel idea, we present a Raft-based HTAP database: TiDB. In the database, we design a multi-Raft storage system which consists of a row store and a column store. The row store is built based on the Raft algorithm. It is scalable to materialize updates from transactional requests with high availability. In particular, it asynchronously replicates Raft logs to learners which transform row format to column format for tuples, forming a real-time updatable column store. This column store allows analytical queries to efficiently read fresh and consistent data with strong isolation from transactions on the row store. Based on this storage system, we build an SQL engine to process large-scale distributed transactions and expensive analytical queries. The SQL engine optimally accesses row-format and column-format replicas of data.
+
+### HSAP
+
+- [Procella: Unifying serving and analytical data at YouTube](papers/procella.pdf) (2019)
+
+  Large organizations like YouTube are dealing with exploding data volume and increasing demand for data driven applications. Broadly, these can be categorized as: reporting and dashboarding, embedded statistics in pages, time-series monitoring, and ad-hoc analysis. Typically, organizations build specialized infrastructure for each of these use cases. This, however, creates silos of data and processing, and results in a complex, expensive, and harder to maintain infrastructure.
+
+  At YouTube, we solved this problem by building a new SQL query engine – Procella. Procella implements a superset of capabilities required to address all of the four use cases above, with high scale and performance, in a single product. Today, Procella serves hundreds of billions of queries per day across all four workloads at YouTube and several other Google product areas.
+
+- [Alibaba Hologres: A Cloud-Native Service for Hybrid Serving/Analytical Processing](papers/hologres.pdf) (2020)
+
+  In this work, we propose Hologres, which is a cloud native service for hybrid serving and analytical processing (HSAP). Hologres decouples the computation and storage layers, allowing flexible scaling in each layer. Tables are partitioned into self-managed shards. Each shard processes its read and write requests concurrently independent of each other. Hologres leverages hybrid row/column storage to optimize operations such as point lookup, column scan and data ingestion used in HSAP. We propose Execution Context as a resource abstraction between system threads and user tasks. Execution contexts can be cooperatively scheduled with little context switching overhead. Queries are parallelized and mapped to execution contexts for concurrent execution. The scheduling framework enforces resource isolation among different queries and supports customizable schedule policy.
 
 ----
 
@@ -299,89 +416,6 @@ The content below will be refactored later.
   This paper proves the CAP conjecture in the asynchronous network model, and then discusses solutions to this dilemma in the partially synchronous model.
 
 - [CAP Twelve Years Later: How the "Rules" Have Changed](https://www.infoq.com/articles/cap-twelve-years-later-how-the-rules-have-changed) (2012)
-
-## SQL
-
-- [Access Path Selection in a Relational Database Management System](papers/systemr.pdf) (1979)
-
-  This paper presents a cost-based SQL optimizer in System R. The optimizer estimates the cost of access paths in terms of I/O and CPU costs, using statistics about the contents of each relation.
-
-- [The Volcano Optimizer Generator: Extensibility and Efficient Search](papers/volcano.pdf) (1993)
-
-  This paper presents an optimizer generator that translates a model specification into an optimizer source code. It also provides a search engine to be used in all generated optimizers. The search engine is goal-oriented using directed dynamic programming search algorithms.
-
-- [The Cascades Framework for Query Optimization](papers/cascades.pdf) (1995)
-
-- [How We Built a Cost-Based SQL Optimizer](https://www.cockroachlabs.com/blog/building-cost-based-sql-optimizer/) (2018)
-- [How We Built a Vectorized SQL Engine](https://www.cockroachlabs.com/blog/how-we-built-a-vectorized-sql-engine/) (2019)
-
-## OLTP Database
-
-- [Megastore: Providing Scalable, Highly Available Storage for Interactive Services](papers/megastore.pdf) (2011)
-
-  This paper presents Megastore, a storage system that blends the scalability of a NoSQL datastore with the convenience of a traditional RDBMS in a novel way, and provides both strong consistency guarantees and high availability.
-
-- [Spanner: Google’s Globally-Distributed Database](papers/spanner-2012.pdf) (2012)
-
-  This paper presents Spanner, a scalable, multi-version, globally-distributed, and synchronously-replicated database.
-
-- [F1: A Distributed SQL Database That Scales](papers/f1.pdf) (2013)
-
-  This paper presents F1, a hybrid database that combines high availability, the scalability of NoSQL systems like Bigtable, and the consistency and usability of traditional SQL databases. F1 is built on Spanner, which provides synchronous cross-datacenter replication and strong consistency.
-
-- [Online, Asynchronous Schema Change in F1](papers/f1-schema.pdf) (2013)
-
-  This paper describes a protocol for schema evolution in a globally distributed database management system with shared data, stateless servers, and no global membership.
-
-- [Spanner: Becoming a SQL System](papers/spanner-2017.pdf) (2017)
-
-  This paper highlights the database DNA of Spanner. It describes distributed query execution in the presence of resharding, query restarts upon transient failures, range extraction that drives query routing and index seeks, and the improved blockwise-columnar storage format.
-
-- [Amazon Aurora: Design Considerations for High Throughput Cloud-Native Relational Databases](papers/aurora-2017.pdf) (2017)
-
-- [Amazon Aurora: On Avoiding Distributed Consensus for I/Os, Commits, and Membership Changes](papers/aurora-2018.pdf) (2018)
-
-- [Socrates: The New SQL Server in the Cloud](papers/socrates.pdf) (SIGMOD, 2019)
-
-- [CockroachDB: The Resilient Geo-Distributed SQL Database](papers/cockroachdb.pdf) (SIGMOD, 2020)
-
-  This paper presents the design of CockroachDB and its novel transaction model that supports consistent geo-distrib- uted transactions on commodity hardware.
-
-- [How CockroachDB Does Distributed, Atomic Transactions](https://www.cockroachlabs.com/blog/how-cockroachdb-distributes-atomic-transactions/) (2015)
-- [How online schema changes are possible in CockroachDB](https://www.cockroachlabs.com/blog/how-online-schema-changes-are-possible-in-cockroachdb/) (2016)
-- [Living Without Atomic Clocks](https://www.cockroachlabs.com/blog/living-without-atomic-clocks/) (2016)
-- [Serializable, Lockless, Distributed: Isolation in CockroachDB](https://www.cockroachlabs.com/blog/serializable-lockless-distributed-isolation-cockroachdb/) (2016)
-- [CockroachDB’s Consistency Model](https://www.cockroachlabs.com/blog/consistency-model/) (2019)
-
-- [TiDB: A Raft-based HTAP Database](papers/tidb.pdf) (2020)
-
-## OLAP Database
-
-- [C-Store: A Column-oriented DBMS](papers/c-store.pdf) (2005)
-
-  This paper presents the design of a read-optimized relational DBMS that stores data by column.
-
-- [MonetDB/X100: Hyper-Pipelining Query Execution](papers/monetdb.pdf) (2005)
-
-  This paper presents a CPU efficient query processor that employs a vectorized query processing model. The processor uses loop-pipelined and cache-conscious operations to take advantage of modern CPUs.
-
-- [Dremel: Interactive Analysis of Web-Scale Datasets](papers/dremel.pdf) (2010)
-
-- [The Design and Implementation of Modern Column-Oriented Database Systems](papers/modern-column-stores.pdf) (2013)
-
-  This book discusses modern column-stores, their architecture and evolution as well the benefits they can bring in data analytics. There is a specific focus on three influential research prototypes, MonetDB, MonetDB/X100, and C-Store.
-
-- [The Snowflake Elastic Data Warehouse](papers/snowflake.pdf) (2016)
-
-- [AnalyticDB: Real-time OLAP Database System at Alibaba Cloud](papers/analyticdb.pdf) (2019)
-
-- [Procella: Unifying serving and analytical data at YouTube](papers/procella.pdf) (2019)
-
-- [Alibaba Hologres: A Cloud-Native Service for Hybrid Serving/Analytical Processing](papers/hologres.pdf) (2020)
-
-- [Amazon Redshift Re-invented](papers/redshift-reinvented.pdf) (2022)
-
-  Redshift improved storage and compute scalability with innovations such as tiered storage, multi-cluster auto-scaling, cross-cluster data sharing and the AQUA query acceleration layer. Autonomics have made Amazon Redshift easier to use. Amazon Redshift Serverless is the culmination of autonomics effort, which allows customers to run and scale analytics without the need to set up and manage data warehouse infrastructure.
 
 ## Distributed system
 
