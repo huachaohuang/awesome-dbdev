@@ -4,6 +4,8 @@ Database development is interesting and challenging. You can always find interes
 
 ## Introduction
 
+- [What I Learned From Programming Databases](http://www.philipotoole.com/what-i-learned-from-programming-a-database/) (2016)
+
 - [Notes on Distributed Systems for Young Bloods](https://www.somethingsimilar.com/2013/01/14/notes-on-distributed-systems-for-young-bloods/) (2013)
 
 - [How does a relational database work](http://coding-geek.com/how-databases-work/) (2015)
@@ -11,8 +13,6 @@ Database development is interesting and challenging. You can always find interes
 - [Elements Of Scale: Composing And Scaling Data Platforms](http://www.benstopford.com/2015/04/28/elements-of-scale-composing-and-scaling-data-platforms/) (2015)
 
 - [Apache Kafka, Samza, and the Unix Philosophy of Distributed Data](http://www.confluent.io/blog/apache-kafka-samza-and-the-unix-philosophy-of-distributed-data) (2015)
-
-- [What I Learned From Programming Databases](http://www.philipotoole.com/what-i-learned-from-programming-a-database/) (2016)
 
 ## Storage Device
 
@@ -42,8 +42,6 @@ Database development is interesting and challenging. You can always find interes
 - [The Five-Minute Rule 20 Years Later, and How Flash Memory Changes the Rules](papers/five-minute-rule-2007.pdf) (2007)
 - [The Five-Minute Rule 30 Years Later, and its Impact on the Storage Hierarchy](papers/five-minute-rule-2017.pdf) (2017)
 
-- [Bitcask: A Log-Structured Hash Table for Fast Key/Value Data](papers/bitcask.pdf) (2010)
-
 - [The Adaptive Radix Tree: ARTful Indexing for Main-Memory Databases](papers/adaptive-radix-tree.pdf) (2013)
 
   This paper presents ART, an adaptive radix tree (trie) for efficient indexing in main memory. Its lookup performance surpasses highly tuned, read-only search trees, while supporting very efficient insertions and deletions as well. At the same time, ART is very space efficient and solves the problem of excessive worst-case space consumption, which plagues most radix trees, by adaptively choosing compact and efficient data structures for internal nodes.
@@ -53,6 +51,18 @@ Database development is interesting and challenging. You can always find interes
   This article proposes to use a frequency-based cache admission policy in order to boost the effectiveness of caches subject to skewed access distributions. Given a newly accessed item and an eviction candidate from the cache, our scheme decides, based on the recent access history, whether it is worth admitting the new item into the cache at the expense of the eviction candidate.
 
   This concept is enabled through a novel approximate LFU structure called TinyLFU, which maintains an approximate representation of the access frequency of a large sample of recently accessed items. TinyLFU is very compact and lightweight as it builds upon Bloom filter theory.
+
+- [The Data Calculator: Data Structure Design and Cost Synthesis from First Principles and Learned Cost Models](papers/datacalculator.pdf) (2018)
+
+  Data structures are critical in any data-driven scenario, but they are notoriously hard to design due to a massive design space and the dependence of performance on workload and hardware which evolve continuously. We present a design engine, the Data Calculator, which enables interactive and semi-automated design of data structures. It brings two innovations. First, it offers a set of fine-grained design primitives that capture the first principles of data layout design: how data structure nodes lay data out, and how they are positioned relative to each other. This allows for a structured description of the universe of possible data structure designs that can be synthesized as combinations of those primitives. The second innovation is computation of performance using learned cost models. These models are trained on diverse hardware and data profiles and capture the cost properties of fundamental data access primitives (e.g., random access). With these models, we synthesize the performance cost of complex operations on arbitrary data structure designs without having to: 1) implement the data structure, 2) run the workload, or even 3) access the target hardware.
+
+- [The Case for Learned Index Structures](papers/learned-index.pdf) (2018)
+
+  Indexes are models: a B-Tree-Index can be seen as a model to map a key to the position of a record within a sorted array, a Hash-Index as a model to map a key to a position of a record within an unsorted array, and a BitMap-Index as a model to indicate if a data record exists or not. In this exploratory research paper, we start from this premise and posit that all existing index structures can be replaced with other types of models, including deep-learning models, which we term learned indexes. We theoretically analyze under which conditions learned indexes outperform traditional index structures and describe the main challenges in designing learned index structures.
+
+- [The PGM-index: a fully-dynamic compressed learned index with provable worst-case bounds](papers/pgm-index.pdf) (2020)
+
+  We present the first learned index that supports predecessor, range queries and updates within provably efficient time and space bounds in the worst case. In the (static) context of just predecessor and range queries these bounds turn out to be optimal. We call this learned index the Piecewise Geometric Model index (PGM-index).
 
 ### B-tree
 
@@ -113,6 +123,14 @@ Database development is interesting and challenging. You can always find interes
 - [MyRocks: LSM-Tree Database Storage Engine Serving Facebook's Social Graph](papers/myrocks.pdf) (2020)
 
   In this paper, we describe our journey to build and run an OLTP LSM-tree SQL database at scale. We also discuss the features we implemented to keep pace with UDB workloads, what made migrations easier, and what operational and software development challenges we faced during the two years of running MyRocks in production.
+
+### Hash table
+
+- [Bitcask: A Log-Structured Hash Table for Fast Key/Value Data](papers/bitcask.pdf) (2010)
+
+- [Faster: A Concurrent Key-Value Store with In-Place Updates](papers/faster.pdf) (2018)
+
+  This paper presents Faster, a new key-value store for point read, blind update, and read-modify-write operations. Faster combines a highly cache-optimized concurrent hash index with a hybrid log: a concurrent log-structured record store that spans main memory and storage, while supporting fast in-place updates of the hot set in memory.
 
 ## Relational database
 
@@ -231,6 +249,56 @@ Database development is interesting and challenging. You can always find interes
 
   In this work, we propose Hologres, which is a cloud native service for hybrid serving and analytical processing (HSAP). Hologres decouples the computation and storage layers, allowing flexible scaling in each layer. Tables are partitioned into self-managed shards. Each shard processes its read and write requests concurrently independent of each other. Hologres leverages hybrid row/column storage to optimize operations such as point lookup, column scan and data ingestion used in HSAP. We propose Execution Context as a resource abstraction between system threads and user tasks. Execution contexts can be cooperatively scheduled with little context switching overhead. Queries are parallelized and mapped to execution contexts for concurrent execution. The scheduling framework enforces resource isolation among different queries and supports customizable schedule policy.
 
+## Distributed storage system
+
+- [The Google File System](papers/gfs.pdf) (2003)
+
+  We have designed and implemented the Google File System, a scalable distributed file system for large distributed data-intensive applications. It provides fault tolerance while running on inexpensive commodity hardware, and it delivers high aggregate performance to a large number of clients.
+
+- [Bigtable: A Distributed Storage System for Structured Data](papers/bigtable.pdf) (2006)
+
+  Bigtable is a distributed storage system for managing structured data that is designed to scale to a very large size: petabytes of data across thousands of commodity servers. Many projects at Google store data in Bigtable, including web indexing, Google Earth, and Google Finance. These applications place very different demands on Bigtable, both in terms of data size (from URLs to web pages to satellite imagery) and latency requirements (from backend bulk processing to real-time data serving). Despite these varied demands, Bigtable has successfully provided a flexible, high-performance solution for all of these Google products. In this paper we describe the simple data model provided by Bigtable, which gives clients dynamic control over data layout and format, and we describe the design and implementation of Bigtable.
+
+- [Dynamo: Amazon’s Highly Available Key-value Store](papers/dynamo.pdf) (2007)
+
+  This paper presents the design and implementation of Dynamo, a highly available key-value storage system that some of Amazon’s core services use to provide an “always-on” experience. To achieve this level of availability, Dynamo sacrifices consistency under certain failure scenarios. It makes extensive use of object versioning and application-assisted conflict resolution in a manner that provides a novel interface for developers to use.
+
+- [Finding a needle in Haystack: Facebook’s photo storage](papers/haystack.pdf) (2010)
+
+  This paper describes Haystack, an object storage system optimized for Facebook’s Photos application. Facebook currently stores over 260 billion images, which translates to over 20 petabytes of data. Users up- load one billion new photos (∼60 terabytes) each week and Facebook serves over one million images per second at peak. Haystack provides a less expensive and higher performing solution than our previous approach, which leveraged network attached storage appliances over NFS. Our key observation is that this traditional design incurs an excessive number of disk operations because of metadata lookups. We carefully reduce this per photo metadata so that Haystack storage machines can perform all metadata lookups in main memory. This choice conserves disk operations for reading actual data and thus increases overall throughput.
+
+- [TAO: Facebook’s Distributed Data Store for the Social Graph](papers/tao.pdf) (2013)
+
+  We introduce a simple data model and API tailored for serving the social graph, and TAO, an implementation of this model. TAO is a geographically distributed data store that provides efficient and timely access to the social graph for Facebook’s demanding workload using a fixed set of queries. It is deployed at Facebook, replacing memcache for many data types that fit its model. The system runs on thousands of machines, is widely distributed, and provides access to many petabytes of data. TAO can process a billion reads and millions of writes each second.
+
+- [f4: Facebook’s Warm BLOB Storage System](papers/f4.pdf) (2014)
+
+  Facebook’s corpus of photos, videos, and other Binary Large OBjects (BLOBs) that need to be reliably stored and quickly accessible is massive and continues to grow. As the footprint of BLOBs increases, storing them in our traditional storage system, Haystack, is becoming increasingly inefficient. To increase our storage efficiency, measured in the effective-replication-factor of BLOBs, we examine the underlying access patterns of BLOBs and identify temperature zones that include hot BLOBs that are accessed frequently and warm BLOBs that are accessed far less often. Our overall BLOB storage system is designed to isolate warm BLOBs and enable us to use a specialized warm BLOB storage system, f4. f4 is a new system that lowers the effective-replication-factor of warm BLOBs while remaining fault tolerant and able to support the lower throughput demands.
+
+- [Sharding the Shards: Managing Datastore Locality at Scale with Akkio](papers/akkio.pdf) (2018)
+
+  Akkio is a locality management service layered between client applications and distributed datastore systems. It determines how and when to migrate data to reduce response times and resource usage. Akkio primarily targets multi-datacenter geo-distributed datastore systems. Its design was motivated by the observation that many of Facebook’s frequently accessed datasets have low R/W ratios that are not well served by distributed caches or full replication. Akkio’s unit of migration is called a μ-shard. Each μ-shard is designed to contain related data with some degree of access locality. At Facebook, μ-shards have become a first-class abstraction.
+
+- [Anna: A KVS for Any Scale](papers/anna-2018.pdf) (2018)
+
+  We explore a new key-value store system called Anna: a partitioned, multi-mastered system that achieves high performance and elasticity via wait-free execution and coordination-free consistency. Our design rests on a simple architecture of coordination-free actors that perform state update via merge of lattice-based composite data structures. We demonstrate that a wide variety of consistency models can be elegantly implemented in this architecture with unprecedented consistency, smooth fine-grained elasticity, and performance that far exceeds the state of the art.
+
+- [Autoscaling Tiered Cloud Storage in Anna](papers/anna-2019.pdf) (2019)
+
+  In this paper, we describe how we extended a distributed key-value store called Anna into an autoscaling, multi-tier service for the cloud. In its extended form, Anna is designed to overcome the narrow cost-performance limitations typical of current cloud storage systems. We describe three key aspects of Anna’s new design: multi-master selective replication of hot keys, a vertical tiering of storage layers with different cost-performance tradeoffs, and horizontal elasticity of each tier to add and remove nodes in response to load dynamics. Anna’s policy engine uses these mechanisms to balance service-level objectives around cost, latency and fault tolerance. Experimental results explore the behavior of Anna’s mechanisms and policy, exhibiting orders of magnitude efficiency improvements over both commodity cloud KVS services and research systems.
+
+- [DistCache: Provable Load Balancing for Large-Scale Storage Systems with Distributed Caching](papers/distcache.pdf) (2019)
+
+  We present DistCache, a new distributed caching mechanism that provides provable load balancing for large-scale storage systems. DistCache co-designs cache allocation with cache topology and query routing. The key idea is to partition the hot objects with independent hash functions between cache nodes in different layers, and to adaptively route queries with the power-of-two-choices. We prove that DistCache enables the cache throughput to increase linearly with the number of cache nodes, by unifying techniques from expander graphs, network flows, and queuing theory. DistCache is a general solution that can be applied to many storage systems.
+
+- [Virtual Consensus in Delos](papers/delos-2020.pdf) (2020)
+
+  We propose virtualizing consensus by virtualizing the shared log API, allowing services to change consensus protocols without downtime. Virtualization splits the logic of consensus into the VirtualLog, a generic and reusable reconfiguration layer; and pluggable ordering protocols called Loglets. Loglets are simple, since they do not need to support reconfiguration or leader election; diverse, consisting of different protocols, codebases, and even deployment modes; and composable, via RAID-like stacking and striping. We describe a production database called Delos, which leverages virtual consensus for rapid, incremental development and deployment.
+
+- [Log-structured Protocols in Delos](papers/delos-2021.pdf) (2021)
+
+  Developers have access to a wide range of storage APIs and functionality in large-scale systems, such as rela- tional databases, key-value stores, and namespaces. However, this diversity comes at a cost: each API is implemented by a complex distributed system that is difficult to develop and operate. Delos amortizes this cost by enabling different APIs on a shared codebase and operational platform. The primary innovation in Delos is a log-structured protocol: a fine-grained replicated state machine executing above a shared log that can be layered into reusable protocol stacks under different databases.
+
 ----
 
 The content below will be refactored later.
@@ -238,6 +306,18 @@ The content below will be refactored later.
 ----
 
 ## Operating System
+
+- [What Every Programmer Should Know About Memory](papers/cpumemory.pdf) (2007)
+
+  This paper explains the structure of memory subsystems in use on modern commodity hardware, illustrating why CPU caches were developed, how they work, and what programs should do to achieve optimal performance by utilizing them.
+
+- [What Every Systems Programmer Should Know About Concurrency](papers/concurrency.pdf) (2018)
+
+  Seasoned programmers are familiar with tools like mutexes, semaphores, and condition variables. But what makes them work? How do we write concurrent code when we can’t use them, like when we’re working below the operating system in an embedded environment, or when we can’t block due to hard time constraints? And since your system transforms your code into things you didn’t write, running in orders you never asked for, how do multithreaded programs work at all? Concurrency — especially on modern hardware — is a complicated and unintuitive topic, but let’s try to cover some fundamentals.
+
+- [Everything You Always Wanted to Know About Synchronization but Were Afraid to Ask](papers/synchronization.pdf) (2013)
+
+  This paper presents the most exhaustive study of synchronization to date. We span multiple layers, from hardware cache-coherence protocols up to high-level concurrent software. We do so on different types of architectures, from single-socket – uniform and non-uniform – to multi-socket – directory and broadcast-based – many-cores.
 
 ### Kernel
 
@@ -261,36 +341,12 @@ The content below will be refactored later.
 
   In this paper, we propose a new file system for SSDs, SFS. First, SFS exploits the maximum write bandwidth of SSD by taking a log-structured approach. SFS transforms all random writes at file system level to sequential ones at SSD level. Second, SFS takes a new data grouping strategy on writing, instead of the existing data separation strategy on segment cleaning. It puts the data blocks with similar update likelihood into the same segment. This minimizes the inevitable segment cleaning overhead in any log-structured file system by allowing the segments to form a sharp bimodal distribution of segment utilization.
 
-### Modern hardware
-
-- [What Every Programmer Should Know About Memory](papers/cpumemory.pdf) (2007)
-
-  This paper explains the structure of memory subsystems in use on modern commodity hardware, illustrating why CPU caches were developed, how they work, and what programs should do to achieve optimal performance by utilizing them.
-
-- [What Every Systems Programmer Should Know About Concurrency](papers/concurrency.pdf) (2018)
-
-  Seasoned programmers are familiar with tools like mutexes, semaphores, and condition variables. But what makes them work? How do we write concurrent code when we can’t use them, like when we’re working below the operating system in an embedded environment, or when we can’t block due to hard time constraints? And since your system transforms your code into things you didn’t write, running in orders you never asked for, how do multithreaded programs work at all? Concurrency — especially on modern hardware — is a complicated and unintuitive topic, but let’s try to cover some fundamentals.
-
-- [Everything You Always Wanted to Know About Synchronization but Were Afraid to Ask](papers/synchronization.pdf) (2013)
-
-  This paper presents the most exhaustive study of synchronization to date. We span multiple layers, from hardware cache-coherence protocols up to high-level concurrent software. We do so on different types of architectures, from single-socket – uniform and non- uniform – to multi-socket – directory and broadcast-based – many-cores.
-
 ### Storage virtualization
 
 - [Logical volume management](https://en.wikipedia.org/wiki/Logical_volume_management)
 - [Logical Volume Management (LVM) - Linux](https://www.youtube.com/watch?v=fadQX2e_PGk) (Video)
 - [Redundant Array of Independent Disks (RAID)](https://en.wikipedia.org/wiki/RAID)
 - [What is RAID 0, 1, 2, 3, 4, 5, 6 and 10 (1+0)?](https://www.youtube.com/watch?v=wTcxRObq738) (Video)
-
-## Storage Engine
-
-- [Faster: A Concurrent Key-Value Store with In-Place Updates](papers/faster.pdf) (2018)
-
-- [The Data Calculator: Data Structure Design and Cost Synthesis from First Principles and Learned Cost Models](papers/datacalculator.pdf) (2018)
-
-- [The Case for Learned Index Structures](papers/learned-index.pdf) (2018)
-
-- [The PGM-index: a fully-dynamic compressed learned index with provable worst-case bounds](papers/pgm-index.pdf) (2020)
 
 ## Transaction
 
@@ -421,45 +477,7 @@ The content below will be refactored later.
 
 - [An Opportunity Cost Approach for Job Assignment in a Scalable Computing Cluster](papers/epvm.pdf) (2000)
 
-- [The Google File System](papers/gfs.pdf) (2003)
-
-  This paper presents the Google File System, a scalable distributed file system for large distributed data-intensive applications.
-
-- [Bigtable: A Distributed Storage System for Structured Data](papers/bigtable.pdf) (2006)
-
-  This paper presents Bigtable, a distributed storage system for managing structured data that is designed to scale to a very large size.
-
-- [Dynamo: Amazon’s Highly Available Key-value Store](papers/dynamo.pdf) (2007)
-
-  This paper presents the design and implementation of Dynamo, a highly available key-value storage system that some of Amazon's core services use to provide an “always-on” experience.
-
-- [Finding a needle in Haystack: Facebook’s photo storage](papers/haystack.pdf) (2010)
-
-- [TAO: Facebook’s Distributed Data Store for the Social Graph](papers/tao.pdf) (2013)
-
-  We introduce a simple data model and API tailored for serving the social graph, and TAO, an implementation of this model. TAO is a geographically distributed data store that provides efficient and timely access to the social graph for Facebook’s demanding workload using a fixed set of queries.
-
-- [f4: Facebook’s Warm BLOB Storage System](papers/f4.pdf) (2014)
-
 - [Large-scale cluster management at Google with Borg](papers/borg.pdf) (2015)
-
-- [Sharding the Shards: Managing Datastore Locality at Scale with Akkio](papers/akkio.pdf) (2018)
-
-  In this paper we present Akkio, a locality management service for distributed datastore systems whose aim is to improve data access response times and to reduce cross-datacenter bandwidth usage as well as the total amount of storage capacity needed.
-
-- [Anna: A KVS for Any Scale](papers/anna-2018.pdf) (2018)
-
-- [Autoscaling Tiered Cloud Storage in Anna](papers/anna-2019.pdf) (2019)
-
-- [DistCache: Provable Load Balancing for Large-Scale Storage Systems with Distributed Caching](papers/distcache.pdf) (2019)
-
-- [Virtual Consensus in Delos](papers/delos-2020.pdf) (2020)
-
-  We propose virtualizing consensus by virtualizing the shared log API, allowing services to change consensus protocols without downtime. Virtualization splits the logic of consensus into the VirtualLog, a generic and reusable reconfiguration layer; and pluggable ordering protocols called Loglets.
-
-- [Log-structured Protocols in Delos](papers/delos-2021.pdf) (2021)
-
-  The primary innovation in Delos is a log-structured protocol: a fine-grained replicated state machine executing above a shared log that can be layered into reusable protocol stacks under different databases.
 
 ## Miscellaneous
 
