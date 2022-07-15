@@ -228,6 +228,100 @@ Database development is interesting and challenging. You can always find interes
 
   In this work, we propose Hologres, which is a cloud native service for hybrid serving and analytical processing (HSAP). Hologres decouples the computation and storage layers, allowing flexible scaling in each layer. Tables are partitioned into self-managed shards. Each shard processes its read and write requests concurrently independent of each other. Hologres leverages hybrid row/column storage to optimize operations such as point lookup, column scan and data ingestion used in HSAP. We propose Execution Context as a resource abstraction between system threads and user tasks. Execution contexts can be cooperatively scheduled with little context switching overhead. Queries are parallelized and mapped to execution contexts for concurrent execution. The scheduling framework enforces resource isolation among different queries and supports customizable schedule policy.
 
+## Transaction
+
+- [Granularity of Locks and Degrees of Consistency in a Shared Data Base](papers/locks.pdf) (1975)
+
+  The first part of this paper introduces a locking protocol that allows simultaneous locking at various granularities in a database with a hierarchical structure. The second part of this paper introduces four degrees of consistency and the relationships of the four degrees to the locking protocol.
+
+- [The Notion of Consistency and Predicate Locks in a Database System](papers/predicate-locks.pdf) (1976)
+
+  In database systems, users access shared data under the assumption that the data satisfies certain consistency constraints. This paper defines the concepts of transaction, consistency and schedule and shows that consistency requires that a transaction cannot request new locks after releasing a lock. Then it is argued that a transaction needs to lock a logical rather than a physical subset of the database. These subsets may be specified by predicates. An implementation of predicate locks which satisfies the consistency condition is suggested.
+
+- [How to Make a Multiprocessor Computer That Correctly Executes Multiprocess Progranm](papers/sequential-consistency.pdf) (1979)
+
+  I forget what prompted me to be thinking about memory caching, but it occurred to me one day that multiprocessor synchronization algorithms assume that each processor accesses the same word in memory, but each processor actually accesses its own copy in its cache. It hardly required a triple-digit IQ to realize that this could cause problems. I suppose what made this paper worth reading was its simple, precise definition of sequential consistency as the required correctness condition. This was not the first paper about cache coherence. However, it is the early paper most often cited in the cache-coherence literature.
+
+- [Linearizability: A Correctness Condition for Concurrent Objects](papers/linearizability.pdf) (1990)
+
+  A concurrent object is a data object shared by concurrent processes. Linearizability is a correctness condition for concurrent objects that exploits the semantics of abstract data types. It permits a high degree of concurrency, yet it permits programmers to specify and reason about concurrent objects using known techniques from the sequential domain. Linearizability provides the illusion that each operation applied by concurrent processes takes effect instantaneously at some point between its invocation and its response, implying that the meaning of a concurrent object’s operations can be given by pre- and post-conditions. This paper defines linearizability, compares it to other correctness conditions, presents and demonstrates a method for proving the correctness of implementations, and shows how to reason about concurrent objects, given they are linearizable.
+
+- [Linearizability versus Serializability](http://www.bailis.org/blog/linearizability-versus-serializability/) (2014)
+
+  Linearizability and serializability are both important properties about interleavings of operations in databases and distributed systems, and it’s easy to get them confused. This post gives a short, simple, and hopefully practical overview of the differences between the two.
+
+- [Session Guarantees for Weakly Consistent Replicated Data](papers/session-guarantees.pdf) (1994)
+
+  Four per-session guarantees are proposed to aid users and applications of weakly consistent replicated data: Read Your Writes, Monotonic Reads, Writes Follow Reads, and Monotonic Writes. The intent is to present individual applications with a view of the database that is consistent with their own actions, even if they read and write from various, potentially inconsistent servers. The guarantees can be layered on existing systems that employ a read-any/write-any replication scheme while retaining the principal benefits of such a scheme, namely high-availability, simplicity, scalability, and support for disconnected operation. These session guarantees were developed in the context of the Bayou project at Xerox PARC in which we are designing and building a replicated storage system to support the needs of mobile computing users who may be only intermittently connected.
+
+- [Causal Memory: Definitions, Implementation and Programming](papers/causal-consistency.pdf) (1995)
+
+  The abstraction of a shared memory is of growing importance in distributed computing systems. Traditional memory consistency ensures that all processes agree on a common order of all operations on memory. Unfortunately, providing these guarantees entails access latencies that prevent scaling to large systems. This paper weakens such guarantees by defining causal memory, an abstraction that ensures that processes in a system agree on the relative ordering of operations that are causally related. Because causal memory is weakly consistent, it admits more executions, and hence more concurrency, than either atomic or sequentially consistent memories. This paper provides a formal definition of causal memory and gives an implementation for message-passing systems. In addition, it describes a practical class of programs that, if developed for a strongly consistent memory, run correctly with causal memory.
+
+- [A Critique of ANSI SQL Isolation Levels](papers/snapshot-isolation.pdf) (1995)
+
+  ANSI SQL-92 defines Isolation Levels in terms of phenomena: Dirty Reads, Non-Repeatable Reads, and Phantoms. This paper shows that these phenomena and the ANSI SQL definitions fail to characterize several popular isolation levels, including the standard locking implementations of the levels. Investigating the ambiguities of the phenomena leads to clearer definitions; in addition new phenomena that better characterize isolation types are introduced. An important multiversion isolation type, Snapshot Isolation, is defined.
+
+- [Generalized Isolation Level Definitions](papers/generalized-isolation.pdf) (2000)
+
+  Commercial databases support different isolation levels to allow programmers to trade off consistency for a potential gain in performance. The isolation levels are defined in the current ANSI standard, but the definitions are ambiguous and revised definitions proposed to correct the problem are too constrained since they allow only pessimistic (locking) implementations. This paper presents new specifications for the ANSI levels. Our specifications are portable; they apply not only to locking implementations, but also to optimistic and multi-version concurrency control schemes. Furthermore, unlike earlier definitions, our new specifications handle predicates in a correct and flexible manner at all levels.
+
+- [Serializable Isolation for Snapshot Databases](papers/serializable-snapshot-isolation.pdf) (2008)
+
+  This paper describes a modification to the concurrency control algorithm of a database management system that automatically detects and prevents snapshot isolation anomalies at runtime for arbitrary applications, thus providing serializable isolation. The new algorithm preserves the properties that make snapshot isolation attractive, including that readers do not block writers and vice versa. An implementation and performance study of the algorithm are described, showing that the throughput approaches that of snapshot isolation in most cases.
+
+- [A Critique of Snapshot Isolation](papers/write-snapshot-isolation.pdf) (2012)
+
+  There have been recent attempts to enrich large-scale data stores, such as HBase and BigTable, with transactional support. Not surprisingly, inspired by traditional database management systems, serializability is usually compromised for the benefit of efficiency. For example, Google Percolator, implements lock-based snapshot isolation on top of BigTable. We show in this paper that this compromise is not necessary in lock-free implementations of transactional support. We introduce write-snapshot isolation, a novel isolation level that has a performance comparable with that of snapshot isolation, and yet provides serializability. The main insight in write-snapshot isolation is to prevent read-write conflicts in contrast to write-write conflicts that are prevented by snapshot isolation.
+
+## Distributed transaction
+
+- [Time, Clocks, and the Ordering of Events in a Distributed System](papers/logical-clocks.pdf) (1978)
+
+  The concept of one event happening before another in a distributed system is examined, and is shown to define a partial ordering of the events. A distributed algorithm is given for synchronizing a system of logical clocks which can be used to totally order the events. The use of the total ordering is illustrated with a method for solving synchronization problems. The algorithm is then specialized for synchronizing physical clocks, and a bound is derived on how far out of synchrony the clocks can become.
+
+- [Logical Physical Clocks and Consistent Snapshots in Globally Distributed Databases](papers/hybrid-logical-clocks.pdf) (2014)
+
+  We propose a hybrid logical clock, HLC, that com- bines the best of logical clocks and physical clocks. HLC captures the causality relationship like logical clocks, and enables easy identification of consistent snapshots in dis- tributed systems. Dually, HLC can be used in lieu of phys- ical/NTP clocks since it maintains its logical clock to be always close to the NTP clock. Moreover HLC fits in to 64 bits NTP timestamp format, and is masking toler- ant to NTP kinks and uncertainties. We show that HLC has many benefits for wait-free transaction ordering and performing snapshot reads in multiversion globally dis- tributed databases.
+
+- [Consensus on Transaction Commit](papers/paxos-commit.pdf) (2004)
+
+  The distributed transaction commit problem requires reaching agreement on whether a transaction is committed or aborted. The classic Two-Phase Commit protocol blocks if the coordinator fails. Fault-tolerant consensus algorithms also reach agreement, but do not block whenever any majority of the processes are working. The Paxos Commit algorithm runs a Paxos consensus algorithm on the commit/abort decision of each participant to obtain a transaction commit protocol that uses 2F + 1 coordinators and makes progress if at least F + 1 of them are working properly. Paxos Commit has the same stable-storage write delay, and can be implemented to have the same message delay in the fault-free case, as Two-Phase Commit, but it uses more messages. The classic Two-Phase Commit algorithm is obtained as the special F = 0 case of the Paxos Commit algorithm.
+
+- [Large-scale Incremental Processing Using Distributed Transactions and Notifications](papers/percolator.pdf) (2010)
+
+  We have built Percolator, a system for incrementally processing updates to a large data set, and deployed it to create the Google web search index. By replacing a batch-based indexing system with an indexing system based on incremental processing using Percolator, we process the same number of documents per day, while reducing the average age of documents in Google search results by 50%.
+
+- [Calvin: Fast Distributed Transactions for Partitioned Database Systems](papers/calvin.pdf) (2012)
+
+  Many distributed storage systems achieve high data access throughput via partitioning and replication, each system with its own advantages and tradeoffs. In order to achieve high scalability, however, today’s systems generally reduce transactional support, disallowing single transactions from spanning multiple partitions. Calvin is a practical transaction scheduling and data replication layer that uses a deterministic ordering guarantee to significantly reduce the normally prohibitive contention costs associated with distributed transactions. Unlike previous deterministic database system prototypes, Calvin supports disk-based storage, scales near-linearly on a cluster of commodity machines, and has no single point of failure. By replicating transaction inputs rather than effects, Calvin is also able to support multiple consistency levels—including Paxos-based strong consistency across geographically distant replicas—at no cost to transactional throughput.
+
+- [Highly Available Transactions: Virtues and Limitations](papers/highly-available-transactions.pdf) (2013)
+
+  To minimize network latency and remain online during server failures and network partitions, many modern distributed data storage systems eschew transactional functionality, which provides strong semantic guarantees for groups of multiple operations over multiple data items. In this work, we consider the problem of providing Highly Available Transactions (HATs): transactional guarantees that do not suffer unavailability during system partitions or incur high network latency. We introduce a taxonomy of highly available systems and analyze existing ACID isolation and distributed data consistency guarantees to identify which can and cannot be achieved in HAT systems. This unifies the literature on weak transactional isolation, replica consistency, and highly available systems.
+
+- [Consistency in Non-Transactional Distributed Storage Systems](papers/consistency-overview.pdf) (2016)
+
+  In this paper we aim to fill the void in literature, by providing a structured and comprehensive overview of different consistency notions that appeared in distributed systems, and in particular storage systems research, in the last four decades. We overview more than 50 different consistency notions, ranging from linearizability to eventual and weak consistency, defining precisely many of these, in particular where the previous definitions were ambiguous. We further provide a partial order among different consistency predicates, ordering them by their semantic “strength”, which we believe will reveal useful in future research. Finally, we map the consistency semantics to different practical systems and research prototypes.
+
+- [SLOG: Serializable, Low-latency, Geo-replicated Transactions](papers/slog.pdf) (2019)
+
+  For decades, applications deployed on a world-wide scale have been forced to give up at least one of (1) strict serializability (2) low latency writes (3) high transactional throughput. In this paper we discuss SLOG: a system that avoids this tradeoff for work- loads which contain physical region locality in data access. SLOG achieves high-throughput, strictly serializable ACID transactions at geo-replicated distance and scale for all transactions submitted across the world, all the while achieving low latency for transactions that initiate from a location close to the home region for data they access. Experiments find that SLOG can reduce latency by more than an order of magnitude relative to state-of-the-art strictly serializable geo-replicated database systems such as Spanner and Calvin, while maintaining high throughput under contention.
+
+- [Transactional Causal Consistency for Serverless Computing](papers/transactional-causal-consistency.pdf) (2020)
+
+  We consider the setting of serverless Function-as-a-Service (FaaS) platforms, where storage services are disaggregated from the machines that support function execution. FaaS applications consist of compositions of functions, each of which may run on a separate machine and access remote storage.
+
+  The challenge we address is improving I/O latency in this setting while also providing application-wide consistency. Previous work has explored providing causal consistency for individual I/Os by carefully managing the versions stored in a client-side data cache. In our setting, a single application may execute multiple functions across different nodes, and therefore issue interrelated I/Os to multiple distinct caches. This raises the challenge of Multisite Transactional Causal Consistency (MTCC): the ability to provide causal consistency for all I/Os within a given transaction even if it runs across multiple physical sites. We present protocols for MTCC implemented in a system called HydroCache. Our evaluation demonstrates orders-of-magnitude performance improvements due to caching, while also protecting against consistency anomalies that otherwise arise frequently.
+
+- [Distributed consistency at scale: Spanner vs. Calvin](http://dbmsmusings.blogspot.com/2017/04/distributed-consistency-at-scale.html) (2017)
+- [NewSQL database systems are failing to guarantee consistency, and I blame Spanner](http://dbmsmusings.blogspot.com/2018/09/newsql-database-systems-are-failing-to.html) (2018)
+- [Consistency without Clocks: The FaunaDB Distributed Transaction Protocol](https://fauna.com/blog/consistency-without-clocks-faunadb-transaction-protocol) (2018)
+- [Demystifying Database Systems, Part 1: An Introduction to Transaction Isolation Levels](https://fauna.com/blog/introduction-to-transaction-isolation-levels) (2019)
+- [Demystifying Database Systems, Part 2: Correctness Anomalies Under Serializable Isolation](https://fauna.com/blog/demystifying-database-systems-correctness-anomalies-under-serializable-isolation) (2019)
+- [Demystifying Database Systems, Part 3: Introduction to Consistency Levels](https://fauna.com/blog/demystifying-database-systems-introduction-to-consistency-levels) (2019)
+- [Demystifying Database Systems, Part 4: Isolation levels vs. Consistency levels](https://fauna.com/blog/demystifying-database-systems-part-4-isolation-levels-vs-consistency-levels) (2019)
+
 ## Replication algorithm
 
 - [Paxos Made Simple](papers/paxos-made-simple.pdf) (2001)
@@ -339,26 +433,6 @@ The content below will be refactored later.
 
 ----
 
-## Transaction
-
-### Isolation
-
-- [A Critique of ANSI SQL Isolation Levels](papers/ansi-isolation.pdf) (1995)
-
-  This paper analyzes the ambiguities of ANSI isolation levels and provides clearer phenomena definitions. It also presents a new MVCC isolation level called snapshot isolation. A transaction in snapshot isolation reads data from a snapshot of the committed data as of the time the transaction started, and checks for write-write conflicts.
-
-- [Generalized Isolation Level Definitions](papers/generalized-isolation.pdf) (2000)
-
-  This paper proposes a graph-based approach to define existing ANSI isolation levels.
-
-- [Serializable Isolation for Snapshot Databases](papers/serializable-snapshot-isolation.pdf) (2008)
-
-  This paper presents an algorithm to achieve serializable snapshot isolation based on anti-dependencies detection.
-
-- [A Critique of Snapshot Isolation](papers/snapshot-isolation.pdf) (2012)
-
-  This paper presents a new MVCC isolation level called write-snapshot isolation. A transaction in write-snapshot isolation checks for read-write conflicts instead of write-write conflicts in snapshot isolation.
-
 ## Operating System
 
 - [What Every Programmer Should Know About Memory](papers/cpumemory.pdf) (2007)
@@ -402,78 +476,7 @@ The content below will be refactored later.
 - [Redundant Array of Independent Disks (RAID)](https://en.wikipedia.org/wiki/RAID)
 - [What is RAID 0, 1, 2, 3, 4, 5, 6 and 10 (1+0)?](https://www.youtube.com/watch?v=wTcxRObq738) (Video)
 
-## Transaction
-
-- [Granularity of Locks and Degrees of Consistency in a Shared Data Base](papers/locks.pdf) (1975)
-
-  The first part of this paper introduces a locking protocol that allows simultaneous locking at various granularities in a database with a hierarchical structure. The second part of this paper introduces four degrees of consistency and the relationships of the four degrees to the locking protocol.
-
-- [The Notion of Consistency and Predicate Locks in a Database System](papers/predicate-locks.pdf) (1976)
-
-  This paper proofs that two-phase locking (2PL) guarantees serializability and introduces predicate locks to address the problem of phantom reads.
-
-- [How to Make a Multiprocessor Computer That Correctly Executes Multiprocess Progranm](papers/sequential-consistency.pdf) (1979)
-
-  This paper defines the condition of sequential consistency and describes a method to ensure the sequential consistency of interconnecting sequential processors with memory modules.
-
-- [Linearizability: A Correctness Condition for Concurrent Objects](papers/linearizability.pdf) (1990)
-
-  This paper defines the condition of linearizability and discusses the differences between it and other correctness conditions.
-
-- [Session Guarantees for Weakly Consistent Replicated Data](papers/session-guarantees.pdf) (1994)
-
-  This paper proposes four per-session guarantees to aid users and applications of weakly consistent replicated data: Read Your Writes, Monotonic Reads, Writes Follow Reads, and Monotonic Writes.
-
-- [Causal Memory: Definitions, Implementation and Programming](papers/causal-consistency.pdf) (1995)
-
-  This paper defines the condition of causal consistency based on Lamport's "happened before" relation.
-
-## Distributed transaction
-
-- [Time, Clocks, and the Ordering of Events in a Distributed System](papers/logical-clocks.pdf) (1978)
-
-  This paper discusses the partial ordering defined by the "happened before" relation, and gives a distributed algorithm for extending it to a consistent total ordering of all the events.
-
-- [Large-scale Incremental Processing Using Distributed Transactions and Notifications](papers/percolator.pdf) (2010)
-
-  This paper presents Percolator, an incremental update processing system built on top of Bigtable. Percolator provides snapshot isolation transactions using a two-phase commit protocol.
-
-- [Calvin: Fast Distributed Transactions for Partitioned Database Systems](papers/calvin.pdf) (2012)
-
-  This paper presents Calvin, a practical transaction scheduling and data replication layer that uses a deterministic ordering guarantee to significantly reduce the normally prohibitive contention costs associated with distributed transactions.
-
-- [Highly Available Transactions: Virtues and Limitations](papers/highly-available-transactions.pdf) (2013)
-
-  This paper introduces a taxonomy of highly available systems and analyze existing ACID isolation and distributed data consistency guarantees to identify which can and cannot be achieved in HAT systems.
-
-- [Logical Physical Clocks and Consistent Snapshots in Globally Distributed Databases](papers/hybrid-logical-clocks.pdf) (2014)
-
-  This paper proposes a hybrid logical clock, HLC, that combines the best of logical clocks and physical clocks.
-
-- [Consistency in Non-Transactional Distributed Storage Systems](papers/consistency-overview.pdf) (2016)
-
-  This paper provides a structured and comprehensive overview of different consistency notions and provide a partial order among different consistency predicates.
-
-- [SLOG: Serializable, Low-latency, Geo-replicated Transactions](papers/slog.pdf) (2019)
-
-  This paper presents SLOG, a system that provides strictly serializable ACID transactions at geo-replicated distance. SLOG achieves high-throughtput and low latency for transactions that initiate from a location close to the home region for data they access.
-
-- [Transactional Causal Consistency for Serverless Computing](papers/transactional-causal-consistency.pdf) (2020)
-
-- [Linearizability versus Serializability](http://www.bailis.org/blog/linearizability-versus-serializability/) (2014)
-- [Distributed consistency at scale: Spanner vs. Calvin](http://dbmsmusings.blogspot.com/2017/04/distributed-consistency-at-scale.html) (2017)
-- [NewSQL database systems are failing to guarantee consistency, and I blame Spanner](http://dbmsmusings.blogspot.com/2018/09/newsql-database-systems-are-failing-to.html) (2018)
-- [Consistency without Clocks: The FaunaDB Distributed Transaction Protocol](https://fauna.com/blog/consistency-without-clocks-faunadb-transaction-protocol) (2018)
-- [Demystifying Database Systems, Part 1: An Introduction to Transaction Isolation Levels](https://fauna.com/blog/introduction-to-transaction-isolation-levels) (2019)
-- [Demystifying Database Systems, Part 2: Correctness Anomalies Under Serializable Isolation](https://fauna.com/blog/demystifying-database-systems-correctness-anomalies-under-serializable-isolation) (2019)
-- [Demystifying Database Systems, Part 3: Introduction to Consistency Levels](https://fauna.com/blog/demystifying-database-systems-introduction-to-consistency-levels) (2019)
-- [Demystifying Database Systems, Part 4: Isolation levels vs. Consistency levels](https://fauna.com/blog/demystifying-database-systems-part-4-isolation-levels-vs-consistency-levels) (2019)
-
 ## Concensus and replication
-
-- [Consensus on Transaction Commit](papers/paxos-commit.pdf) (2004)
-
-  This paper presents the Paxos Commit algorithm. Paxos Commit runs a Paxos consensus algorithm on the commit/abort decision of each participant to obtain a transaction commit protocol that uses 2F + 1 coordinators and makes progress if at least F + 1 of them are working properly.
 
 - [Brewer’s Conjecture and the Feasibility of Consistent, Available, Partition-Tolerant Web Services](papers/cap-therom.pdf) (2002)
 
@@ -487,9 +490,11 @@ The content below will be refactored later.
 
 - [Large-scale cluster management at Google with Borg](papers/borg.pdf) (2015)
 
-## Miscellaneous
+## Data model
 
 - [What Goes Around Comes Around](papers/what-goes-around-comes-around.pdf) (2005)
+
+## Miscellaneous
 
 - ["One Size Fits All": An Idea Whose Time Has Come and Gone](papers/one-size-fits-all.pdf) (2005)
 
