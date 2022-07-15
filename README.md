@@ -14,27 +14,6 @@ Database development is interesting and challenging. You can always find interes
 
 - [Apache Kafka, Samza, and the Unix Philosophy of Distributed Data](http://www.confluent.io/blog/apache-kafka-samza-and-the-unix-philosophy-of-distributed-data) (2015)
 
-## Storage Device
-
-### Media
-
-- [Hard Disk Drive (HDD)](https://en.wikipedia.org/wiki/Hard_disk_drive)
-- [How HDD Works](https://www.youtube.com/watch?v=Ep-yM894mQQ) (Video)
-- [The Development of HDD Technique](https://www.youtube.com/watch?v=wteUW2sL7bc) (Video)
-
-- [Solid-State Drive (SSD)](https://en.wikipedia.org/wiki/Solid-state_drive)
-- [How Flash Memory Works](https://www.youtube.com/watch?v=s7JLXs5es7I) (Video)
-- [Coding for SSDs](http://codecapsule.com/2014/02/12/coding-for-ssds-part-1-introduction-and-table-of-contents/)
-
-### Interface
-
-- [A History of PC Buses - From ISA to PCI Express](https://www.youtube.com/watch?v=qla-5isbK60) (Video)
-- [Serial Attached SCSI (SAS)](https://en.wikipedia.org/wiki/Serial_Attached_SCSI)
-- [Understanding SCSI](https://www.youtube.com/watch?v=pR7SdrXdT4M) (Video)
-- [Serial AT Attachment (SATA)](https://en.wikipedia.org/wiki/Serial_ATA)
-- [PCI Express (PCIe)](https://en.wikipedia.org/wiki/PCI_Express)
-- [NVM Express (NVMe)](https://en.wikipedia.org/wiki/NVM_Express)
-
 ## Storage Engine
 
 - [The Five-Minute Rule for Trading Memory for Disc Accesses](papers/five-minute-rule-1987.pdf) (1987)
@@ -197,7 +176,7 @@ Database development is interesting and challenging. You can always find interes
 - [Serializable, Lockless, Distributed: Isolation in CockroachDB](https://www.cockroachlabs.com/blog/serializable-lockless-distributed-isolation-cockroachdb/) (2016)
 - [CockroachDB’s Consistency Model](https://www.cockroachlabs.com/blog/consistency-model/) (2019)
 
-## OLAP
+### OLAP
 
 - [C-Store: A Column-oriented DBMS](papers/c-store.pdf) (2005)
 
@@ -249,6 +228,40 @@ Database development is interesting and challenging. You can always find interes
 
   In this work, we propose Hologres, which is a cloud native service for hybrid serving and analytical processing (HSAP). Hologres decouples the computation and storage layers, allowing flexible scaling in each layer. Tables are partitioned into self-managed shards. Each shard processes its read and write requests concurrently independent of each other. Hologres leverages hybrid row/column storage to optimize operations such as point lookup, column scan and data ingestion used in HSAP. We propose Execution Context as a resource abstraction between system threads and user tasks. Execution contexts can be cooperatively scheduled with little context switching overhead. Queries are parallelized and mapped to execution contexts for concurrent execution. The scheduling framework enforces resource isolation among different queries and supports customizable schedule policy.
 
+## Replication algorithm
+
+- [Paxos Made Simple](papers/paxos-made-simple.pdf) (2001)
+
+  The Paxos algorithm, when presented in plain English, is very simple.
+
+- [Paxos Made Live - An Engineering Perspective](papers/paxos-made-live.pdf) (2007)
+
+  We used the Paxos algorithm (“Paxos”) as the base for a framework that implements a fault-tolerant log. We then relied on that framework to build a fault-tolerant database. This paper discusses a selection of the algorithmic and engineering challenges we encountered in moving Paxos from theory to practice.
+
+- [There Is More Consensus in Egalitarian Parliaments](papers/epaxos.pdf) (2013)
+
+  This paper describes the design and implementation of Egalitarian Paxos (EPaxos), a new distributed consensus algorithm based on Paxos. EPaxos achieves three goals: (1) optimal commit latency in the wide-area when toler- ating one and two failures, under realistic conditions; (2) uniform load balancing across all replicas (thus achieving high throughput); and (3) graceful performance degrada- tion when replicas are slow or crash.
+
+- [Paxos Quorum Leases: Fast Reads Without Sacrificing Writes](papers/paxos-quorum-leases.pdf) (2014)
+
+  This paper describes quorum leases, a new technique that allows Paxos-based systems to perform reads with high throughput and low latency. Quorum leases do not sacrifice consistency and have only a small impact on system availability and write latency. Quorum leases allow a majority of replicas to perform strongly consistent local reads, which substantially reduces read latency at those replicas (e.g., by two orders of magnitude in wide-area scenarios). Previous techniques for performing local reads in Paxos systems either (a) sacrifice consistency; (b) allow only one replica to read locally; or (c) decrease the availability of the system and increase the latency of all updates by requiring all replicas to be notified synchronously.
+
+- [In Search of an Understandable Consensus Algorithm](papers/raft.pdf) (2014)
+
+  Raft is a consensus algorithm for managing a replicated log. It produces a result equivalent to (multi-)Paxos, and it is as efficient as Paxos, but its structure is different from Paxos; this makes Raft more understandable than Paxos and also provides a better foundation for building practical systems. In order to enhance understandability, Raft separates the key elements of consensus, such as leader election, log replication, and safety, and it enforces a stronger degree of coherency to reduce the number of states that must be considered. Results from a user study demonstrate that Raft is easier for students to learn than Paxos. Raft also includes a new mechanism for changing the cluster membership, which uses overlapping majorities to guarantee safety.
+
+- [Weighted Voting for Replicated Data](papers/quorum.pdf) (1979)
+
+  In a new algorithm for maintaining replicated data, every copy of a replicated file is assigned some number of votes. Every transaction collects a read quorum of r votes to read a file, and a write quorum of w votes to write a file, such that r+w is greater than the total number of votes assigned to the file. This ensures that there is a non-null intersection between every read quorum and every write quorum. Version numbers make it possible to determine which copies are current. The reliability and performance characteristics of a replicated file can be controlled by appropriately choosing r, w, and the file's voting configuration. The algorithm guarantees serial consistency, admits temporary copies in a natural way by the introduction of copies with no votes, and has been implemented in the context of an application system called Violet.
+
+- [Chain Replication for Supporting High Throughput and Availability](papers/chain-replication.pdf) (2004)
+
+  Chain replication is a new approach to coordinating clusters of fail-stop storage servers. The approach is intended for supporting large-scale storage services that exhibit high throughput and availability without sacrificing strong consistency guarantees. Besides outlining the chain replication protocols themselves, simulation experiments explore the performance characteristics of a prototype implementation. Throughput, availability, and several object-placement strategies (including schemes based on distributed hash table routing) are discussed.
+
+- [Conflict-free Replicated Data Types](papers/crdt.pdf) (2011)
+
+  Under a formal Strong Eventual Consistency (SEC) model, we study sufficient conditions for convergence. A data type that satisfies these conditions is called a Conflict-free Replicated Data Type (CRDT). Replicas of any CRDT are guaranteed to converge in a self-stabilising manner, despite any number of failures. This paper formalises two popular approaches (state- and operation-based) and their relevant sufficient conditions. We study a number of useful CRDTs, such as sets with clean semantics, supporting both add and remove operations, and consider in depth the more complex Graph data type. CRDT types can be composed to develop large-scale distributed applications, and have interesting theoretical properties.
+
 ## Distributed storage system
 
 - [The Google File System](papers/gfs.pdf) (2003)
@@ -299,11 +312,52 @@ Database development is interesting and challenging. You can always find interes
 
   Developers have access to a wide range of storage APIs and functionality in large-scale systems, such as rela- tional databases, key-value stores, and namespaces. However, this diversity comes at a cost: each API is implemented by a complex distributed system that is difficult to develop and operate. Delos amortizes this cost by enabling different APIs on a shared codebase and operational platform. The primary innovation in Delos is a log-structured protocol: a fine-grained replicated state machine executing above a shared log that can be layered into reusable protocol stacks under different databases.
 
+## Storage Device
+
+### Media
+
+- [Hard Disk Drive (HDD)](https://en.wikipedia.org/wiki/Hard_disk_drive)
+- [How HDD Works](https://www.youtube.com/watch?v=Ep-yM894mQQ) (Video)
+- [The Development of HDD Technique](https://www.youtube.com/watch?v=wteUW2sL7bc) (Video)
+
+- [Solid-State Drive (SSD)](https://en.wikipedia.org/wiki/Solid-state_drive)
+- [How Flash Memory Works](https://www.youtube.com/watch?v=s7JLXs5es7I) (Video)
+- [Coding for SSDs](http://codecapsule.com/2014/02/12/coding-for-ssds-part-1-introduction-and-table-of-contents/)
+
+### Interface
+
+- [A History of PC Buses - From ISA to PCI Express](https://www.youtube.com/watch?v=qla-5isbK60) (Video)
+- [Serial Attached SCSI (SAS)](https://en.wikipedia.org/wiki/Serial_Attached_SCSI)
+- [Understanding SCSI](https://www.youtube.com/watch?v=pR7SdrXdT4M) (Video)
+- [Serial AT Attachment (SATA)](https://en.wikipedia.org/wiki/Serial_ATA)
+- [PCI Express (PCIe)](https://en.wikipedia.org/wiki/PCI_Express)
+- [NVM Express (NVMe)](https://en.wikipedia.org/wiki/NVM_Express)
+
 ----
 
 The content below will be refactored later.
 
 ----
+
+## Transaction
+
+### Isolation
+
+- [A Critique of ANSI SQL Isolation Levels](papers/ansi-isolation.pdf) (1995)
+
+  This paper analyzes the ambiguities of ANSI isolation levels and provides clearer phenomena definitions. It also presents a new MVCC isolation level called snapshot isolation. A transaction in snapshot isolation reads data from a snapshot of the committed data as of the time the transaction started, and checks for write-write conflicts.
+
+- [Generalized Isolation Level Definitions](papers/generalized-isolation.pdf) (2000)
+
+  This paper proposes a graph-based approach to define existing ANSI isolation levels.
+
+- [Serializable Isolation for Snapshot Databases](papers/serializable-snapshot-isolation.pdf) (2008)
+
+  This paper presents an algorithm to achieve serializable snapshot isolation based on anti-dependencies detection.
+
+- [A Critique of Snapshot Isolation](papers/snapshot-isolation.pdf) (2012)
+
+  This paper presents a new MVCC isolation level called write-snapshot isolation. A transaction in write-snapshot isolation checks for read-write conflicts instead of write-write conflicts in snapshot isolation.
 
 ## Operating System
 
@@ -374,22 +428,6 @@ The content below will be refactored later.
 
   This paper defines the condition of causal consistency based on Lamport's "happened before" relation.
 
-- [A Critique of ANSI SQL Isolation Levels](papers/ansi-isolation.pdf) (1995)
-
-  This paper analyzes the ambiguities of ANSI isolation levels and provides clearer phenomena definitions. It also presents a new MVCC isolation level called snapshot isolation. A transaction in snapshot isolation reads data from a snapshot of the committed data as of the time the transaction started, and checks for write-write conflicts.
-
-- [Generalized Isolation Level Definitions](papers/generalized-isolation.pdf) (2000)
-
-  This paper proposes a graph-based approach to define existing ANSI isolation levels.
-
-- [Serializable Isolation for Snapshot Databases](papers/serializable-snapshot-isolation.pdf) (2008)
-
-  This paper presents an algorithm to achieve serializable snapshot isolation based on anti-dependencies detection.
-
-- [A Critique of Snapshot Isolation](papers/snapshot-isolation.pdf) (2012)
-
-  This paper presents a new MVCC isolation level called write-snapshot isolation. A transaction in write-snapshot isolation checks for read-write conflicts instead of write-write conflicts in snapshot isolation.
-
 ## Distributed transaction
 
 - [Time, Clocks, and the Ordering of Events in a Distributed System](papers/logical-clocks.pdf) (1978)
@@ -433,39 +471,9 @@ The content below will be refactored later.
 
 ## Concensus and replication
 
-- [Paxos Made Simple](papers/paxos-made-simple.pdf) (2001)
-
-  The Paxos algorithm, when presented in plain English, is very simple.
-
 - [Consensus on Transaction Commit](papers/paxos-commit.pdf) (2004)
 
   This paper presents the Paxos Commit algorithm. Paxos Commit runs a Paxos consensus algorithm on the commit/abort decision of each participant to obtain a transaction commit protocol that uses 2F + 1 coordinators and makes progress if at least F + 1 of them are working properly.
-
-- [Paxos Made Live - An Engineering Perspective](papers/paxos-made-live.pdf) (2007)
-
-  This paper presents the experience of building Chubby, a fault-tolerant storage system using the Paxos consensus algorithm.
-
-- [There Is More Consensus in Egalitarian Parliaments](papers/epaxos.pdf) (2013)
-
-  This paper presents the design and implementation of Egalitarian Paxos (EPaxos), a new distributed consensus algorithm based on Paxos that achieves uniform load balancing across all replicas.
-
-- [Paxos Quorum Leases: Fast Reads Without Sacrificing Writes](papers/paxos-quorum-leases.pdf) (2014)
-
-  This paper presents quorum leases, a technique that allows Paxos-based systems to perform consistent local reads on multiple replicas.
-
-- [In Search of an Understandable Consensus Algorithm](papers/raft.pdf) (2014)
-
-  This paper presents Raft, a consensus algorithm for managing a replicated log. Raft produces a result equivalent to Paxos, and it is as efficient as Paxos, but its structure is different from Paxos. Raft is more understandable than Paxos and also provides a better foundation for building practical systems.
-
-- [Weighted Voting for Replicated Data](papers/quorum.pdf) (1979)
-
-  In a new algorithm for maintaining replicated data, every copy of a replicated file is assigned some number of votes. Every transaction collects a read quorum of r votes to read a file, and a write quorum of w votes to write a file, such that r+ w is greater than the total number of votes assigned to the file.
-
-- [Chain Replication for Supporting High Throughput and Availability](papers/chain-replication.pdf) (2004)
-
-  Chain replication is a new approach to coordinating clusters of fail-stop storage servers. The approach is intended for supporting large-scale storage services that exhibit high throughput and availability with-out sacrificing strong consistency guarantees.
-
-- [Conflict-free Replicated Data Types](papers/crdt.pdf) (2011)
 
 - [Brewer’s Conjecture and the Feasibility of Consistent, Available, Partition-Tolerant Web Services](papers/cap-therom.pdf) (2002)
 
