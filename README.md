@@ -4,9 +4,11 @@ Database development is interesting and challenging. You can always find interes
 
 ## Introduction
 
-- [What I Learned From Programming Databases](http://www.philipotoole.com/what-i-learned-from-programming-a-database/) (2016)
+- [Readings in Database Systems](http://www.redbook.io/)
 
-- [Notes on Distributed Systems for Young Bloods](https://www.somethingsimilar.com/2013/01/14/notes-on-distributed-systems-for-young-bloods/) (2013)
+  Readings in Database Systems (commonly known as the "Red Book") has offered readers an opinionated take on both classic and cutting-edge research in the field of data management since 1988.
+
+- [Designing Data-Intensive Applications](https://www.oreilly.com/library/view/designing-data-intensive-applications/9781491903063/)
 
 - [How does a relational database work](http://coding-geek.com/how-databases-work/) (2015)
 
@@ -14,12 +16,67 @@ Database development is interesting and challenging. You can always find interes
 
 - [Apache Kafka, Samza, and the Unix Philosophy of Distributed Data](http://www.confluent.io/blog/apache-kafka-samza-and-the-unix-philosophy-of-distributed-data) (2015)
 
+## System programming
+
+- [What Every Programmer Should Know About Memory](papers/cpumemory.pdf) (2007)
+
+  This paper explains the structure of memory subsystems in use on modern commodity hardware, illustrating why CPU caches were developed, how they work, and what programs should do to achieve optimal performance by utilizing them.
+
+- [What Every Systems Programmer Should Know About Concurrency](papers/concurrency.pdf) (2018)
+
+  Seasoned programmers are familiar with tools like mutexes, semaphores, and condition variables. But what makes them work? How do we write concurrent code when we can’t use them, like when we’re working below the operating system in an embedded environment, or when we can’t block due to hard time constraints? And since your system transforms your code into things you didn’t write, running in orders you never asked for, how do multithreaded programs work at all? Concurrency — especially on modern hardware — is a complicated and unintuitive topic, but let’s try to cover some fundamentals.
+
+- [Everything You Always Wanted to Know About Synchronization but Were Afraid to Ask](papers/synchronization.pdf) (2013)
+
+  This paper presents the most exhaustive study of synchronization to date. We span multiple layers, from hardware cache-coherence protocols up to high-level concurrent software. We do so on different types of architectures, from single-socket – uniform and non-uniform – to multi-socket – directory and broadcast-based – many-cores.
+
+### Linux kernel
+
+- [Understanding the Linux Kernel](https://www.oreilly.com/library/view/understanding-the-linux/0596005652/)
+
+- [Understanding the Linux Virtual Memory Manager](https://www.kernel.org/doc/gorman/)
+
+- [ext4 Data Structures and Algorithms](https://www.kernel.org/doc/html/latest/filesystems/ext4/index.html)
+
+- [The Slab Allocator: An Object-Caching Kernel Memory Allocator](papers/slab.pdf) (1994)
+
+  This paper presents a comprehensive design overview of the SunOS 5.4 kernel memory allocator. This allocator is based on a set of object-caching primitives that reduce the cost of allocating complex objects by retaining their state between uses.
+
+## Storage Device
+
+### Media
+
+- [Hard Disk Drive (HDD)](https://en.wikipedia.org/wiki/Hard_disk_drive)
+- [How HDD Works](https://www.youtube.com/watch?v=Ep-yM894mQQ) (Video)
+- [The Development of HDD Technique](https://www.youtube.com/watch?v=wteUW2sL7bc) (Video)
+
+- [Solid-State Drive (SSD)](https://en.wikipedia.org/wiki/Solid-state_drive)
+- [How Flash Memory Works](https://www.youtube.com/watch?v=s7JLXs5es7I) (Video)
+- [Coding for SSDs](http://codecapsule.com/2014/02/12/coding-for-ssds-part-1-introduction-and-table-of-contents/)
+
+### Interface
+
+- [A History of PC Buses - From ISA to PCI Express](https://www.youtube.com/watch?v=qla-5isbK60) (Video)
+- [Serial Attached SCSI (SAS)](https://en.wikipedia.org/wiki/Serial_Attached_SCSI)
+- [Understanding SCSI](https://www.youtube.com/watch?v=pR7SdrXdT4M) (Video)
+- [Serial AT Attachment (SATA)](https://en.wikipedia.org/wiki/Serial_ATA)
+- [PCI Express (PCIe)](https://en.wikipedia.org/wiki/PCI_Express)
+- [NVM Express (NVMe)](https://en.wikipedia.org/wiki/NVM_Express)
+
 ## Storage Engine
 
 - [The Five-Minute Rule for Trading Memory for Disc Accesses](papers/five-minute-rule-1987.pdf) (1987)
 - [The Five-Minute Rule 10 Years Later, and Other Computer Storage Rules of Thumb](papers/five-minute-rule-1997.pdf) (1997)
 - [The Five-Minute Rule 20 Years Later, and How Flash Memory Changes the Rules](papers/five-minute-rule-2007.pdf) (2007)
 - [The Five-Minute Rule 30 Years Later, and its Impact on the Storage Hierarchy](papers/five-minute-rule-2017.pdf) (2017)
+
+- [The Design and Implementation of a Log-Structured File System](papers/lfs.pdf) (1991)
+
+  This paper presents a new technique for disk storage management called a log-structured file system. A log-structured file system writes all modifications to disk sequentially in a log-like structure, thereby speeding up both file writing and crash recovery.
+
+- [SFS: Random Write Considered Harmful in Solid State Drives](papers/sfs.pdf) (2012)
+
+  In this paper, we propose a new file system for SSDs, SFS. First, SFS exploits the maximum write bandwidth of SSD by taking a log-structured approach. SFS transforms all random writes at file system level to sequential ones at SSD level. Second, SFS takes a new data grouping strategy on writing, instead of the existing data separation strategy on segment cleaning. It puts the data blocks with similar update likelihood into the same segment. This minimizes the inevitable segment cleaning overhead in any log-structured file system by allowing the segments to form a sharp bimodal distribution of segment utilization.
 
 - [The Adaptive Radix Tree: ARTful Indexing for Main-Memory Databases](papers/adaptive-radix-tree.pdf) (2013)
 
@@ -228,6 +285,40 @@ Database development is interesting and challenging. You can always find interes
 
   In this work, we propose Hologres, which is a cloud native service for hybrid serving and analytical processing (HSAP). Hologres decouples the computation and storage layers, allowing flexible scaling in each layer. Tables are partitioned into self-managed shards. Each shard processes its read and write requests concurrently independent of each other. Hologres leverages hybrid row/column storage to optimize operations such as point lookup, column scan and data ingestion used in HSAP. We propose Execution Context as a resource abstraction between system threads and user tasks. Execution contexts can be cooperatively scheduled with little context switching overhead. Queries are parallelized and mapped to execution contexts for concurrent execution. The scheduling framework enforces resource isolation among different queries and supports customizable schedule policy.
 
+## Replication
+
+- [Paxos Made Simple](papers/paxos-made-simple.pdf) (2001)
+
+  The Paxos algorithm, when presented in plain English, is very simple.
+
+- [Paxos Made Live - An Engineering Perspective](papers/paxos-made-live.pdf) (2007)
+
+  We used the Paxos algorithm (“Paxos”) as the base for a framework that implements a fault-tolerant log. We then relied on that framework to build a fault-tolerant database. This paper discusses a selection of the algorithmic and engineering challenges we encountered in moving Paxos from theory to practice.
+
+- [There Is More Consensus in Egalitarian Parliaments](papers/epaxos.pdf) (2013)
+
+  This paper describes the design and implementation of Egalitarian Paxos (EPaxos), a new distributed consensus algorithm based on Paxos. EPaxos achieves three goals: (1) optimal commit latency in the wide-area when toler- ating one and two failures, under realistic conditions; (2) uniform load balancing across all replicas (thus achieving high throughput); and (3) graceful performance degrada- tion when replicas are slow or crash.
+
+- [Paxos Quorum Leases: Fast Reads Without Sacrificing Writes](papers/paxos-quorum-leases.pdf) (2014)
+
+  This paper describes quorum leases, a new technique that allows Paxos-based systems to perform reads with high throughput and low latency. Quorum leases do not sacrifice consistency and have only a small impact on system availability and write latency. Quorum leases allow a majority of replicas to perform strongly consistent local reads, which substantially reduces read latency at those replicas (e.g., by two orders of magnitude in wide-area scenarios). Previous techniques for performing local reads in Paxos systems either (a) sacrifice consistency; (b) allow only one replica to read locally; or (c) decrease the availability of the system and increase the latency of all updates by requiring all replicas to be notified synchronously.
+
+- [In Search of an Understandable Consensus Algorithm](papers/raft.pdf) (2014)
+
+  Raft is a consensus algorithm for managing a replicated log. It produces a result equivalent to (multi-)Paxos, and it is as efficient as Paxos, but its structure is different from Paxos; this makes Raft more understandable than Paxos and also provides a better foundation for building practical systems. In order to enhance understandability, Raft separates the key elements of consensus, such as leader election, log replication, and safety, and it enforces a stronger degree of coherency to reduce the number of states that must be considered. Results from a user study demonstrate that Raft is easier for students to learn than Paxos. Raft also includes a new mechanism for changing the cluster membership, which uses overlapping majorities to guarantee safety.
+
+- [Weighted Voting for Replicated Data](papers/quorum.pdf) (1979)
+
+  In a new algorithm for maintaining replicated data, every copy of a replicated file is assigned some number of votes. Every transaction collects a read quorum of r votes to read a file, and a write quorum of w votes to write a file, such that r+w is greater than the total number of votes assigned to the file. This ensures that there is a non-null intersection between every read quorum and every write quorum. Version numbers make it possible to determine which copies are current. The reliability and performance characteristics of a replicated file can be controlled by appropriately choosing r, w, and the file's voting configuration. The algorithm guarantees serial consistency, admits temporary copies in a natural way by the introduction of copies with no votes, and has been implemented in the context of an application system called Violet.
+
+- [Chain Replication for Supporting High Throughput and Availability](papers/chain-replication.pdf) (2004)
+
+  Chain replication is a new approach to coordinating clusters of fail-stop storage servers. The approach is intended for supporting large-scale storage services that exhibit high throughput and availability without sacrificing strong consistency guarantees. Besides outlining the chain replication protocols themselves, simulation experiments explore the performance characteristics of a prototype implementation. Throughput, availability, and several object-placement strategies (including schemes based on distributed hash table routing) are discussed.
+
+- [Conflict-free Replicated Data Types](papers/crdt.pdf) (2011)
+
+  Under a formal Strong Eventual Consistency (SEC) model, we study sufficient conditions for convergence. A data type that satisfies these conditions is called a Conflict-free Replicated Data Type (CRDT). Replicas of any CRDT are guaranteed to converge in a self-stabilising manner, despite any number of failures. This paper formalises two popular approaches (state- and operation-based) and their relevant sufficient conditions. We study a number of useful CRDTs, such as sets with clean semantics, supporting both add and remove operations, and consider in depth the more complex Graph data type. CRDT types can be composed to develop large-scale distributed applications, and have interesting theoretical properties.
+
 ## Transaction
 
 - [Granularity of Locks and Degrees of Consistency in a Shared Data Base](papers/locks.pdf) (1975)
@@ -322,41 +413,23 @@ Database development is interesting and challenging. You can always find interes
 - [Demystifying Database Systems, Part 3: Introduction to Consistency Levels](https://fauna.com/blog/demystifying-database-systems-introduction-to-consistency-levels) (2019)
 - [Demystifying Database Systems, Part 4: Isolation levels vs. Consistency levels](https://fauna.com/blog/demystifying-database-systems-part-4-isolation-levels-vs-consistency-levels) (2019)
 
-## Replication algorithm
+## Distributed system
 
-- [Paxos Made Simple](papers/paxos-made-simple.pdf) (2001)
+- [Brewer’s Conjecture and the Feasibility of Consistent, Available, Partition-Tolerant Web Services](papers/cap-theorem.pdf) (2002)
 
-  The Paxos algorithm, when presented in plain English, is very simple.
+  When designing distributed web services, there are three properties that are commonly desired: consistency, availability, and partition tolerance. It is impossible to achieve all three. In this note, we prove this conjecture in the asynchronous network model, and then discuss solutions to this dilemma in the partially synchronous model.
 
-- [Paxos Made Live - An Engineering Perspective](papers/paxos-made-live.pdf) (2007)
+- [CAP Twelve Years Later: How the "Rules" Have Changed](https://www.infoq.com/articles/cap-twelve-years-later-how-the-rules-have-changed) (2012)
 
-  We used the Paxos algorithm (“Paxos”) as the base for a framework that implements a fault-tolerant log. We then relied on that framework to build a fault-tolerant database. This paper discusses a selection of the algorithmic and engineering challenges we encountered in moving Paxos from theory to practice.
+  Although designers still need to choose between consistency and availability when partitions are present, there is an incredible range of flexibility for handling partitions and recovering from them. The modern CAP goal should be to maximize combinations of consistency and availability that make sense for the specific application. Such an approach incorporates plans for operation during a partition and for recovery afterward, thus helping designers think about CAP beyond its historically perceived limitations.
 
-- [There Is More Consensus in Egalitarian Parliaments](papers/epaxos.pdf) (2013)
+- [An Opportunity Cost Approach for Job Assignment in a Scalable Computing Cluster](papers/epvm.pdf) (2000)
 
-  This paper describes the design and implementation of Egalitarian Paxos (EPaxos), a new distributed consensus algorithm based on Paxos. EPaxos achieves three goals: (1) optimal commit latency in the wide-area when toler- ating one and two failures, under realistic conditions; (2) uniform load balancing across all replicas (thus achieving high throughput); and (3) graceful performance degrada- tion when replicas are slow or crash.
+  A new method is presented for job assignment to and reassignment between machines in a computing cluster. Our method is based on a theoretical framework that has been experimentally tested and shown to be useful in practice. This opportunity cost method converts the usage of several heterogeneous resources in a machine to a single homogeneous cost. Assignment and reassignment are then performed based on that cost. This is in contrast to traditional, ad hoc methods for job assignment and reassignment. These treated each resource as an independent entity with its own constraints, as there was no clean way to balance one resource against another.
 
-- [Paxos Quorum Leases: Fast Reads Without Sacrificing Writes](papers/paxos-quorum-leases.pdf) (2014)
+- [Large-scale cluster management at Google with Borg](papers/borg.pdf) (2015)
 
-  This paper describes quorum leases, a new technique that allows Paxos-based systems to perform reads with high throughput and low latency. Quorum leases do not sacrifice consistency and have only a small impact on system availability and write latency. Quorum leases allow a majority of replicas to perform strongly consistent local reads, which substantially reduces read latency at those replicas (e.g., by two orders of magnitude in wide-area scenarios). Previous techniques for performing local reads in Paxos systems either (a) sacrifice consistency; (b) allow only one replica to read locally; or (c) decrease the availability of the system and increase the latency of all updates by requiring all replicas to be notified synchronously.
-
-- [In Search of an Understandable Consensus Algorithm](papers/raft.pdf) (2014)
-
-  Raft is a consensus algorithm for managing a replicated log. It produces a result equivalent to (multi-)Paxos, and it is as efficient as Paxos, but its structure is different from Paxos; this makes Raft more understandable than Paxos and also provides a better foundation for building practical systems. In order to enhance understandability, Raft separates the key elements of consensus, such as leader election, log replication, and safety, and it enforces a stronger degree of coherency to reduce the number of states that must be considered. Results from a user study demonstrate that Raft is easier for students to learn than Paxos. Raft also includes a new mechanism for changing the cluster membership, which uses overlapping majorities to guarantee safety.
-
-- [Weighted Voting for Replicated Data](papers/quorum.pdf) (1979)
-
-  In a new algorithm for maintaining replicated data, every copy of a replicated file is assigned some number of votes. Every transaction collects a read quorum of r votes to read a file, and a write quorum of w votes to write a file, such that r+w is greater than the total number of votes assigned to the file. This ensures that there is a non-null intersection between every read quorum and every write quorum. Version numbers make it possible to determine which copies are current. The reliability and performance characteristics of a replicated file can be controlled by appropriately choosing r, w, and the file's voting configuration. The algorithm guarantees serial consistency, admits temporary copies in a natural way by the introduction of copies with no votes, and has been implemented in the context of an application system called Violet.
-
-- [Chain Replication for Supporting High Throughput and Availability](papers/chain-replication.pdf) (2004)
-
-  Chain replication is a new approach to coordinating clusters of fail-stop storage servers. The approach is intended for supporting large-scale storage services that exhibit high throughput and availability without sacrificing strong consistency guarantees. Besides outlining the chain replication protocols themselves, simulation experiments explore the performance characteristics of a prototype implementation. Throughput, availability, and several object-placement strategies (including schemes based on distributed hash table routing) are discussed.
-
-- [Conflict-free Replicated Data Types](papers/crdt.pdf) (2011)
-
-  Under a formal Strong Eventual Consistency (SEC) model, we study sufficient conditions for convergence. A data type that satisfies these conditions is called a Conflict-free Replicated Data Type (CRDT). Replicas of any CRDT are guaranteed to converge in a self-stabilising manner, despite any number of failures. This paper formalises two popular approaches (state- and operation-based) and their relevant sufficient conditions. We study a number of useful CRDTs, such as sets with clean semantics, supporting both add and remove operations, and consider in depth the more complex Graph data type. CRDT types can be composed to develop large-scale distributed applications, and have interesting theoretical properties.
-
-## Distributed storage system
+  Google’s Borg system is a cluster manager that runs hundreds of thousands of jobs, from many thousands of different applications, across a number of clusters each with up to tens of thousands of machines. It achieves high utilization by combining admission control, efficient task-packing, over-commitment, and machine sharing with process-level performance isolation. It supports high-availability applications with runtime features that minimize fault-recovery time, and scheduling policies that reduce the probability of correlated failures. Borg simplifies life for its users by offering a declarative job specification language, name service integration, real-time job monitoring, and tools to analyze and simulate system behavior.
 
 - [The Google File System](papers/gfs.pdf) (2003)
 
@@ -406,104 +479,24 @@ Database development is interesting and challenging. You can always find interes
 
   Developers have access to a wide range of storage APIs and functionality in large-scale systems, such as rela- tional databases, key-value stores, and namespaces. However, this diversity comes at a cost: each API is implemented by a complex distributed system that is difficult to develop and operate. Delos amortizes this cost by enabling different APIs on a shared codebase and operational platform. The primary innovation in Delos is a log-structured protocol: a fine-grained replicated state machine executing above a shared log that can be layered into reusable protocol stacks under different databases.
 
-## Storage Device
+## Lessons learned and the future
 
-### Media
+- [Notes on Distributed Systems for Young Bloods](https://www.somethingsimilar.com/2013/01/14/notes-on-distributed-systems-for-young-bloods/) (2013)
 
-- [Hard Disk Drive (HDD)](https://en.wikipedia.org/wiki/Hard_disk_drive)
-- [How HDD Works](https://www.youtube.com/watch?v=Ep-yM894mQQ) (Video)
-- [The Development of HDD Technique](https://www.youtube.com/watch?v=wteUW2sL7bc) (Video)
-
-- [Solid-State Drive (SSD)](https://en.wikipedia.org/wiki/Solid-state_drive)
-- [How Flash Memory Works](https://www.youtube.com/watch?v=s7JLXs5es7I) (Video)
-- [Coding for SSDs](http://codecapsule.com/2014/02/12/coding-for-ssds-part-1-introduction-and-table-of-contents/)
-
-### Interface
-
-- [A History of PC Buses - From ISA to PCI Express](https://www.youtube.com/watch?v=qla-5isbK60) (Video)
-- [Serial Attached SCSI (SAS)](https://en.wikipedia.org/wiki/Serial_Attached_SCSI)
-- [Understanding SCSI](https://www.youtube.com/watch?v=pR7SdrXdT4M) (Video)
-- [Serial AT Attachment (SATA)](https://en.wikipedia.org/wiki/Serial_ATA)
-- [PCI Express (PCIe)](https://en.wikipedia.org/wiki/PCI_Express)
-- [NVM Express (NVMe)](https://en.wikipedia.org/wiki/NVM_Express)
-
-----
-
-The content below will be refactored later.
-
-----
-
-## Operating System
-
-- [What Every Programmer Should Know About Memory](papers/cpumemory.pdf) (2007)
-
-  This paper explains the structure of memory subsystems in use on modern commodity hardware, illustrating why CPU caches were developed, how they work, and what programs should do to achieve optimal performance by utilizing them.
-
-- [What Every Systems Programmer Should Know About Concurrency](papers/concurrency.pdf) (2018)
-
-  Seasoned programmers are familiar with tools like mutexes, semaphores, and condition variables. But what makes them work? How do we write concurrent code when we can’t use them, like when we’re working below the operating system in an embedded environment, or when we can’t block due to hard time constraints? And since your system transforms your code into things you didn’t write, running in orders you never asked for, how do multithreaded programs work at all? Concurrency — especially on modern hardware — is a complicated and unintuitive topic, but let’s try to cover some fundamentals.
-
-- [Everything You Always Wanted to Know About Synchronization but Were Afraid to Ask](papers/synchronization.pdf) (2013)
-
-  This paper presents the most exhaustive study of synchronization to date. We span multiple layers, from hardware cache-coherence protocols up to high-level concurrent software. We do so on different types of architectures, from single-socket – uniform and non-uniform – to multi-socket – directory and broadcast-based – many-cores.
-
-### Kernel
-
-- [Understanding the Linux Kernel](https://www.oreilly.com/library/view/understanding-the-linux/0596005652/)
-- [Understanding the Linux Virtual Memory Manager](https://www.kernel.org/doc/gorman/)
-- [Linux Device Drivers](https://www.oreilly.com/library/view/linux-device-drivers/0596005903/)
-
-- [The Slab Allocator: An Object-Caching Kernel Memory Allocator](papers/slab.pdf) (1994)
-
-  This paper presents a comprehensive design overview of the SunOS 5.4 kernel memory allocator. This allocator is based on a set of object-caching primitives that reduce the cost of allocating complex objects by retaining their state between uses.
-
-### File system
-
-- [ext4 Data Structures and Algorithms](https://www.kernel.org/doc/html/latest/filesystems/ext4/index.html)
-
-- [The Design and Implementation of a Log-Structured File System](papers/lfs.pdf) (1991)
-
-  This paper presents a new technique for disk storage management called a log-structured file system. A log-structured file system writes all modifications to disk sequentially in a log-like structure, thereby speeding up both file writing and crash recovery.
-
-- [SFS: Random Write Considered Harmful in Solid State Drives](papers/sfs.pdf) (2012)
-
-  In this paper, we propose a new file system for SSDs, SFS. First, SFS exploits the maximum write bandwidth of SSD by taking a log-structured approach. SFS transforms all random writes at file system level to sequential ones at SSD level. Second, SFS takes a new data grouping strategy on writing, instead of the existing data separation strategy on segment cleaning. It puts the data blocks with similar update likelihood into the same segment. This minimizes the inevitable segment cleaning overhead in any log-structured file system by allowing the segments to form a sharp bimodal distribution of segment utilization.
-
-### Storage virtualization
-
-- [Logical volume management](https://en.wikipedia.org/wiki/Logical_volume_management)
-- [Logical Volume Management (LVM) - Linux](https://www.youtube.com/watch?v=fadQX2e_PGk) (Video)
-- [Redundant Array of Independent Disks (RAID)](https://en.wikipedia.org/wiki/RAID)
-- [What is RAID 0, 1, 2, 3, 4, 5, 6 and 10 (1+0)?](https://www.youtube.com/watch?v=wTcxRObq738) (Video)
-
-## Concensus and replication
-
-- [Brewer’s Conjecture and the Feasibility of Consistent, Available, Partition-Tolerant Web Services](papers/cap-therom.pdf) (2002)
-
-  This paper proves the CAP conjecture in the asynchronous network model, and then discusses solutions to this dilemma in the partially synchronous model.
-
-- [CAP Twelve Years Later: How the "Rules" Have Changed](https://www.infoq.com/articles/cap-twelve-years-later-how-the-rules-have-changed) (2012)
-
-## Distributed system
-
-- [An Opportunity Cost Approach for Job Assignment in a Scalable Computing Cluster](papers/epvm.pdf) (2000)
-
-- [Large-scale cluster management at Google with Borg](papers/borg.pdf) (2015)
-
-## Data model
+- [What I Learned From Programming Databases](http://www.philipotoole.com/what-i-learned-from-programming-a-database/) (2016)
 
 - [What Goes Around Comes Around](papers/what-goes-around-comes-around.pdf) (2005)
 
-## Miscellaneous
+  This paper provides a summary of 35 years of data model proposals, grouped into 9 different eras. We discuss the proposals of each era, and show that there are only a few basic data modeling ideas, and most have been around a long time. Later proposals inevitably bear a strong resemblance to certain earlier proposals. Hence, it is a worthwhile exercise to study previous proposals.
+
+  In addition, we present the lessons learned from the exploration of the proposals in each era. Most current researchers were not around for many of the previous eras, and have limited (if any) understanding of what was previously learned. There is an old adage that he who does not understand history is condemned to repeat it. By presenting “ancient history”, we hope to allow future researchers to avoid replaying history.
 
 - ["One Size Fits All": An Idea Whose Time Has Come and Gone](papers/one-size-fits-all.pdf) (2005)
 
+  The last 25 years of commercial DBMS development can be summed up in a single phrase: “One size fits all”. This phrase refers to the fact that the traditional DBMS architecture (originally designed and optimized for business data processing) has been used to support many data-centric applications with widely varying characteristics and requirements.
+
+  In this paper, we argue that this concept is no longer applicable to the database market, and that the commercial world will fracture into a collection of independent database engines, some of which may be unified by a common front-end parser. We use examples from the stream-processing market and the data-warehouse market to bolster our claims. We also briefly discuss other markets for which the traditional architecture is a poor fit and argue for a critical rethinking of the current factoring of systems services into products.
+
 - [The Seattle Report on Database Research](papers/the-seattle-report-2019.pdf) (2019)
 
-## Books
-
-- [Readings in Database Systems](http://www.redbook.io/)
-
-  Readings in Database Systems (commonly known as the "Red Book") has offered readers an opinionated take on both classic and cutting-edge research in the field of data management since 1988.
-
-- [Designing Data-Intensive Applications](https://www.oreilly.com/library/view/designing-data-intensive-applications/9781491903063/)
+  Approximately every five years, a group of database researchers meet to do a self-assessment of our community, including reflections on our impact on the industry as well as challenges facing our research community. This report summarizes the discussion and conclusions of the 9th such meeting, held during October 9-10, 2018 in Seattle.
