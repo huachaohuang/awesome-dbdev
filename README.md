@@ -88,6 +88,10 @@ Database development is interesting and challenging. You can always find interes
 
   This concept is enabled through a novel approximate LFU structure called TinyLFU, which maintains an approximate representation of the access frequency of a large sample of recently accessed items. TinyLFU is very compact and lightweight as it builds upon Bloom filter theory.
 
+- [Cost/Performance in Modern Data Stores](papers/cost-performance.pdf) (2018)
+
+  Data in traditional “caching” data systems resides on secondary storage, and is read into main memory only when operated on. This limits system performance. Main memory data stores with data always in main memory are much faster. But this performance comes at a cost. In this paper, we analyze the costs of both in-memory operations and secondary storage operations where data is not “in cache”. We study the performance impact of cache misses on caching system performance. The analysis considers both execution and storage costs. Based on our analysis, we derive cost/performance results for a data caching system and a main memory system to understand where each demonstrates the best cost per operation, what is driving the cost differences, and the scale of the differences. This analysis (1) provides insight into why data caching systems continue to dominate the market; (2) points to higher performance that does not rely on simply increasing main memory cache size; and (3) suggests a path to lower costs and hence better cost/performance.
+
 - [The Data Calculator: Data Structure Design and Cost Synthesis from First Principles and Learned Cost Models](papers/datacalculator.pdf) (2018)
 
   Data structures are critical in any data-driven scenario, but they are notoriously hard to design due to a massive design space and the dependence of performance on workload and hardware which evolve continuously. We present a design engine, the Data Calculator, which enables interactive and semi-automated design of data structures. It brings two innovations. First, it offers a set of fine-grained design primitives that capture the first principles of data layout design: how data structure nodes lay data out, and how they are positioned relative to each other. This allows for a structured description of the universe of possible data structure designs that can be synthesized as combinations of those primitives. The second innovation is computation of performance using learned cost models. These models are trained on diverse hardware and data profiles and capture the cost properties of fundamental data access primitives (e.g., random access). With these models, we synthesize the performance cost of complex operations on arbitrary data structure designs without having to: 1) implement the data structure, 2) run the workload, or even 3) access the target hardware.
@@ -106,9 +110,21 @@ Database development is interesting and challenging. You can always find interes
 
   A streaming B-tree is a dictionary that efficiently implements insertions and range queries. We present two cache-oblivious streaming B-trees, the shuttle tree, and  the cache-oblivious lookahead array (COLA).
 
-- [The Bw-Tree: A B-tree for New Hardware Platforms](papers/bw-tree.pdf) (2013)
+- [Modern B-Tree Techniques](papers/modern-btree.pdf) (2011)
+
+  This survey reviews the basics of B-trees and of B-tree indexes in databases, transactional techniques and query processing techniques related to B-trees, B-tree utilities essential for database operations, and many optimizations and improvements. It is intended both as a survey and as a reference, enabling researchers to compare index innovations with advanced B-tree techniques and enabling professionals to select features, functions, and tradeoffs most appropriate for their data management challenges.
+
+- [The Bw-Tree: A B-tree for New Hardware Platforms](papers/bwtree.pdf) (2013)
 
   Our new form of B-tree, called the Bw-tree achieves its very high performance via a latch-free approach that effectively exploits the processor caches of modern multi-core chips. Our storage manager uses a unique form of log structuring that blurs the distinction between a page and a record store and works well with flash storage. This paper describes the architecture and algorithms for the Bw-tree, focusing on the main memory aspects.
+
+- [Optimizing Bw-tree Indexing Performance](papers/bwtree-2017.pdf) (2017)
+
+  In this paper, we present our optimized Bw-tree index that is substantially faster than our initial implementation. We apply an integrated set optimizations, new ones and refinements of prior techniques, to produce Bw-tree indexing with up to 40 percent better performance for single key lookups, while also improving range search performance. And our original implementation performs comparably to the best main memory indexes. Uniquely, however, it is designed to be used with data residing on secondary storage, and hence includes the overheads required to keep data paginated.
+
+- [Building a Bw-Tree Takes More Than Just Buzz Words](papers/open-bwtree.pdf) (2018)
+
+  This paper has two contributions: First, it is the missing guide for how to build a lock-free Bw-Tree. We clarify missing points in Microsoft’s original design documents and then present techniques to improve the index’s performance. Although our focus here is on the Bw-Tree, many of our methods apply more broadly to designing and implementing future lock-free in-memory data structures. Our experimental evaluation shows that our optimized variant achieves 1.1–2.5× better performance than the original Microsoft proposal for highly concurrent workloads. Second, our evaluation shows that despite our improvements, the Bw-Tree still does not perform as well as other concurrent data structures that use locks.
 
 - [LLAMA: A Cache/Storage Subsystem for Modern Hardware](papers/llama.pdf) (2013)
 
@@ -164,6 +180,10 @@ Database development is interesting and challenging. You can always find interes
 
 - [Bitcask: A Log-Structured Hash Table for Fast Key/Value Data](papers/bitcask.pdf) (2010)
 
+- [SILT: A Memory-Efficient, High-Performance Key-Value Store](papers/silt.pdf) (2011)
+
+  SILT (Small Index Large Table) is a memory-efficient, high-performance key-value store system based on flash storage that scales to serve billions of key-value items on a single node. It requires only 0.7 bytes of DRAM per entry and retrieves key/value pairs using on average 1.01 flash reads each. SILT combines new algorithmic and systems techniques to balance the use of memory, storage, and computation. Our contributions include: (1) the design of three basic key-value stores each with a different emphasis on memory-efficiency and write-friendliness; (2) synthesis of the basic key-value stores to build a SILT key-value store system; and (3) an analytical model for tuning system parameters carefully to meet the needs of different workloads. SILT requires one to two orders of magnitude less memory to provide comparable throughput to current high-performance key-value systems on a commodity desktop system with flash storage.
+
 - [Faster: A Concurrent Key-Value Store with In-Place Updates](papers/faster.pdf) (2018)
 
   This paper presents Faster, a new key-value store for point read, blind update, and read-modify-write operations. Faster combines a highly cache-optimized concurrent hash index with a hybrid log: a concurrent log-structured record store that spans main memory and storage, while supporting fast in-place updates of the hot set in memory.
@@ -188,6 +208,14 @@ Database development is interesting and challenging. You can always find interes
 - [How We Built a Vectorized SQL Engine](https://www.cockroachlabs.com/blog/how-we-built-a-vectorized-sql-engine/) (2019)
 
 ### OLTP
+
+- [The End of an Architectural Era (It’s Time for a Complete Rewrite)](papers/hstore.pdf) (2007)
+
+  In previous papers, some of us predicted the end of “one size fits all” as a commercial relational DBMS paradigm. These papers presented reasons and experimental evidence that showed that the major RDBMS vendors can be outperformed by 1-2 orders of magnitude by specialized engines in the data warehouse, stream processing, text, and scientific database markets.
+
+  Assuming that specialized engines dominate these markets over time, the current relational DBMS code lines will be left with the business data processing (OLTP) market and hybrid markets where more than one kind of capability is required. In this paper we show that current RDBMSs can be beaten by nearly two orders of magnitude in the OLTP market as well. The experimental evidence comes from comparing a new OLTP prototype, H-Store, which we have built at M.I.T., to a popular RDBMS on the standard transactional benchmark, TPC-C.
+
+  We conclude that the current RDBMS code lines, while attempting to be a “one size fits all” solution, in fact, excel at nothing. Hence, they are 25 year old legacy code lines that should be retired in favor of a collection of “from scratch” specialized engines. The DBMS vendors (and the research community) should start with a clean sheet of paper and design systems for tomorrow’s requirements, not continue to push code lines and architectures designed for yesterday’s needs.
 
 - [Megastore: Providing Scalable, Highly Available Storage for Interactive Services](papers/megastore.pdf) (2011)
 
@@ -245,6 +273,12 @@ Database development is interesting and challenging. You can always find interes
 
   The second part of the paper describes the architecture of our new X100 query engine for the MonetDB system that follows these guidelines. On the surface, it resembles a classical Volcano-style engine, but the crucial difference to base all execution on the concept of vector processing makes it highly CPU efficient.
 
+- [Database Cracking](papers/database-cracking.pdf) (2007)
+
+  Database indices provide a non-discriminative navigational infrastructure to localize tuples of interest. Their mainte- nance cost is taken during database updates. In this pa- per, we study the complementary approach, addressing in- dex maintenance as part of query processing using continu- ous physical reorganization, i.e., cracking the database into manageable pieces. The motivation is that by automatically organizing data the way users request it, we can achieve fast access and the much desired self-organized behavior.
+
+  We present the first mature cracking architecture and re- port on our implementation of cracking in the context of a full fledged relational system. It led to a minor enhancement to its relational algebra kernel, such that cracking could be piggy-backed without incurring too much processing over- head. Furthermore, we illustrate the ripple effect of dynamic reorganization on the query plans derived by the SQL opti- mizer. The experiences and results obtained are indicative of a significant reduction in system complexity. We show that the resulting system is able to self-organize based on incom- ing requests with clear performance benefits. This behavior is visible even when the user focus is randomly shifting to different parts of the data.
+
 - [Dremel: Interactive Analysis of Web-Scale Datasets](papers/dremel.pdf) (2010)
 
   Dremel is a scalable, interactive ad-hoc query system for analysis of read-only nested data. By combining multi-level executiontrees and columnar data layout, it is capable of running aggregation queries over trillion-row tables in seconds. The system scales to thousands of CPUs and petabytes of data, and has thousands of users at Google.  In this paper, we describe the architecture and implementation of Dremel, and explain how it complements MapReduce-based computing. We present a novel columnar storage representation for nested records and discuss experiments on few-thousand node instances of the system.
@@ -262,6 +296,10 @@ Database development is interesting and challenging. You can always find interes
 - [AnalyticDB: Real-time OLAP Database System at Alibaba Cloud](papers/analyticdb.pdf) (2019)
 
   In this paper, we introduce AnalyticDB, a real-time OLAP database system developed at Alibaba. AnalyticDB maintains all-column indexes in an asynchronous manner with acceptable overhead, which provides low latency for complex ad-hoc queries. Its storage engine extends hybrid row-column layout for fast retrieval of both structured data and data of complex types. To handle large-scale data with high query concurrency and write throughput, AnalyticDB decouples read and write access paths. To further reducequery latency, novel storage-aware SQL optimizer and execution engine are developed to fully utilize the advantages of the underlying storage and indexes.
+
+- [Delta Lake: High-Performance ACID Table Storage over Cloud Object Stores](papers/deltalake.pdf) (2021)
+
+  Cloud object stores such as Amazon S3 are some of the largest and most cost-effective storage systems on the planet, making them an attractive target to store large data warehouses and data lakes. Unfortunately, their implementation as key-value stores makes it difficult to achieve ACID transactions and high performance: metadata operations such as listing objects are expensive, and consistency guarantees are limited. In this paper, we present Delta Lake, an open source ACID table storage layer over cloud object stores initially developed at Databricks. Delta Lake uses a transaction log that is compacted into Apache Parquet format to provide ACID properties, time travel, and significantly faster metadata operations for large tabular datasets (e.g., the ability to quickly search billions of table partitions for those relevant to a query). It also leverages this design to provide high-level features such as automatic data layout optimization, upserts, caching, and audit logs. Delta Lake tables can be accessed from Apache Spark, Hive, Presto, Redshift and other systems. Delta Lake is deployed at thousands of Databricks customers that process exabytes of data per day, with the largest instances managing exabyte-scale datasets and billions of objects.
 
 - [Amazon Redshift Re-invented](papers/redshift-reinvented.pdf) (2022)
 
@@ -447,6 +485,10 @@ Database development is interesting and challenging. You can always find interes
 
   This paper describes Haystack, an object storage system optimized for Facebook’s Photos application. Facebook currently stores over 260 billion images, which translates to over 20 petabytes of data. Users up- load one billion new photos (∼60 terabytes) each week and Facebook serves over one million images per second at peak. Haystack provides a less expensive and higher performing solution than our previous approach, which leveraged network attached storage appliances over NFS. Our key observation is that this traditional design incurs an excessive number of disk operations because of metadata lookups. We carefully reduce this per photo metadata so that Haystack storage machines can perform all metadata lookups in main memory. This choice conserves disk operations for reading actual data and thus increases overall throughput.
 
+- [Windows Azure Storage: A Highly Available Cloud Storage Service with Strong Consistency](papers/azure-storage.pdf) (2011)
+
+  Windows Azure Storage (WAS) is a cloud storage system that provides customers the ability to store seemingly limitless amounts of data for any duration of time. WAS customers have access to their data from anywhere at any time and only pay for what they use and store. In WAS, data is stored durably using both local and geographic replication to facilitate disaster recovery. Currently, WAS storage comes in the form of Blobs (files), Tables (structured storage), and Queues (message delivery). In this paper, we describe the WAS architecture, global namespace, and data model, as well as its resource provisioning, load balancing, and replication systems.
+
 - [TAO: Facebook’s Distributed Data Store for the Social Graph](papers/tao.pdf) (2013)
 
   We introduce a simple data model and API tailored for serving the social graph, and TAO, an implementation of this model. TAO is a geographically distributed data store that provides efficient and timely access to the social graph for Facebook’s demanding workload using a fixed set of queries. It is deployed at Facebook, replacing memcache for many data types that fit its model. The system runs on thousands of machines, is widely distributed, and provides access to many petabytes of data. TAO can process a billion reads and millions of writes each second.
@@ -471,6 +513,14 @@ Database development is interesting and challenging. You can always find interes
 
   We present DistCache, a new distributed caching mechanism that provides provable load balancing for large-scale storage systems. DistCache co-designs cache allocation with cache topology and query routing. The key idea is to partition the hot objects with independent hash functions between cache nodes in different layers, and to adaptively route queries with the power-of-two-choices. We prove that DistCache enables the cache throughput to increase linearly with the number of cache nodes, by unifying techniques from expander graphs, network flows, and queuing theory. DistCache is a general solution that can be applied to many storage systems.
 
+- [FoundationDB Record Layer: A Multi-Tenant Structured Datastore](papers/foundationdb-2019.pdf) (2019)
+
+  The FoundationDB Record Layer is an open source library that provides a record-oriented data store with semantics similar to a relational database implemented on top of FoundationDB, an ordered, transactional key-value store. The Record Layer provides a lightweight, highly extensible way to store structured data. It offers schema management and a rich set of query and indexing facilities, some of which are not usually found in traditional relational databases, such as nested record types, indexes on commit versions, and indexes that span multiple record types. The Record Layer is stateless and built for massive multi-tenancy, encapsulating and isolating all of a tenant’s state, including indexes, into a separate logical database. We demonstrate how the Record Layer is used by CloudKit, Apple’s cloud backend service, to provide powerful abstractions to applications serving hundreds of millions of users. CloudKit uses the Record Layer to host billions of independent databases, many with a common schema. Features provided by the Record Layer enable CloudKit to provide richer APIs and stronger semantics with reduced maintenance overhead and improved scalability.
+
+- [FoundationDB: A Distributed Unbundled Transactional Key Value Store](papers/foundationdb-2021.pdf) (2021)
+
+  FoundationDB is an open source transactional key value store created more than ten years ago. It is one of the first systems to combine the flexibility and scalability of NoSQL architectures with the power of ACID transactions (a.k.a. NewSQL). FoundationDB adopts an unbundled architecture that decouples an in-memory transaction management system, a distributed storage system, and a built-in distributed configuration system. Each sub-system can be independently provisioned and configured to achieve the desired scalability, high-availability and fault tolerance properties. FoundationDB uniquely integrates a deterministic simulation framework, used to test every new feature of the system under a myriad of possible faults. This rigorous testing makes FoundationDB extremely stable and allows developers to introduce and release new features in a rapid cadence. FoundationDB offers a minimal and carefully chosen feature set, which has enabled a range of disparate systems (from semi-relational databases, document and object stores, to graph databases and more) to be built as layers on top. FoundationDB is the underpinning of cloud infrastructure at Apple, Snowflake and other companies, due to its consistency, robustness and availability for storing user data, system metadata and configuration, and other critical information.
+
 - [Virtual Consensus in Delos](papers/delos-2020.pdf) (2020)
 
   We propose virtualizing consensus by virtualizing the shared log API, allowing services to change consensus protocols without downtime. Virtualization splits the logic of consensus into the VirtualLog, a generic and reusable reconfiguration layer; and pluggable ordering protocols called Loglets. Loglets are simple, since they do not need to support reconfiguration or leader election; diverse, consisting of different protocols, codebases, and even deployment modes; and composable, via RAID-like stacking and striping. We describe a production database called Delos, which leverages virtual consensus for rapid, incremental development and deployment.
@@ -478,6 +528,10 @@ Database development is interesting and challenging. You can always find interes
 - [Log-structured Protocols in Delos](papers/delos-2021.pdf) (2021)
 
   Developers have access to a wide range of storage APIs and functionality in large-scale systems, such as rela- tional databases, key-value stores, and namespaces. However, this diversity comes at a cost: each API is implemented by a complex distributed system that is difficult to develop and operate. Delos amortizes this cost by enabling different APIs on a shared codebase and operational platform. The primary innovation in Delos is a log-structured protocol: a fine-grained replicated state machine executing above a shared log that can be layered into reusable protocol stacks under different databases.
+
+- [Amazon DynamoDB: A Scalable, Predictably Performant, and Fully Managed NoSQL Database Service](papers/dynamodb.pdf) (2022)
+
+  Amazon DynamoDB is a NoSQL cloud database service that provides consistent performance at any scale. Hundreds of thousands of customers rely on DynamoDB for its fundamental properties: consistent performance, availability, durability, and a fully managed serverless experience. In 2021, during the 66-hour Amazon Prime Day shopping event, Amazon systems - including Alexa, the Amazon.com sites, and Amazon fulfillment centers, made trillions of API calls to DynamoDB, peaking at 89.2 million requests per second, while experiencing high availability with single-digit millisecond performance. Since the launch of DynamoDB in 2012, its design and implementation have evolved in response to our experiences operating it. The system has successfully dealt with issues related to fairness, traffic imbalance across partitions, monitoring, and automated system operations without impacting availability or performance. Reliability is essential, as even the slightest disruption can significantly impact customers. This paper presents our experience operating DynamoDB at a massive scale and how the architecture continues to evolve to meet the ever-increasing demands of customer workloads.
 
 ## Lessons learned and the future
 
