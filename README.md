@@ -52,7 +52,7 @@ Database development is interesting and challenging. You can always find interes
 
 - [Solid-State Drive (SSD)](https://en.wikipedia.org/wiki/Solid-state_drive)
 - [How Flash Memory Works](https://www.youtube.com/watch?v=s7JLXs5es7I) (Video)
-- [Coding for SSDs](http://codecapsule.com/2014/02/12/coding-for-ssds-part-1-introduction-and-table-of-contents/)
+- [Coding for SSDs - What every programmer should know about SSDs](http://codecapsule.com/2014/02/12/coding-for-ssds-part-1-introduction-and-table-of-contents/)
 
 ### Interface
 
@@ -74,6 +74,10 @@ Database development is interesting and challenging. You can always find interes
 
   This paper presents a new technique for disk storage management called a log-structured file system. A log-structured file system writes all modifications to disk sequentially in a log-like structure, thereby speeding up both file writing and crash recovery.
 
+- [Efficiently Reclaiming Space in a Log Structured Store](papers/lss.pdf) (2020)
+
+  A log structured store uses a single write I/O for a number of diverse and non-contiguous pages within a large buffer instead of using a write I/O for each page separately. This requires that pages be relocated on every write, because pages are never updated in place. Instead, pages are dynamically remapped on every write. Log structuring was invented for and used initially in file systems. Today, a form of log structuring is used in SSD controllers because an SSD requires the erasure of a large block of pages before flash storage can be reused. No update-in-place requires that the storage for out-of-date pages be reclaimed (garbage collected or “cleaned”). We analyze cleaning performance and introduce a cleaning strategy that uses a new way to prioritize the order in which stale pages are garbage collected. Our cleaning strategy approximates an “optimal cleaning strategy”.
+
 - [SFS: Random Write Considered Harmful in Solid State Drives](papers/sfs.pdf) (2012)
 
   In this paper, we propose a new file system for SSDs, SFS. First, SFS exploits the maximum write bandwidth of SSD by taking a log-structured approach. SFS transforms all random writes at file system level to sequential ones at SSD level. Second, SFS takes a new data grouping strategy on writing, instead of the existing data separation strategy on segment cleaning. It puts the data blocks with similar update likelihood into the same segment. This minimizes the inevitable segment cleaning overhead in any log-structured file system by allowing the segments to form a sharp bimodal distribution of segment utilization.
@@ -87,6 +91,14 @@ Database development is interesting and challenging. You can always find interes
   This article proposes to use a frequency-based cache admission policy in order to boost the effectiveness of caches subject to skewed access distributions. Given a newly accessed item and an eviction candidate from the cache, our scheme decides, based on the recent access history, whether it is worth admitting the new item into the cache at the expense of the eviction candidate.
 
   This concept is enabled through a novel approximate LFU structure called TinyLFU, which maintains an approximate representation of the access frequency of a large sample of recently accessed items. TinyLFU is very compact and lightweight as it builds upon Bloom filter theory.
+
+- [LeanStore: In-Memory Data Management Beyond Main Memory](papers/leanstore.pdf) (2018)
+
+  In this work, we revisit this fundamental dichotomy and design a novel storage manager that is optimized for modern hardware. Our evaluation, which is based on TPC-C and micro benchmarks, shows that our approach has little overhead in comparison with a pure in-memory system when all data resides in main memory. At the same time, like a traditional buffer manager, it is fully transparent and can manage very large data sets effectively. Furthermore, due to low-overhead synchronization, our implementation is also highly scalable on multi-core CPUs.
+
+- [HotRing: A Hotspot-Aware In-Memory Key-Value Store](papers/hotring.pdf) (2020)
+
+  In this paper, we explore hotspot-aware designs for in-memory index structures in KVSes. We first analyze the potential benefits from ideal hotspot-aware indexes, and discuss challenges (i.e., hotspot shift and concurrent access issues) in effectively leveraging hotspot-awareness. Based on these insights, we propose a novel hotspot-aware KVS, named HotRing1, that is optimized for massively concurrent accesses to a small portion of items. HotRing is based on an ordered-ring hash index structure, which provides fast access to hot items by moving head pointers closer to them. It also applies a lightweight strategy to detect hotspot shifts at run-time. HotRing comprehensively adopts lock-free structures in its design, for both common operations (i.e., read, update) and HotRing-specific operations (i.e., hotspot shift detection, head pointer movement and ordered-ring rehash), so that massively concurrent requests can better leverage multi-core architectures. 
 
 - [Cost/Performance in Modern Data Stores](papers/cost-performance.pdf) (2018)
 
