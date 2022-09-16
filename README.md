@@ -136,10 +136,6 @@ Database development is interesting and challenging. You can always find interes
 
   Our new form of B-tree, called the Bw-tree achieves its very high performance via a latch-free approach that effectively exploits the processor caches of modern multi-core chips. Our storage manager uses a unique form of log structuring that blurs the distinction between a page and a record store and works well with flash storage. This paper describes the architecture and algorithms for the Bw-tree, focusing on the main memory aspects.
 
-- [Optimizing Bw-tree Indexing Performance](papers/bwtree-2017.pdf) (2017)
-
-  In this paper, we present our optimized Bw-tree index that is substantially faster than our initial implementation. We apply an integrated set optimizations, new ones and refinements of prior techniques, to produce Bw-tree indexing with up to 40 percent better performance for single key lookups, while also improving range search performance. And our original implementation performs comparably to the best main memory indexes. Uniquely, however, it is designed to be used with data residing on secondary storage, and hence includes the overheads required to keep data paginated.
-
 - [Building a Bw-Tree Takes More Than Just Buzz Words](papers/open-bwtree.pdf) (2018)
 
   This paper has two contributions: First, it is the missing guide for how to build a lock-free Bw-Tree. We clarify missing points in Microsoft’s original design documents and then present techniques to improve the index’s performance. Although our focus here is on the Bw-Tree, many of our methods apply more broadly to designing and implementing future lock-free in-memory data structures. Our experimental evaluation shows that our optimized variant achieves 1.1–2.5× better performance than the original Microsoft proposal for highly concurrent workloads. Second, our evaluation shows that despite our improvements, the Bw-Tree still does not perform as well as other concurrent data structures that use locks.
