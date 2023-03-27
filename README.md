@@ -292,6 +292,7 @@ Database development is interesting and challenging. You can always find interes
 - [Living Without Atomic Clocks](https://www.cockroachlabs.com/blog/living-without-atomic-clocks/) (Cockroach Labs, 2016)
 - [Serializable, Lockless, Distributed: Isolation in CockroachDB](https://www.cockroachlabs.com/blog/serializable-lockless-distributed-isolation-cockroachdb/) (Cockroach Labs, 2016)
 - [CockroachDB’s Consistency Model](https://www.cockroachlabs.com/blog/consistency-model/) (Cockroach Labs, 2019)
+- [Polybase's schema validaton language](https://polybase.xyz/blog/introduction-to-polylang)
 
 ### OLAP
 
