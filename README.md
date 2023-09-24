@@ -208,6 +208,10 @@ Database development is interesting and challenging. You can always find interes
 
   In this paper, we describe our journey to build and run an OLTP LSM-tree SQL database at scale. We also discuss the features we implemented to keep pace with UDB workloads, what made migrations easier, and what operational and software development challenges we faced during the two years of running MyRocks in production.
 
+- [Disaggregating RocksDB: A Production Experience](papers/disaggregating-rocksdb.pdf) (2023)
+
+  As in the general industry, there is a trend in Meta’s data centers to migrate data from locally attached SSDs to cloud storage. We extended RocksDB, a widely used open-source storage engine designed and built for local SSDs, to leverage disaggregated storage.
+
 ### Hash table
 
 - [Bitcask: A Log-Structured Hash Table for Fast Key/Value Data](papers/bitcask.pdf) (2010)
@@ -354,6 +358,16 @@ Database development is interesting and challenging. You can always find interes
 - [Alibaba Hologres: A Cloud-Native Service for Hybrid Serving/Analytical Processing](papers/hologres.pdf) (2020)
 
   In this work, we propose Hologres, which is a cloud native service for hybrid serving and analytical processing (HSAP). Hologres decouples the computation and storage layers, allowing flexible scaling in each layer. Tables are partitioned into self-managed shards. Each shard processes its read and write requests concurrently independent of each other. Hologres leverages hybrid row/column storage to optimize operations such as point lookup, column scan and data ingestion used in HSAP. We propose Execution Context as a resource abstraction between system threads and user tasks. Execution contexts can be cooperatively scheduled with little context switching overhead. Queries are parallelized and mapped to execution contexts for concurrent execution. The scheduling framework enforces resource isolation among different queries and supports customizable schedule policy.
+
+### Miscellaneous
+
+- [The relational model for database management](https://dl.acm.org/doi/book/10.5555/77708) (1990)
+
+  An important adjunct to precision is a sound theoretical foundation.  The relational model is solidly based on two parts of mathematics: first-order predicate logic and the theory of relations. This book, however, does not dwell on the theoretical foundations, but rather on all the features of the relational model that I now perceive as important for database users, and therefore for DBMS vendors. My perceptions result from 20 years of practical experience in computing and data processing (chiefly, but not exclusively, with large-scale customers of IBM), followed by another 20 years of research.
+
+- [PostgreSQL 14 Internals](https://postgrespro.com/community/books/internals) (2023)
+
+  This book is for those who will not settle for a black-box approach when working with a database. Briefly touching upon the main concepts of PostgreSQL, the book then plunges into the depths of data consistency and isolation, explaining implementation details of multiversion concurrency control and snapshot isolation, buffer cache and write-ahead log, and the locking system. The rest of the book covers the questions of planning and executing SQL queries, including the discussion of data access and join methods, statistics, and various index types.
 
 ## Replication
 
