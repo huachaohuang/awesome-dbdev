@@ -12,7 +12,7 @@ Database development is interesting and challenging. You can always find interes
 
   In this practical and comprehensive guide, author Martin Kleppmann helps you navigate this diverse landscape by examining the pros and cons of various technologies for processing and storing data. Software keeps changing, but the fundamental principles remain the same. With this book, software engineers and architects will learn how to apply those ideas in practice, and how to make full use of data in modern applications.
 
-- [How does a relational database work](http://coding-geek.com/how-databases-work/) (2015)
+- [How does a relational database work](https://web.archive.org/web/20230307091314/http://coding-geek.com/how-databases-work/) (2015)
 
 - [Elements Of Scale: Composing And Scaling Data Platforms](http://www.benstopford.com/2015/04/28/elements-of-scale-composing-and-scaling-data-platforms/) (2015)
 
